@@ -5,15 +5,9 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
-from six import text_type
-
-from .module import Module
 from .database import Database
-from .filter import Filter, FilterList
-from .model import (FIELDS_FILEBOX, FIELDS_HISTORY, FIELDS_NOTE,
-                    FIELDS_PIPELINE, FileBoxDetail, FileBoxInfo, HistoryInfo,
-                    ImageInfo, NoteInfo, PipelineInfo)
-from .selection import Selection
+from .filter import Filter
+from .module import Module
 
 LOGGER = logging.getLogger(__name__)
 

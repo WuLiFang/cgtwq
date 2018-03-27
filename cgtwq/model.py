@@ -5,9 +5,43 @@ from __future__ import (absolute_import, division, print_function,
 
 from collections import namedtuple
 
-# Filebox
-FIELDS_FILEBOX = ('#id', '#pipeline_id', 'title')
-FileBoxInfo = namedtuple('FileBoxInfo', ('id', 'pipeline_id', 'title'))
+
+class FileBoxCategoryInfo(namedtuple('FileBoxInfo', ('id', 'pipeline_id', 'title'))):
+    """Filebox catagory information.  """
+
+    fields = ('#id', '#pipeline_id', 'title')
+
+
+class PipelineInfo(namedtuple('PipelineInfo', ('id', 'name', 'module'))):
+    """Pipeline information.  """
+    fields = ('#id', 'name', 'module')
+
+
+class NoteInfo(namedtuple('NoteInfo',
+                          ('id', 'task_id', 'account_id',
+                           'html', 'time', 'account_name',
+                           'module'))):
+    """Note informatiom.  """
+
+    fields = ('#id', '#task_id', '#from_account_id',
+              'text', 'time', 'create_by',
+              'module')
+
+
+class HistoryInfo(
+        namedtuple(
+            'HistoryInfo',
+            ('id', 'task_id', 'account_id',
+             'step', 'status', 'file',
+             'text', 'create_by', 'time')
+        )):
+    """History information.   """
+
+    fields = ('#id', '#task_id', '#account_id',
+              'step', 'status', 'file',
+              'text', 'create_by', 'time')
+
+
 FileBoxDetail = namedtuple(
     'FileBoxDetail',
     ('path',
@@ -18,27 +52,4 @@ FileBoxDetail = namedtuple(
      'is_in_history_add_datetime', 'is_cover_disable',
      'is_msg_to_first_qc')
 )
-
-# Pipeline
-FIELDS_PIPELINE = ('#id', 'name', 'module')
-PipelineInfo = namedtuple('PipelineInfo', ('id', 'name', 'module'))
-
-# Image
 ImageInfo = namedtuple('ImageInfo', ('max', 'min', 'path'))
-
-# Note
-FIELDS_NOTE = ('#id', '#task_id', '#from_account_id',
-               'text', 'time', 'create_by',
-               'module')
-NoteInfo = namedtuple('NoteInfo',
-                      ('id', 'task_id', 'account_id',
-                       'html', 'time', 'account_name',
-                       'module'))
-# History
-FIELDS_HISTORY = ('#id', '#task_id', '#account_id',
-                  'step', 'status', 'file',
-                  'text', 'create_by', 'time')
-HistoryInfo = namedtuple('HistoryInfo',
-                         ('id', 'task_id', 'account_id',
-                          'step', 'status', 'file',
-                          'text', 'create_by', 'time'))

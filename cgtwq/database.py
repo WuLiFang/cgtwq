@@ -7,9 +7,7 @@ import logging
 
 from . import server
 from .filter import FilterList
-from .model import (FIELDS_FILEBOX, FIELDS_HISTORY, FIELDS_NOTE,
-                    FIELDS_PIPELINE, FileBoxDetail, FileBoxInfo, HistoryInfo,
-                    ImageInfo, NoteInfo, PipelineInfo)
+from .model import FileBoxCategoryInfo, PipelineInfo
 from .module import Module
 from .server import setting
 
@@ -52,18 +50,18 @@ class Database(object):
             ValueError: No matched filebox.
 
         Returns:
-            tuple[Filebox]: namedtuple for ('id', 'pipeline_id', 'title')
+            tuple[FileBoxCategoryInfo]: namedtuple for ('id', 'pipeline_id', 'title')
         """
 
         if id_:
             resp = self.call("c_file", "get_one_with_id",
                              id=id_,
-                             field_array=FIELDS_FILEBOX)
+                             field_array=FileBoxCategoryInfo.fields)
             ret = [resp.data]
         elif filters:
             resp = self.call("c_file", "get_with_filter",
                              filter_array=FilterList(filters),
-                             field_array=FIELDS_FILEBOX)
+                             field_array=FileBoxCategoryInfo.fields)
             ret = resp.data
         else:
             raise ValueError(
@@ -72,7 +70,7 @@ class Database(object):
         if not resp.data:
             raise ValueError('No matched filebox.')
         assert all(isinstance(i, list) for i in ret), resp
-        return tuple(FileBoxInfo(*i) for i in ret)
+        return tuple(FileBoxCategoryInfo(*i) for i in ret)
 
     def get_piplines(self, filters):
         """Get piplines from database.
@@ -81,12 +79,12 @@ class Database(object):
             filters (FilterList): Filter to get pipeline.
 
         Returns:
-            tuple[Pipeline]: namedtuple for ('id', 'name', 'module')
+            tuple[PipelineInfo]: namedtuple for ('id', 'name', 'module')
         """
 
         resp = self.call(
             "c_pipeline", "get_with_filter",
-            field_array=FIELDS_PIPELINE,
+            field_array=PipelineInfo.fields,
             filter_array=FilterList(filters))
         return tuple(PipelineInfo(*i) for i in resp.data)
 

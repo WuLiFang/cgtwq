@@ -8,7 +8,7 @@ import uuid
 from unittest import TestCase, main
 
 from util import skip_if_not_logged_in
-from cgtwq import database
+from cgtwq import database, model
 from cgtwq import Filter
 import cgtwq
 
@@ -61,7 +61,7 @@ class ModuleTestCase(TestCase):
 
         result = self.module.get_history(Filter('status', 'Approve'))
         for i in result:
-            assert isinstance(i, database.HistoryInfo)
+            assert isinstance(i, model.HistoryInfo)
 
     def test_count_history(self):
 
@@ -95,7 +95,7 @@ class SelectionTestCase(TestCase):
     def test_get_filebox(self):
         select = self.select
         result = select.get_filebox('submit')
-        self.assertIsInstance(result, database.FileBoxDetail)
+        self.assertIsInstance(result, model.FileBoxDetail)
 
         # Test wrong sign.
         self.assertRaises(ValueError,
@@ -110,7 +110,7 @@ class SelectionTestCase(TestCase):
     def test_get_image(self):
         result = self.select.get_image('image')
         for i in result:
-            self.assertIsInstance(i, database.ImageInfo)
+            self.assertIsInstance(i, model.ImageInfo)
 
     def test_set_image(self):
         for i in self.select.to_entries():
@@ -121,7 +121,7 @@ class SelectionTestCase(TestCase):
     def test_get_notes(self):
         result = self.select.get_notes()
         for i in result:
-            self.assertIsInstance(i, database.NoteInfo)
+            self.assertIsInstance(i, model.NoteInfo)
 
     def test_send_message(self):
         self.select.send_message('test',
@@ -131,7 +131,7 @@ class SelectionTestCase(TestCase):
     def test_get_history(self):
         result = self.select.get_history()
         for i in result:
-            assert isinstance(i, database.HistoryInfo)
+            assert isinstance(i, model.HistoryInfo)
 
     def test_count_history(self):
         result = self.select.count_history()

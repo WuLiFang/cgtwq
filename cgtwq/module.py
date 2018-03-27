@@ -8,13 +8,10 @@ import logging
 from six import text_type
 
 from .filter import Filter, FilterList
-from .model import (FIELDS_FILEBOX, FIELDS_HISTORY, FIELDS_NOTE,
-                    FIELDS_PIPELINE, FileBoxDetail, FileBoxInfo, HistoryInfo,
-                    ImageInfo, NoteInfo, PipelineInfo)
+from .model import HistoryInfo
 from .selection import Selection
 
 LOGGER = logging.getLogger(__name__)
-from functools import partial
 
 
 class Module(object):
@@ -138,7 +135,7 @@ class Module(object):
 
         resp = self.call(
             "c_history", "get_with_filter",
-            field_array=FIELDS_HISTORY,
+            field_array=HistoryInfo.fields,
             filter_array=FilterList(filters))
         return tuple(HistoryInfo(*i) for i in resp.data)
 

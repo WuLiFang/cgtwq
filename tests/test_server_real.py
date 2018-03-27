@@ -27,7 +27,7 @@ class ServerTestCase(TestCase):
         # Prepare
         tempdir = mkdtemp()
         self.addCleanup(os.rmdir, tempdir)
-        fd, tempfile = mkstemp(dir=tempdir)
+        fd, tempfile = mkstemp(dir=tempdir)  # pylint: disable=invalid-name
         self.addCleanup(os.remove, tempfile)
         dummy_data = unicode(uuid.uuid4())
         with io.open(fd, 'w') as f:

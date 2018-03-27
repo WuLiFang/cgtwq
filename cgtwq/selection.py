@@ -12,9 +12,7 @@ from six import text_type
 from .server.file import upload
 from .server.filetools import file_md5, genreate_thumb
 from .filter import Field, Filter
-from .model import (FIELDS_FILEBOX, FIELDS_HISTORY, FIELDS_NOTE,
-                    FIELDS_PIPELINE, FileBoxDetail, FileBoxInfo, HistoryInfo,
-                    ImageInfo, NoteInfo, PipelineInfo)
+from .model import (FileBoxDetail, ImageInfo, NoteInfo)
 from .resultset import ResultSet
 
 _OS = {'windows': 'win', 'linux': 'linux', 'darwin': 'mac'}.get(
@@ -269,7 +267,7 @@ class Selection(tuple):
 
         resp = self.call("c_note", "get_with_task_id",
                          task_id=self[0],
-                         field_array=FIELDS_NOTE)
+                         field_array=NoteInfo.fields)
         return tuple(NoteInfo(*i) for i in resp.data)
 
     def get_history(self, filters=None):
