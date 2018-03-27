@@ -10,5 +10,6 @@ setup(
     install_requires=[
         'requests==2.18.4',
         'websocket-client==0.47.0',
+        'git+https://https://github.com/WuLiFang/wlf@bcd210a4843157e33dcf782be74099ce2ca18966#egg=wlf',
     ]
 )
