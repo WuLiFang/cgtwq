@@ -13,13 +13,12 @@ import six
 import util
 
 
-from cgtwq.filetools import genreate_thumb
+from cgtwq.server.filetools import genreate_thumb
 
 
 class FileToolsTestCase(TestCase):
 
     @skipIf(six.PY3, 'TODO')
-    @skipIf(sys.platform != 'win32', 'TODO')
     def test_generate_thumb(self):
         result = genreate_thumb(util.path('resource', 'gray.jpg'), 100, 75)
         self.addCleanup(os.unlink, result)
