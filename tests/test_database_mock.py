@@ -9,7 +9,6 @@ from unittest import TestCase, main
 import six
 
 import cgtwq
-from cgtwq import Database, database
 from cgtwq.server.websocket import Response
 
 if six.PY3:
@@ -43,10 +42,10 @@ class ModuleTestCase(TestCase):
     def test_select(self):
         module = self.module
         result = module.select('0')
-        self.assertIsInstance(result, cgtwq.database.Selection)
+        self.assertIsInstance(result, cgtwq.Selection)
         last = result
         result = module['0']
-        self.assertIsInstance(result, cgtwq.database.Selection)
+        self.assertIsInstance(result, cgtwq.Selection)
         self.assertEqual(result, last)
 
         self.call_method.assert_not_called()
@@ -65,7 +64,7 @@ class ModuleTestCase(TestCase):
                                   sign_filter_array=[
                                       ['shot_task.key', '=', 'value']],
                                   token=select.token)
-        self.assertIsInstance(select, cgtwq.database.Selection)
+        self.assertIsInstance(select, cgtwq.Selection)
 
     @patch('cgtwq.database.Module.filter')
     @patch('cgtwq.database.Module.select')
@@ -73,7 +72,7 @@ class ModuleTestCase(TestCase):
         assert isinstance(select, MagicMock)
         assert isinstance(filter_, MagicMock)
         module = self.module
-        select.return_value = filter_.return_value = cgtwq.database.Selection(
+        select.return_value = filter_.return_value = cgtwq.Selection(
             module)
 
         _ = module['abc']
@@ -90,7 +89,7 @@ class SelectionTestCase(TestCase):
         self.addCleanup(patcher.stop)
 
         self.call_method = patcher.start()
-        self.select = cgtwq.database.Selection(
+        self.select = cgtwq.Selection(
             cgtwq.Database('dummy_db')['shot_task'],
             '1', '2')
 
@@ -104,7 +103,7 @@ class SelectionTestCase(TestCase):
 
         # Test `get_fields`.
         result = select.get_fields('id', 'artist', 'task_name')
-        self.assertIsInstance(result, cgtwq.database.ResultSet)
+        self.assertIsInstance(result, cgtwq.ResultSet)
         self.assertEqual(result.column('artist'), ('dog', 'monkey'))
         call_method.assert_called_once_with(
             'c_orm', 'get_in_id',
@@ -176,7 +175,7 @@ class SelectionTestCase(TestCase):
             'c_folder',
             'get_replace_path_in_sign',
             db='dummy_db', id_array=('1', '2'),
-            module='shot_task', os=cgtwq.database._OS,  # pylint: disable=protected-access
+            module='shot_task', os=cgtwq.selection._OS,  # pylint: disable=protected-access
             sign_array=('test',),
             task_id_array=('1', '2'),
             token=select.token)
@@ -204,7 +203,7 @@ class SelectionTestCase(TestCase):
             db='dummy_db',
             id_array=('1', '2'),
             module='shot_task',
-            os=cgtwq.database._OS,
+            os=cgtwq.selection._OS,
             sign='test_fb',
             task_id='1',
             token=select.token)
@@ -212,8 +211,8 @@ class SelectionTestCase(TestCase):
     def test_to_entry(self):
 
         self.assertRaises(ValueError, self.select.to_entry)
-        result = Database('test')['m'].select('1').to_entry()
-        self.assertIsInstance(result, database.Entry)
+        result = cgtwq.Database('test')['m'].select('1').to_entry()
+        self.assertIsInstance(result, cgtwq.Entry)
 
     def test_submit(self):
         call_method = self.call_method
@@ -239,7 +238,7 @@ class EntryTestCase(TestCase):
         self.addCleanup(patcher.stop)
 
         self.call_method = patcher.start()
-        self.task = cgtwq.database.Entry(
+        self.task = cgtwq.Entry(
             cgtwq.Database('dummy_db')['shot_task'], '1')
 
     def test_getter(self):

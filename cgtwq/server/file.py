@@ -10,9 +10,9 @@ import os
 import tempfile
 from collections import namedtuple
 
-from .http import post, get
-from ..client import CGTeamWorkClient
-from ..util import file_md5
+from . import setting
+from .filetools import file_md5
+from .http import get, post
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ COUNTINUE = 1 << 1
 REPLACE = 1 << 2
 
 
-def upload(path, pathname, ip=None, flags=BACKUP | COUNTINUE):
+def upload(path, pathname, token, ip=None, flags=BACKUP | COUNTINUE):
     """Upload file to server.
 
     Args:
@@ -40,17 +40,19 @@ def upload(path, pathname, ip=None, flags=BACKUP | COUNTINUE):
     Returns:
         str: Upload path.
     """
+    # pylint: disable=invalid-name
 
     chunk_size = 2*2**20  # 2MB
     hash_ = file_md5(path)
     pathname = '/{}'.format(unicode(pathname).lstrip('\\/'))
-    ip = ip or CGTeamWorkClient.server_ip()
     ret = 'http://{}{}'.format(ip, pathname)
 
     LOGGER.debug('upload: %s -> %s', path, pathname)
-    result = post('/file.php', {'file_md5': hash_,
-                                'upload_des_path': pathname,
-                                'action': 'pre_upload'},
+    result = post('/file.php',
+                  {'file_md5': hash_,
+                   'upload_des_path': pathname,
+                   'action': 'pre_upload'},
+                  token=token,
                   ip=ip)
     LOGGER.debug('POST: result: %s', result)
 
@@ -76,13 +78,13 @@ def upload(path, pathname, ip=None, flags=BACKUP | COUNTINUE):
                 'no_continue_upload': 'N' if flags & COUNTINUE else 'Y'}
         for chunk in iter(lambda: f.read(chunk_size), b''):
             data['read_pos'] = file_pos
-            post('/upload_file', data, files={'files': chunk})
+            post('/upload_file', data, token=token, files={'files': chunk})
             file_pos += chunk_size
 
     return ret
 
 
-def download(pathname, dest):
+def download(pathname, dest, token):
     """Download file from server.
 
     Args:
@@ -99,7 +101,7 @@ def download(pathname, dest):
         unicode: Path of downloaded file.
     """
 
-    info = stat(pathname)
+    info = stat(pathname, token)
     if not info.file_md5:
         raise ValueError('Server file not exists.', pathname)
 
@@ -128,7 +130,8 @@ def download(pathname, dest):
 
     # Download to tempfile.
     headers = {'Range': 'byte={}-'.format(info.file_size)}
-    resp = get(info.server_path, stream=True, verify=False, headers=headers)
+    resp = get(info.server_path, token=token,
+               stream=True, verify=False, headers=headers)
     fd, filename = tempfile.mkstemp('.cgtwqdownload', dir=dest_dir)
     with io.open(fd, 'wb') as f:
         for chunk in resp.iter_content():
@@ -143,11 +146,12 @@ def download(pathname, dest):
     return dest
 
 
-def file_operation(action, **kwargs):
+def file_operation(action, token, **kwargs):
     """Do file operation on server.
 
     Args:
-        action (unicode): Server defined action name.
+        action (str): Server defined action name.
+        token (str): User token.
 
     Returns:
         Server execution result.
@@ -155,12 +159,12 @@ def file_operation(action, **kwargs):
 
     LOGGER.debug('%s: %s', action, kwargs)
     kwargs['action'] = action
-    result = post('/file.php', kwargs)
+    result = post('/file.php', data=kwargs, token=token)
     LOGGER.debug('%s: result: %s', action, result)
     return result
 
 
-def delete(pathname):
+def delete(pathname, token):
     """Delete file on server.
 
     Args:
@@ -170,10 +174,10 @@ def delete(pathname):
         bool: Is deletion successed.
     """
 
-    return file_operation('delete', server_path=pathname)
+    return file_operation('delete', token=token, server_path=pathname)
 
 
-def rename(src, dst):
+def rename(src, dst, token):
     """Rename(move) file on server.
 
     Args:
@@ -184,10 +188,10 @@ def rename(src, dst):
         bool: Is deletion successed.
     """
 
-    return file_operation('rename', old_path=src, new_path=dst)
+    return file_operation('rename', token=token, old_path=src, new_path=dst)
 
 
-def mkdir(pathname):
+def mkdir(pathname, token):
     """Make directory on server.
 
     Args:
@@ -197,13 +201,13 @@ def mkdir(pathname):
         bool: Is directory created.
     """
 
-    return file_operation('create_dir', server_path=pathname)
+    return file_operation('create_dir', token=token, server_path=pathname)
 
 
 DirInfo = namedtuple('DirInfo', ('dir', 'file'))
 
 
-def listdir(pathname):
+def listdir(pathname, token):
     """List directory contents on server.
 
     Args:
@@ -213,11 +217,11 @@ def listdir(pathname):
         DirInfo: namedtuple of directory info.
     """
 
-    result = file_operation('list_dir', server_path=pathname)
+    result = file_operation('list_dir', token=token, server_path=pathname)
     return DirInfo(**result)
 
 
-def isdir(pathname):
+def isdir(pathname, token):
     """Check if pathname is directory.
 
     Args:
@@ -227,10 +231,10 @@ def isdir(pathname):
         bool: True if `pathname` is directory.
     """
 
-    return file_operation('is_dir', server_path=pathname)
+    return file_operation('is_dir', token=token, server_path=pathname)
 
 
-def exists(pathname):
+def exists(pathname, token):
     """Check if pathname exists on server.
 
     Args:
@@ -240,13 +244,13 @@ def exists(pathname):
         bool: True if `pathname` exists on server.
     """
 
-    return file_operation('file_exists', server_path=pathname)
+    return file_operation('file_exists', token=token, server_path=pathname)
 
 
 FileInfo = namedtuple('FileInfo', ('file_md5', 'file_size', 'server_path'))
 
 
-def stat(pathname):
+def stat(pathname, token):
     """Get server file status.
 
     Args:
@@ -256,6 +260,6 @@ def stat(pathname):
         FileInfo: Server file information.
     """
 
-    result = file_operation('file_info', server_path=pathname)
+    result = file_operation('file_info', token=token, server_path=pathname)
     assert isinstance(result, dict), type(result)
     return FileInfo(**result)

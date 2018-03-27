@@ -8,30 +8,29 @@ import logging
 
 import requests
 
-from ..client import CGTeamWorkClient
+from . import setting
 
 LOGGER = logging.getLogger(__file__)
 
-from .. import setting
 
-
-def post(pathname, data, ip=None, **kwargs):
-    """Post data to CGTeamWork server.
+def post(pathname, data, token, ip=None, **kwargs):
+    """`POST` data to CGTeamWork server.
         pathname (str unicode): Pathname for http host.
         ip (str unicode, optional): Defaults to None. If `ip` is None,
-            will use ip from setting or CGTeamWorkClient.
+            will use ip from setting or setting.
         data: Data to post.
         **kwargs: kwargs for `requests.post`
 
     Returns:
         Server execution result.
     """
+    # pylint: disable=invalid-name
 
     assert 'cookies' not in kwargs
     assert 'data' not in kwargs
-    token = data.get('token', CGTeamWorkClient.token())
+
     data['token'] = token
-    ip = ip or setting.SERVER_IP or CGTeamWorkClient.server_ip()
+    ip = ip or setting.SERVER_IP
     cookies = {'token': token}
 
     resp = requests.post('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
@@ -47,21 +46,21 @@ def post(pathname, data, ip=None, **kwargs):
     return result
 
 
-def get(pathname, token=None, ip=None, **kwargs):
-    """Get request to CGTeamWork server.
+def get(pathname, token, ip=None, **kwargs):
+    """`GET` request to CGTeamWork server.
         token (str unicode, optional): Defaults to None. If `token` is None,
-            will use token from CGTeamWorkClient.
+            will use token from setting.
         ip (str unicode, optional): Defaults to None. If `ip` is None,
-            will use ip from CGTeamWorkClient.
+            will use ip from setting.
         **kwargs: kwargs for `requests.get`
 
     Returns:
         [type]: [description]
     """
+    # pylint: disable=invalid-name
 
     assert 'cookies' not in kwargs
-    token = token or CGTeamWorkClient.token()
-    ip = ip or CGTeamWorkClient.server_ip()
+    ip = ip or setting.SERVER_IP
     cookies = {'token': token}
 
     LOGGER.debug('GET: kwargs: %s', kwargs)

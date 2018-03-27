@@ -11,14 +11,15 @@ from tempfile import mkdtemp, mkstemp
 from unittest import TestCase, main
 
 from util import skip_if_not_logged_in
-from cgtwq import server
+from cgtwq import server, CGTeamWorkClient
 
 
 @skip_if_not_logged_in
 class ServerTestCase(TestCase):
     def test_account(self):
-        account = server.get_account()
-        account_id = server.get_account_id()
+        token = CGTeamWorkClient.token()
+        account = server.get_account(token)
+        account_id = server.get_account_id(token)
         print('# account: <id: {}: {}>'.format(account_id, account))
 
     def test_file_operation(self):
@@ -32,43 +33,44 @@ class ServerTestCase(TestCase):
             f.write(dummy_data)
         dir_pathname = '/_pytest_{}'.format(dummy_data)
         filename = '{}.pytemp'.format(dummy_data)
+        token = CGTeamWorkClient.token()
 
         # Do test.
 
         # `mkdir`, `exists`, 'isdir'.
-        self.assertIs(server.exists(dir_pathname), False)
-        server.mkdir(dir_pathname)
-        self.assertIs(server.exists(dir_pathname), True)
-        self.assertIs(server.isdir(dir_pathname), True)
+        self.assertIs(server.exists(dir_pathname, token), False)
+        server.mkdir(dir_pathname, token)
+        self.assertIs(server.exists(dir_pathname, token), True)
+        self.assertIs(server.isdir(dir_pathname, token), True)
 
         # `upload`, `exists`, 'isdir'.
         pathname = '{}/{}'.format(dir_pathname, filename)
-        self.assertIs(server.exists(pathname), False)
-        server.upload(tempfile, pathname)
-        self.assertIs(server.exists(pathname), True)
-        self.assertIs(server.isdir(pathname), False)
+        self.assertIs(server.exists(pathname, token), False)
+        server.upload(tempfile, pathname, token)
+        self.assertIs(server.exists(pathname, token), True)
+        self.assertIs(server.isdir(pathname, token), False)
 
         # `rename`.
         temppathname = '{}.rename'.format(pathname)
-        server.rename(pathname, temppathname)
-        self.assertIs(server.exists(temppathname), True)
-        self.assertIs(server.exists(filename), False)
-        server.rename(temppathname, pathname)
-        self.assertIs(server.exists(pathname), True)
-        self.assertIs(server.exists(temppathname), False)
+        server.rename(pathname, temppathname, token)
+        self.assertIs(server.exists(temppathname, token), True)
+        self.assertIs(server.exists(filename, token), False)
+        server.rename(temppathname, pathname, token)
+        self.assertIs(server.exists(pathname, token), True)
+        self.assertIs(server.exists(temppathname, token), False)
 
         # `download`.
-        downloaded = server.download(pathname, tempdir + '/')
-        self.assertIn(filename, server.listdir(dir_pathname).file)
+        downloaded = server.download(pathname, tempdir + '/', token)
+        self.assertIn(filename, server.listdir(dir_pathname, token).file)
         with open(downloaded) as f:
             self.assertEqual(f.read(), dummy_data)
         self.addCleanup(os.remove, downloaded)
 
         # `delete`, `exists`, 'isdir'.
-        server.delete(pathname)
-        self.assertNotIn(filename, server.listdir(dir_pathname).file)
-        server.delete(dir_pathname)
-        self.assertIs(server.exists(dir_pathname), False)
+        server.delete(pathname, token)
+        self.assertNotIn(filename, server.listdir(dir_pathname, token).file)
+        server.delete(dir_pathname, token)
+        self.assertIs(server.exists(dir_pathname, token), False)
 
     def test_login(self):
         self.assertRaises(ValueError, server.login, 'admin', 'default')

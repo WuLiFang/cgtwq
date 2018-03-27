@@ -1,5 +1,5 @@
 # -*- coding=UTF-8 -*-
-"""Test module `cgtwq.filter`.   """
+"""Test module `cgtwq.filetools`.   """
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -13,10 +13,10 @@ import six
 import util
 
 
-from cgtwq.util import genreate_thumb
+from cgtwq.filetools import genreate_thumb
 
 
-class UtilTestCase(TestCase):
+class FileToolsTestCase(TestCase):
 
     @skipIf(six.PY3, 'TODO')
     @skipIf(sys.platform != 'win32', 'TODO')

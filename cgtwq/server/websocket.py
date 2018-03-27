@@ -10,9 +10,8 @@ from contextlib import contextmanager
 
 import websocket
 
-from ..client import CGTeamWorkClient
+from . import setting
 from ..exceptions import LoginError
-from .. import setting
 
 LOGGER = logging.getLogger(__name__)
 
@@ -63,7 +62,7 @@ def parse_recv(payload):
     return Response(data, code, type_)
 
 
-def call(controller, method, token=None, **kwargs):
+def call(controller, method, token, **kwargs):
     """Send command to server, then get response.
 
     Args:
@@ -81,9 +80,7 @@ def call(controller, method, token=None, **kwargs):
     Returns:
         Response: Server response.
     """
-    # pylint: disable=invalid-name
-    if token is None:
-        token = CGTeamWorkClient.token()
+
     payload = {'controller': controller,
                'method': method,
                'token': token}

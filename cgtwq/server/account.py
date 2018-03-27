@@ -4,24 +4,26 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from .websocket import call
 from collections import namedtuple
+
+from .websocket import call
+
 AccountInfo = namedtuple('AccountInfo',
                          ('account', 'account_id', 'image',
                           'update_time', 'file_key', 'token',
                           'client_type', 'remote_ip', 'name'))
 
 
-def get_account(token=None):
+def get_account(token):
     """Get current account.
 
     Returns:
-        unicode: Account name.
+        str: Account name.
     """
     return call("c_token", "get_account", token=token).data
 
 
-def get_account_id(token=None):
+def get_account_id(token):
     """Get current acccount id.
 
     Returns:

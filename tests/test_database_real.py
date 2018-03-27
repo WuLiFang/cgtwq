@@ -11,21 +11,24 @@ from unittest import TestCase, main
 from util import skip_if_not_logged_in
 from cgtwq import database, server
 from cgtwq import Filter
+from cgtwq.client import update_setting
+import cgtwq
 
 
 @skip_if_not_logged_in
 class DataBaseTestCase(TestCase):
     def setUp(self):
+        update_setting()
         self.database = database.Database('proj_big')
 
     def test_get_filebox(self):
         # filters.
-        self.database.get_fileboxes(filters=database.Filter('title', '检查MOV'))
+        self.database.get_fileboxes(filters=cgtwq.Filter('title', '检查MOV'))
         # id
         self.database.get_fileboxes(id_='271')
 
     def test_get_pipline(self):
-        result = self.database.get_piplines(database.Filter('name', '合成'))
+        result = self.database.get_piplines(cgtwq.Filter('name', '合成'))
         self.assertIsInstance(result[0], database.PipelineInfo)
 
     def test_get_software(self):
@@ -48,6 +51,7 @@ class DataBaseTestCase(TestCase):
 @skip_if_not_logged_in
 class ModuleTestCase(TestCase):
     def setUp(self):
+        update_setting()
         self.module = database.Database('proj_big')['shot_task']
 
     def test_pipeline(self):
@@ -70,11 +74,12 @@ class ModuleTestCase(TestCase):
 @skip_if_not_logged_in
 class SelectionTestCase(TestCase):
     def setUp(self):
+        update_setting()
         module = database.Database('proj_big')['shot_task']
-        select = module.filter(database.Filter('pipeline', '合成') &
-                               database.Filter('shot.shot',
-                                               ['SNJYW_EP26_06_sc349', 'SNJYW_EP26_06_sc350']))
-        assert isinstance(select, database.Selection)
+        select = module.filter(cgtwq.Filter('pipeline', '合成') &
+                               cgtwq.Filter('shot.shot',
+                                            ['SNJYW_EP26_06_sc349', 'SNJYW_EP26_06_sc350']))
+        assert isinstance(select, cgtwq.Selection)
         if not select:
             raise ValueError('No selection to test.')
         self.assertEqual(len(select), 2)
@@ -111,7 +116,7 @@ class SelectionTestCase(TestCase):
 
     def test_set_image(self):
         for i in self.select.to_entries():
-            assert isinstance(i, database.Entry)
+            assert isinstance(i, cgtwq.Entry)
             path = i.get_image().path
             i.set_image(path)
 
@@ -123,7 +128,7 @@ class SelectionTestCase(TestCase):
     def test_send_message(self):
         self.select.send_message('test',
                                  'test <b>message</b>',
-                                 server.get_account_id())
+                                 server.get_account_id(cgtwq.CGTeamWorkClient.token()))
 
     def test_get_history(self):
         result = self.select.get_history()
@@ -143,7 +148,7 @@ class TaskTestCase(TestCase):
 @skip_if_not_logged_in
 class ProjectTestCase(TestCase):
     def test_names(self):
-        result = database.PROJECT.names()
+        result = cgtwq.PROJECT.names()
         self.assertIsInstance(result, tuple)
         for i in result:
             self.assertIsInstance(i, unicode)
@@ -152,7 +157,7 @@ class ProjectTestCase(TestCase):
 @skip_if_not_logged_in
 class AccountTestCase(TestCase):
     def test_names(self):
-        result = database.ACCOUNT.names()
+        result = cgtwq.ACCOUNT.names()
         self.assertIsInstance(result, tuple)
         for i in result:
             self.assertIsInstance(i, unicode)

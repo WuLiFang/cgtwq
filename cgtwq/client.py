@@ -17,7 +17,7 @@ from websocket import create_connection
 
 from wlf.decorators import deprecated
 
-from . import setting
+from .server import setting
 from .exceptions import IDError
 
 CGTeamWorkClientStatus = namedtuple(
@@ -308,3 +308,4 @@ def update_setting():
     """Update setting from desktop client.   """
 
     setting.SERVER_IP = CGTeamWorkClient.server_ip()
+    setting.DEFAULT_TOKEN = CGTeamWorkClient.token()
