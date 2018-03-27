@@ -4,21 +4,19 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import os
 import uuid
 from unittest import TestCase, main
 
 from util import skip_if_not_logged_in
-from cgtwq import database, server
+from cgtwq import database
 from cgtwq import Filter
-from cgtwq.client import update_setting
 import cgtwq
 
 
 @skip_if_not_logged_in
 class DataBaseTestCase(TestCase):
     def setUp(self):
-        update_setting()
+        cgtwq.update_setting()
         self.database = database.Database('proj_big')
 
     def test_get_filebox(self):
@@ -51,7 +49,7 @@ class DataBaseTestCase(TestCase):
 @skip_if_not_logged_in
 class ModuleTestCase(TestCase):
     def setUp(self):
-        update_setting()
+        cgtwq.update_setting()
         self.module = database.Database('proj_big')['shot_task']
 
     def test_pipeline(self):
@@ -74,7 +72,7 @@ class ModuleTestCase(TestCase):
 @skip_if_not_logged_in
 class SelectionTestCase(TestCase):
     def setUp(self):
-        update_setting()
+        cgtwq.update_setting()
         module = database.Database('proj_big')['shot_task']
         select = module.filter(cgtwq.Filter('pipeline', '合成') &
                                cgtwq.Filter('shot.shot',
@@ -128,7 +126,7 @@ class SelectionTestCase(TestCase):
     def test_send_message(self):
         self.select.send_message('test',
                                  'test <b>message</b>',
-                                 server.get_account_id(cgtwq.CGTeamWorkClient.token()))
+                                 cgtwq.get_account_id(cgtwq.DesktopClient.token()))
 
     def test_get_history(self):
         result = self.select.get_history()

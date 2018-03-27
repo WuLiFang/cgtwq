@@ -15,13 +15,10 @@ from subprocess import Popen
 from six import text_type
 from websocket import create_connection
 
-from wlf.decorators import deprecated
-
-from .server import setting
 from .exceptions import IDError
 
-CGTeamWorkClientStatus = namedtuple(
-    'CGTeamWorkClientStatus',
+DesktopClientStatus = namedtuple(
+    'DesktopClientStatus',
     ('server_ip', 'server_http', 'token'))
 PluginData = namedtuple(
     'PulginData',
@@ -37,8 +34,8 @@ PluginData = namedtuple(
 LOGGER = logging.getLogger(__name__)
 
 
-class CGTeamWorkClient(object):
-    """Query from CGTeamWork GUI clients.  """
+class DesktopClient(object):
+    """Get information from CGTeamWork offical GUI clients.  """
 
     url = "ws://127.0.0.1:64999"
     qt_url = 'ws://127.0.0.1:64998'
@@ -47,7 +44,7 @@ class CGTeamWorkClient(object):
 
     def __init__(self):
         self.start()
-        self.status = CGTeamWorkClientStatus(
+        self.status = DesktopClientStatus(
             server_ip=self.server_ip(),
             server_http=self.server_http(),
             token=self.token(),
@@ -288,24 +285,3 @@ class CGTeamWorkClient(object):
             return ret
         finally:
             conn.close()
-
-    @classmethod
-    @deprecated('Use `call_main_widget` instead.')
-    def send_main_widget(cls, *args, **kwargs):
-        """Depreacted. Use `call_main_widget` instead.  """
-
-        return cls.call_main_widget(*args, **kwargs)
-
-    @classmethod
-    @deprecated('Use `call` instead.')
-    def send(cls, *args, **kwargs):
-        """Depreacted. Use `call` instead.  """
-
-        return cls.call(*args, **kwargs)
-
-
-def update_setting():
-    """Update setting from desktop client.   """
-
-    setting.SERVER_IP = CGTeamWorkClient.server_ip()
-    setting.DEFAULT_TOKEN = CGTeamWorkClient.token()

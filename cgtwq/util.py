@@ -5,17 +5,15 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
-from . import server
-from .public_module import ACCOUNT
+from .client import DesktopClient
+
+from .server import setting
 
 LOGGER = logging.getLogger(__name__)
 
 
-def account_name(token=None):
-    """Current user name.
+def update_setting():
+    """Update setting from client.   """
 
-    Returns:
-        text_type
-    """
-
-    return ACCOUNT[server.get_account_id(token)]['name'][0]
+    setting.SERVER_IP = DesktopClient.server_ip()
+    setting.DEFAULT_TOKEN = DesktopClient.token()

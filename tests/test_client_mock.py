@@ -21,7 +21,7 @@ else:
     from mock import patch
 
 
-# Same argument with json.dumps used in `CGTeamWorkClient.call`.
+# Same argument with json.dumps used in `DesktopClient.call`.
 dumps = partial(json.dumps, sort_keys=True, indent=4)
 
 
@@ -31,7 +31,7 @@ def server_dumps(code, data):
     return dumps({'code': six.text_type(code), 'data': data})
 
 
-class CGTeamWorkClientTestCase(TestCase):
+class DesktopClientTestCase(TestCase):
     def setUp(self):
         patcher = patch('cgtwq.client.create_connection')
         self.addCleanup(patcher.stop)
@@ -43,7 +43,7 @@ class CGTeamWorkClientTestCase(TestCase):
 
         # Logged in.
         conn.recv.return_value = server_dumps(1, six.text_type(uuid.uuid4()))
-        result = cgtwq.CGTeamWorkClient.is_running()
+        result = cgtwq.DesktopClient.is_running()
         self.assertIs(result, True)
         conn.send.assert_called_once_with(
             dumps({
@@ -57,12 +57,12 @@ class CGTeamWorkClientTestCase(TestCase):
 
         # Running but not logged in.
         conn.recv.return_value = server_dumps(1, True)
-        result = cgtwq.CGTeamWorkClient.is_running()
+        result = cgtwq.DesktopClient.is_running()
         self.assertIs(result, True)
 
         # Not running.
         conn.recv.side_effect = socket.timeout
-        result = cgtwq.CGTeamWorkClient.is_running()
+        result = cgtwq.DesktopClient.is_running()
         self.assertIs(result, False)
 
     def test_is_logged_in(self):
@@ -71,7 +71,7 @@ class CGTeamWorkClientTestCase(TestCase):
         # Logged in.
         conn.recv.return_value = server_dumps(
             1, six.text_type(uuid.uuid4()))
-        result = cgtwq.CGTeamWorkClient.is_logged_in()
+        result = cgtwq.DesktopClient.is_logged_in()
         self.assertIs(result, True)
         conn.send.assert_called_once_with(
             dumps({
@@ -85,16 +85,16 @@ class CGTeamWorkClientTestCase(TestCase):
 
         # Running but not logged in.
         conn.recv.return_value = server_dumps(1, True)
-        result = cgtwq.CGTeamWorkClient.is_logged_in()
+        result = cgtwq.DesktopClient.is_logged_in()
         self.assertIs(result, False)
 
         # Not running.
         conn.recv.side_effect = socket.timeout
-        result = cgtwq.CGTeamWorkClient.is_logged_in()
+        result = cgtwq.DesktopClient.is_logged_in()
         self.assertIs(result, False)
 
     def test_executable(self):
-        result = cgtwq.CGTeamWorkClient.executable()
+        result = cgtwq.DesktopClient.executable()
         if result is not None:
             self.assertIsInstance(result, (six.text_type))
         self.conn.assert_not_called()
@@ -102,14 +102,14 @@ class CGTeamWorkClientTestCase(TestCase):
     def test_start(self):
         conn = self.conn
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.CGTeamWorkClient.start()
-        if cgtwq.CGTeamWorkClient.executable():
+        cgtwq.DesktopClient.start()
+        if cgtwq.DesktopClient.executable():
             self.conn.send.assert_called_once()
 
     def test_refresh(self):
         conn = self.conn
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.CGTeamWorkClient.refresh('proj_big', 'shot_task')
+        cgtwq.DesktopClient.refresh('proj_big', 'shot_task')
         conn.send.assert_called_once_with(
             dumps({
                 'class_name': 'view_control',
@@ -123,7 +123,7 @@ class CGTeamWorkClientTestCase(TestCase):
     def test_refresh_select(self):
         conn = self.conn
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.CGTeamWorkClient.refresh_select('proj_big', 'shot_task')
+        cgtwq.DesktopClient.refresh_select('proj_big', 'shot_task')
         conn.send.assert_called_once_with(
             dumps({
                 'class_name': 'view_control',
@@ -141,7 +141,7 @@ class CGTeamWorkClientTestCase(TestCase):
 
         # pylint: disable=protected-access
         # Logged in.
-        cgtwq.CGTeamWorkClient._token()
+        cgtwq.DesktopClient._token()
         conn.send.assert_called_once_with(
             dumps({
                 'class_name': 'main_widget',
@@ -151,24 +151,24 @@ class CGTeamWorkClientTestCase(TestCase):
                 'type': 'get'})
         )
 
-        result = cgtwq.CGTeamWorkClient._token()
+        result = cgtwq.DesktopClient._token()
         self.assertEqual(result, uuid_)
 
         # Running but not logged in.
         conn.recv.return_value = server_dumps(1, True)
-        result = cgtwq.CGTeamWorkClient._token()
+        result = cgtwq.DesktopClient._token()
         self.assertEqual(result, '')
 
         # Not running.
         self.create_connection.side_effect = socket.timeout
-        self.assertRaises(socket.timeout, cgtwq.CGTeamWorkClient._token)
+        self.assertRaises(socket.timeout, cgtwq.DesktopClient._token)
 
     def test_server_ip(self):
         # pylint: disable=protected-access
         dummy_ip = '192.168.55.55'
         conn = self.conn
         conn.recv.return_value = server_dumps(1, dummy_ip)
-        result = cgtwq.CGTeamWorkClient._server_ip()
+        result = cgtwq.DesktopClient._server_ip()
         conn.send.assert_called_once_with(
             dumps(
                 {
@@ -186,7 +186,7 @@ class CGTeamWorkClientTestCase(TestCase):
         dummy_http = '192.168.55.55'
         conn = self.conn
         conn.recv.return_value = server_dumps(1, dummy_http)
-        result = cgtwq.CGTeamWorkClient.server_http()
+        result = cgtwq.DesktopClient.server_http()
         conn.send.assert_called_once_with(
             dumps(
                 {
@@ -206,7 +206,7 @@ class CGTeamWorkClientTestCase(TestCase):
         conn = self.conn
         json.loads
         conn.recv.return_value = server_dumps(1, dummy_data)
-        result = cgtwq.CGTeamWorkClient.get_plugin_data(uuid_)
+        result = cgtwq.DesktopClient.get_plugin_data(uuid_)
         self.assertEqual(result,
                          cgtwq.client.PluginData(
                              plugin_id=None, filebox_id=None, database=None,
@@ -230,7 +230,7 @@ class CGTeamWorkClientTestCase(TestCase):
         conn = self.conn
 
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.CGTeamWorkClient.send_plugin_result(uuid_)
+        cgtwq.DesktopClient.send_plugin_result(uuid_)
         conn.send.assert_called_once_with(
             dumps(
                 {

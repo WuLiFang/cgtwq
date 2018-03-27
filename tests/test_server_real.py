@@ -11,15 +11,16 @@ from tempfile import mkdtemp, mkstemp
 from unittest import TestCase, main
 
 from util import skip_if_not_logged_in
-from cgtwq import server, CGTeamWorkClient
+from cgtwq import server, DesktopClient
+import cgtwq
 
 
 @skip_if_not_logged_in
 class ServerTestCase(TestCase):
     def test_account(self):
-        token = CGTeamWorkClient.token()
-        account = server.get_account(token)
-        account_id = server.get_account_id(token)
+        token = cgtwq.DesktopClient.token()
+        account = cgtwq.get_account(token)
+        account_id = cgtwq.get_account_id(token)
         print('# account: <id: {}: {}>'.format(account_id, account))
 
     def test_file_operation(self):
@@ -33,7 +34,7 @@ class ServerTestCase(TestCase):
             f.write(dummy_data)
         dir_pathname = '/_pytest_{}'.format(dummy_data)
         filename = '{}.pytemp'.format(dummy_data)
-        token = CGTeamWorkClient.token()
+        token = DesktopClient.token()
 
         # Do test.
 
@@ -73,7 +74,7 @@ class ServerTestCase(TestCase):
         self.assertIs(server.exists(dir_pathname, token), False)
 
     def test_login(self):
-        self.assertRaises(ValueError, server.login, 'admin', 'default')
+        self.assertRaises(ValueError, cgtwq.login, 'admin', 'default')
 
 
 if __name__ == '__main__':

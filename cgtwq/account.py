@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from collections import namedtuple
 
-from .websocket import call
+from . import server
 
 AccountInfo = namedtuple('AccountInfo',
                          ('account', 'account_id', 'image',
@@ -20,7 +20,7 @@ def get_account(token):
     Returns:
         str: Account name.
     """
-    return call("c_token", "get_account", token=token).data
+    return server.call("c_token", "get_account", token=token).data
 
 
 def get_account_id(token):
@@ -29,7 +29,7 @@ def get_account_id(token):
     Returns:
         unicode: account id.
     """
-    return call("c_token", "get_account_id", token=token).data
+    return server.call("c_token", "get_account_id", token=token).data
 
 
 def login(account, password):
@@ -46,9 +46,9 @@ def login(account, password):
         AccountInfo: Account information.
     """
 
-    resp = call("c_token", "login",
-                account=account,
-                password=password,
-                token='',
-                client_type="py")
+    resp = server.call("c_token", "login",
+                       account=account,
+                       password=password,
+                       token='',
+                       client_type="py")
     return AccountInfo(**resp.data)

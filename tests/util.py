@@ -6,9 +6,9 @@ from __future__ import (absolute_import, division, print_function,
 import os
 from unittest import skipIf
 
-from cgtwq import CGTeamWorkClient
+from cgtwq import DesktopClient
 
-skip_if_not_logged_in = skipIf(not CGTeamWorkClient.is_logged_in(),  # pylint: disable=invalid-name
+skip_if_not_logged_in = skipIf(not DesktopClient.is_logged_in(),  # pylint: disable=invalid-name
                                'CGTeamWork is not logged in.')
 
 ROOT = os.path.abspath(os.path.dirname(__file__))

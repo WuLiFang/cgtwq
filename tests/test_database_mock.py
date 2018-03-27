@@ -32,8 +32,8 @@ class ModuleTestCase(TestCase):
         self.addCleanup(patcher.stop)
         self.call_method = patcher.start()
 
-        for i in (patch('cgtwq.CGTeamWorkClient.server_ip'),
-                  patch('cgtwq.CGTeamWorkClient.token')):
+        for i in (patch('cgtwq.DesktopClient.server_ip'),
+                  patch('cgtwq.DesktopClient.token')):
             self.addCleanup(i.stop)
             i.start()
 
