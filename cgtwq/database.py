@@ -609,18 +609,20 @@ class Selection(tuple):
             _filters &= filters
         return self.module.count_history(_filters)
 
-    def submit(self, filelist, note="", pathlist=None):
-        if not self:
-            raise ValueError('Empty selection.')
+    def submit(self, pathnames=(), filenames=(), note=""):
+        """Submit file to task, then change status to `Check`.
 
-        resp = self.call(
+        Args:
+            pathnames (tuple, optional): Defaults to (). Server pathnames.
+            filenames (tuple, optional): Defaults to (). Local filenames.
+            note (str, optional): Defaults to "". Submit note.
+        """
+        self.call(
             "c_work_flow", "submit",
             task_id=self[0],
-            account_id=server.get_account_id(self.token),
             submit_file_path_array={
-                'path': pathlist or [], 'file_path': filelist},
+                'path': pathnames, 'file_path': filenames},
             text=note)
-        return resp
 
     def get_filebox_submit(self):
         resp = self.call(
