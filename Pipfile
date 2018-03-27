@@ -1,0 +1,21 @@
+[[source]]
+
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[dev-packages]
+
+pytest = "*"
+pylint = "*"
+"autopep8" = "*"
+rope = "*"
+mock = "*"
+
+
+[packages]
+
+requests = "*"
+websocket-client = "*"
+wlf = {git = "https://github.com/WuLiFang/wlf", ref = "bcd210a4843157e33dcf782be74099ce2ca18966"}

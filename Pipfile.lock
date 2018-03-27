@@ -1,0 +1,167 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "124add40701f82889a42630345c43a0e4c38d56f35d5e4a5760d0a93e372f5fd"
+        },
+        "host-environment-markers": {
+            "implementation_name": "cpython",
+            "implementation_version": "0",
+            "os_name": "nt",
+            "platform_machine": "AMD64",
+            "platform_python_implementation": "CPython",
+            "platform_release": "7",
+            "platform_system": "Windows",
+            "platform_version": "6.1.7601",
+            "python_full_version": "2.7.13",
+            "python_version": "2.7",
+            "sys_platform": "win32"
+        },
+        "pipfile-spec": 6,
+        "requires": {},
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.tuna.tsinghua.edu.cn/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "certifi": {
+            "hashes": [],
+            "version": "==2018.1.18"
+        },
+        "chardet": {
+            "hashes": [],
+            "version": "==3.0.4"
+        },
+        "idna": {
+            "hashes": [],
+            "version": "==2.6"
+        },
+        "requests": {
+            "hashes": [],
+            "version": "==2.18.4"
+        },
+        "six": {
+            "hashes": [],
+            "version": "==1.11.0"
+        },
+        "urllib3": {
+            "hashes": [],
+            "version": "==1.22"
+        },
+        "websocket-client": {
+            "hashes": [],
+            "version": "==0.47.0"
+        },
+        "wlf": {
+            "git": "https://github.com/WuLiFang/wlf",
+            "ref": "bcd210a4843157e33dcf782be74099ce2ca18966"
+        }
+    },
+    "develop": {
+        "astroid": {
+            "hashes": [],
+            "version": "==1.6.2"
+        },
+        "attrs": {
+            "hashes": [],
+            "version": "==17.4.0"
+        },
+        "autopep8": {
+            "hashes": [],
+            "version": "==1.3.4"
+        },
+        "backports.functools-lru-cache": {
+            "hashes": [],
+            "markers": "python_version == '2.7'",
+            "version": "==1.5"
+        },
+        "colorama": {
+            "hashes": [],
+            "markers": "sys_platform == 'win32'",
+            "version": "==0.3.9"
+        },
+        "configparser": {
+            "hashes": [],
+            "markers": "python_version == '2.7'",
+            "version": "==3.5.0"
+        },
+        "enum34": {
+            "hashes": [],
+            "markers": "python_version < '3.4'",
+            "version": "==1.1.6"
+        },
+        "funcsigs": {
+            "hashes": [],
+            "markers": "python_version < '3.3'",
+            "version": "==1.0.2"
+        },
+        "futures": {
+            "hashes": [],
+            "version": "==3.2.0"
+        },
+        "isort": {
+            "hashes": [],
+            "version": "==4.3.4"
+        },
+        "lazy-object-proxy": {
+            "hashes": [],
+            "version": "==1.3.1"
+        },
+        "mccabe": {
+            "hashes": [],
+            "version": "==0.6.1"
+        },
+        "mock": {
+            "hashes": [],
+            "version": "==2.0.0"
+        },
+        "more-itertools": {
+            "hashes": [],
+            "version": "==4.1.0"
+        },
+        "pbr": {
+            "hashes": [],
+            "version": "==3.1.1"
+        },
+        "pluggy": {
+            "hashes": [],
+            "version": "==0.6.0"
+        },
+        "py": {
+            "hashes": [],
+            "version": "==1.5.3"
+        },
+        "pycodestyle": {
+            "hashes": [],
+            "version": "==2.3.1"
+        },
+        "pylint": {
+            "hashes": [],
+            "version": "==1.8.3"
+        },
+        "pytest": {
+            "hashes": [],
+            "version": "==3.5.0"
+        },
+        "rope": {
+            "hashes": [],
+            "version": "==0.10.7"
+        },
+        "singledispatch": {
+            "hashes": [],
+            "markers": "python_version < '3.4'",
+            "version": "==3.4.0.3"
+        },
+        "six": {
+            "hashes": [],
+            "version": "==1.11.0"
+        },
+        "wrapt": {
+            "hashes": [],
+            "version": "==1.10.11"
+        }
+    }
+}
