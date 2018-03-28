@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "13f7b301b3a3eef4e125c4123ac7f9a7ba55d00935a6875f9c0d110cbc63d581"
+            "sha256": "b3fa4ae16068f1836c7e5ac73054f7241b61f85aa84f10cba751a7804a3cce59"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -27,6 +27,9 @@
         ]
     },
     "default": {
+        "3500461": {
+            "file": "https://github.com/WuLiFang/wlf/archive/0.3.2.tar.gz"
+        },
         "certifi": {
             "hashes": [],
             "version": "==2018.1.18"
@@ -54,10 +57,6 @@
         "websocket-client": {
             "hashes": [],
             "version": "==0.47.0"
-        },
-        "wlf": {
-            "git": "https://github.com/WuLiFang/wlf",
-            "ref": "cc14b5920fd4ac0260f342c694a8ab5f7c130cab"
         }
     },
     "develop": {

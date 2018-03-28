@@ -1,0 +1,8 @@
+https://github.com/WuLiFang/wlf/archive/0.3.2.tar.gz
+six==1.11.0
+urllib3==1.22
+chardet==3.0.4
+requests==2.18.4
+certifi==2018.1.18
+idna==2.6
+websocket-client==0.47.0
