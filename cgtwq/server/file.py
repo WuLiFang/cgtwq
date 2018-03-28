@@ -10,7 +10,6 @@ import os
 import tempfile
 from collections import namedtuple
 
-from . import setting
 from .filetools import file_md5
 from .http import get, post
 

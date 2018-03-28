@@ -12,5 +12,5 @@ from .module import Module
 from .public_module import ACCOUNT, PROJECT
 from .selection import Selection, Entry
 from .resultset import ResultSet
-from .util import update_setting
+from .util import update_setting, current_account_id, current_account
 from .account import login, get_account, get_account_id
