@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "124add40701f82889a42630345c43a0e4c38d56f35d5e4a5760d0a93e372f5fd"
+            "sha256": "13f7b301b3a3eef4e125c4123ac7f9a7ba55d00935a6875f9c0d110cbc63d581"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
@@ -21,7 +21,7 @@
         "sources": [
             {
                 "name": "pypi",
-                "url": "https://pypi.tuna.tsinghua.edu.cn/simple",
+                "url": "https://mirrors.aliyun.com/pypi/simple",
                 "verify_ssl": true
             }
         ]
@@ -57,7 +57,7 @@
         },
         "wlf": {
             "git": "https://github.com/WuLiFang/wlf",
-            "ref": "bcd210a4843157e33dcf782be74099ce2ca18966"
+            "ref": "cc14b5920fd4ac0260f342c694a8ab5f7c130cab"
         }
     },
     "develop": {
@@ -95,7 +95,7 @@
         },
         "funcsigs": {
             "hashes": [],
-            "markers": "python_version < '3.3'",
+            "markers": "python_version < '3.0'",
             "version": "==1.0.2"
         },
         "futures": {
