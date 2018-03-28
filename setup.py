@@ -11,9 +11,9 @@ setup(
     author=__about__['__author__'],
     packages=find_packages(),
     install_requires=[
-        'requests==2.18.4',
-        'websocket-client==0.47.0',
-        'wlf==0.3.2',
+        'requests>=2.18.4',
+        'websocket-client>=0.47.0',
+        'wlf>=0.3.2',
     ],
     dependency_links=[
         ('https://github.com/WuLiFang/wlf/archive/0.3.2.tar.gz'
