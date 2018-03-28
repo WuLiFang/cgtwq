@@ -3,7 +3,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from ..model import FileBoxDetail
+from ..model import FileBoxInfo
 from .base import BaseSelection, _OS
 
 
@@ -46,12 +46,18 @@ class FileboxMixin(BaseSelection):
 
         if not resp.data:
             raise ValueError('No matched filebox.')
-        assert isinstance(resp.data, dict), resp
-        return FileBoxDetail(**resp.data)
+        return FileBoxInfo(**resp.data)
 
     def get_filebox_submit(self):
+        """Get filebox that set to submit.
+
+        Returns:
+            model.FileboxInfo: Filebox information.
+        """
+
         resp = self.call(
             'c_file', 'filebox_get_submit_data',
             task_id=self[0],
             os=_OS)
-        return resp
+        assert isinstance(resp.data, dict), resp
+        return FileBoxInfo(**resp.data)

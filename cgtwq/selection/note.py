@@ -3,26 +3,12 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import json
-import logging
-import os
-
-from six import text_type
-
-from ..server.file import upload
-from ..server.filetools import file_md5, genreate_thumb
-from ..filter import Field, Filter
-from ..model import (FileBoxDetail, ImageInfo, NoteInfo)
-from ..resultset import ResultSet
-
-_OS = {'windows': 'win', 'linux': 'linux', 'darwin': 'mac'}.get(
-    __import__('platform').system().lower())  # Server defined os string.
-LOGGER = logging.getLogger(__name__)
-
+from ..model import NoteInfo
 from .base import BaseSelection
 
 
 class NoteMixin(BaseSelection):
+    """Note on the Selection.  """
 
     def get_notes(self):
         """Get notes on first item in the selection.

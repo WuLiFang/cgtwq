@@ -42,8 +42,8 @@ class HistoryInfo(
               'text', 'create_by', 'time')
 
 
-FileBoxDetail = namedtuple(
-    'FileBoxDetail',
+FileBoxInfo = namedtuple(
+    'FileBoxInfo',
     ('path',
      'classify', 'title',
      'sign', 'color', 'rule', 'rule_view',

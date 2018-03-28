@@ -39,7 +39,7 @@ class SelectionTestCase(TestCase):
     def test_get_filebox(self):
         select = self.select
         result = select.get_filebox('submit')
-        self.assertIsInstance(result, model.FileBoxDetail)
+        self.assertIsInstance(result, model.FileBoxInfo)
 
         # Test wrong sign.
         self.assertRaises(ValueError,
@@ -84,6 +84,11 @@ class SelectionTestCase(TestCase):
     def test_add_note(self):
         select = self.select
         select.add_note('test', cgtwq.util.current_account_id())
+
+    def test_get_filebox_submit(self):
+        select = self.select
+        result = select.get_filebox_submit()
+        self.assertIsInstance(result, cgtwq.model.FileBoxInfo)
 
 
 if __name__ == '__main__':
