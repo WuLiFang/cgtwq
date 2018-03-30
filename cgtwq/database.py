@@ -5,6 +5,8 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
+from wlf.decorators import renamed
+
 from . import server
 from .filter import FilterList
 from .model import FileBoxCategoryInfo, PipelineInfo
@@ -72,7 +74,8 @@ class Database(object):
         assert all(isinstance(i, list) for i in ret), resp
         return tuple(FileBoxCategoryInfo(*i) for i in ret)
 
-    def get_piplines(self, filters):
+    @renamed('get_piplines')
+    def get_pipelines(self, filters):
         """Get piplines from database.
 
         Args:
