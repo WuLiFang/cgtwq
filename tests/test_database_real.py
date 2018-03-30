@@ -26,7 +26,7 @@ class DataBaseTestCase(TestCase):
         self.database.get_fileboxes(id_='271')
 
     def test_get_pipline(self):
-        result = self.database.get_piplines(cgtwq.Filter('name', '合成'))
+        result = self.database.get_pipelines(cgtwq.Filter('name', '合成'))
         self.assertIsInstance(result[0], database.PipelineInfo)
 
     def test_get_software(self):

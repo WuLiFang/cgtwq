@@ -5,43 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from six import text_type
 
-from .base import BaseSelection
-from .file import FileMixin
-from .filebox import FileboxMixin
-from .history import HistoryMixin
-from .link import LinkMixin
-from .message import MessageMixin
-from .note import NoteMixin
-
-
-class Selection(FileMixin, MessageMixin, NoteMixin,
-                FileboxMixin, LinkMixin, HistoryMixin,
-                BaseSelection):
-    """Selection with all feature.  """
-
-    def to_entry(self):
-        """Convert selection to one entry.
-
-        Raises:
-            ValueError: Not exactly one selected item.
-
-        Returns:
-            Entry: Entry.
-        """
-
-        if len(self) != 1:
-            raise ValueError('Need exactly one selected item.')
-
-        return Entry(self.module, self[0])
-
-    def to_entries(self):
-        """Convert selection to entries.
-
-        Returns:
-            tuple[Entry]: Entries.
-        """
-
-        return tuple(Entry(self.module, i) for i in self)
+from .selection import Selection
 
 
 class Entry(Selection):

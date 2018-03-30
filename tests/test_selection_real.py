@@ -29,21 +29,21 @@ class SelectionTestCase(TestCase):
 
     def test_get_dir(self):
         select = self.select
-        result = select.get_path('comp_image')
+        result = select.get_folder('comp_image')
         self.assertIsInstance(result, dict)
         self.assertEqual(len(result), 2)
         self.assertRaises(ValueError,
-                          select.get_filebox,
+                          select.get_folder,
                           unicode(uuid.uuid4()))
 
     def test_get_filebox(self):
         select = self.select
-        result = select.get_filebox('submit')
+        result = select.filebox.get('submit')
         self.assertIsInstance(result, model.FileBoxInfo)
 
         # Test wrong sign.
         self.assertRaises(ValueError,
-                          select.get_filebox,
+                          select.filebox.get,
                           unicode(uuid.uuid4()))
 
     def test_get_fields(self):
@@ -63,31 +63,31 @@ class SelectionTestCase(TestCase):
             i.set_image(path)
 
     def test_get_notes(self):
-        result = self.select.get_notes()
+        result = self.select.notify.get()
         for i in result:
             self.assertIsInstance(i, model.NoteInfo)
 
     def test_send_message(self):
-        self.select.send_message('test',
-                                 'test <b>message</b>',
-                                 cgtwq.util.current_account_id())
+        self.select.notify.send('test',
+                                'test <b>message</b>',
+                                cgtwq.util.current_account_id())
 
     def test_get_history(self):
-        result = self.select.get_history()
+        result = self.select.history.get()
         for i in result:
             assert isinstance(i, model.HistoryInfo)
 
     def test_count_history(self):
-        result = self.select.count_history()
+        result = self.select.history.count()
         self.assertIsInstance(result, int)
 
     def test_add_note(self):
         select = self.select
-        select.add_note('test', cgtwq.util.current_account_id())
+        select.notify.add('test', cgtwq.util.current_account_id())
 
     def test_get_filebox_submit(self):
         select = self.select
-        result = select.get_filebox_submit()
+        result = select.filebox.get_submit()
         self.assertIsInstance(result, cgtwq.model.FileBoxInfo)
 
 

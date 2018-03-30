@@ -105,7 +105,7 @@ class SelectionTestCase(TestCase):
         call_method.return_value = Response(
             data={'path': 'E:/temp'}, code=1, type='json'
         )
-        select.get_path('test')
+        select.get_folder('test')
         call_method.assert_called_once_with(
             'c_folder',
             'get_replace_path_in_sign',
@@ -131,7 +131,7 @@ class SelectionTestCase(TestCase):
                   "is_cover_disable": "",
                   "is_msg_to_first_qc": ""}, code=1, type='json'
         )
-        select.get_filebox('test_fb')
+        select.filebox.get('test_fb')
         call_method.assert_called_once_with(
             'c_file',
             'filebox_get_one_with_sign',

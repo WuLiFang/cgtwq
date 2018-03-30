@@ -73,7 +73,7 @@ class ModuleTestCase(TestCase):
         assert isinstance(filter_, MagicMock)
         module = self.module
         select.return_value = filter_.return_value = cgtwq.Selection(
-            module)
+            module, 'random')
 
         _ = module['abc']
         select.assert_called_once_with('abc')

@@ -4,13 +4,13 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from ..filter import Filter
-from .base import BaseSelection
+from .base import SelectionAttachment
 
 
-class HistoryMixin(BaseSelection):
+class SelectionHistory(SelectionAttachment):
     """Get history of the selection.  """
 
-    def get_history(self, filters=None):
+    def get(self, filters=None):
         """Get selection related history.
             filters (Filter or FilterList, optional): Defaults to None.
                 Addtional history filters.
@@ -19,12 +19,13 @@ class HistoryMixin(BaseSelection):
             tuple[HistoryInfo]: History records.
         """
 
-        _filters = Filter('#task_id', self)
+        select = self.select
+        _filters = Filter('#task_id', select)
         if filters:
             _filters &= filters
-        return self.module.get_history(_filters)
+        return select.module.get_history(_filters)
 
-    def count_history(self, filters=None):
+    def count(self, filters=None):
         """Count selection related history records.
 
         Args:
@@ -35,7 +36,8 @@ class HistoryMixin(BaseSelection):
             int: Records count.
         """
 
-        _filters = Filter('#task_id', self)
+        select = self.select
+        _filters = Filter('#task_id', select)
         if filters:
             _filters &= filters
-        return self.module.count_history(_filters)
+        return select.module.count_history(_filters)
