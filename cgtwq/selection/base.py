@@ -8,8 +8,12 @@ from six import text_type
 from ..filter import Field
 from ..resultset import ResultSet
 
-_OS = {'windows': 'win', 'linux': 'linux', 'darwin': 'mac'}.get(
-    __import__('platform').system().lower())  # Server defined os string.
+# _OS = {'windows': 'win', 'linux': 'linux', 'darwin': 'mac'}.get(
+#     __import__('platform').system().lower())  # Server defined os string.
+
+# Above `os` string seems to be cgtw internal usage,
+# brings unexpected result in production.
+_OS = 'win'
 
 
 class BaseSelection(tuple):
