@@ -12,6 +12,7 @@ from collections import namedtuple
 
 from .filetools import file_md5
 from .http import get, post
+from six import text_type
 
 LOGGER = logging.getLogger(__name__)
 
@@ -53,7 +54,7 @@ def upload(path, pathname, token, ip=None, flags=BACKUP | COUNTINUE):
                    'action': 'pre_upload'},
                   token=token,
                   ip=ip)
-    LOGGER.debug('POST: result: %s', result)
+    LOGGER.debug('POST: %s: %s', 'result', result)
 
     assert isinstance(result, dict)
     if result.get('upload'):
