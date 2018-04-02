@@ -10,6 +10,8 @@ import os
 import tempfile
 from collections import namedtuple
 
+from six import text_type
+
 from .filetools import file_md5
 from .http import get, post
 
@@ -53,7 +55,7 @@ def upload(path, pathname, token, ip=None, flags=BACKUP | COUNTINUE):
                    'action': 'pre_upload'},
                   token=token,
                   ip=ip)
-    LOGGER.debug('POST: result: %s', result)
+    LOGGER.debug('POST: result: %s', text_type(result))
 
     assert isinstance(result, dict)
     if result.get('upload'):
