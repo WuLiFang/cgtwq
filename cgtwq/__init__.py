@@ -5,7 +5,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from .client import DesktopClient
 from .exceptions import (AccountError, CGTeamWorkException, IDError,
-                         LoginError, PrefixError, SignError)
+                         LoginError, PrefixError, SignError,
+                         PasswordError, AccountNotFoundError)
 from .filter import Filter, FilterList, Field
 from .database import Database
 from .module import Module

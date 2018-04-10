@@ -1,14 +1,16 @@
 # -*- coding=UTF-8 -*-
 """Exceptions for cgtwq.  """
 
-from __future__ import absolute_import, unicode_literals, print_function
+from __future__ import absolute_import, print_function, unicode_literals
+
+from six import text_type
 
 
 class CGTeamWorkException(Exception):
     """Base exception class for CGTeamWork.  """
 
     def __init__(self, *args):
-        super(CGTeamWorkException, self).__init__()
+        super(CGTeamWorkException, self).__init__(*args)
         self.message = args
 
 
@@ -43,7 +45,7 @@ class FolderError(CGTeamWorkException):
 
 
 class LoginError(CGTeamWorkException):
-    """Indicate can't found destination folder."""
+    """Indicate not logged in."""
 
     def __str__(self):
         return 'Not loged in.  \n{}'.format(self.message)
@@ -53,7 +55,7 @@ class LoginError(CGTeamWorkException):
 
 
 class PrefixError(CGTeamWorkException):
-    """Indicate ."""
+    """Indicate no shot match the prefix."""
 
     def __init__(self, prefix):
         super(PrefixError, self).__init__(prefix)
@@ -67,7 +69,7 @@ class PrefixError(CGTeamWorkException):
 
 
 class AccountError(CGTeamWorkException):
-    """Indicate can't found destination folder."""
+    """Indicate account not match."""
 
     def __init__(self, owner='', current=''):
         CGTeamWorkException.__init__(self)
@@ -79,3 +81,29 @@ class AccountError(CGTeamWorkException):
 
     def __unicode__(self):
         return '用户不匹配\n\t已分配给:\t{}\n\t当前用户:\t{}'.format(self.owner or '<未分配>', self.current)
+
+
+class PasswordError(CGTeamWorkException):
+    """Inicate password not correct.  """
+
+    def __str__(self):
+        return 'Wrong password.'
+
+    def __unicode__(self):
+        return '密码错误'
+
+
+class AccountNotFoundError(CGTeamWorkException):
+    """Inicate account not found.  """
+
+    def __str__(self):
+        return 'Account not found: {}'.format(self._get_message().encode('ascii', 'replace'))
+
+    def __unicode__(self):
+        return '无此帐号: {}'.format(self._get_message())
+
+    def _get_message(self):
+        msg = self.args
+        if len(msg) == 1:
+            msg = msg[0]
+        return text_type(msg)

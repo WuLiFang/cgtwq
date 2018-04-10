@@ -74,7 +74,8 @@ class ServerTestCase(TestCase):
         self.assertIs(server.exists(dir_pathname, token), False)
 
     def test_login(self):
-        self.assertRaises(ValueError, cgtwq.login, 'admin', 'default')
+        self.assertRaises(cgtwq.PasswordError,
+                          cgtwq.login, 'admin', 'default')
 
 
 if __name__ == '__main__':
