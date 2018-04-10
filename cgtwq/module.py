@@ -8,7 +8,7 @@ import logging
 from six import text_type
 
 from .filter import Filter, FilterList
-from .model import HistoryInfo
+from .model import HistoryInfo, PipelineInfo
 from .selection import Selection
 
 LOGGER = logging.getLogger(__name__)
@@ -123,7 +123,11 @@ class Module(object):
             tuple[Pipeline]: namedtuple for ('id', 'name', 'module').
         """
 
-        return self.database.get_pipelines(Filter('module', self.name))
+        resp = self.call(
+            'c_pipeline', 'get_with_module',
+            field_array=PipelineInfo.fields
+        )
+        return tuple(PipelineInfo(*i) for i in resp.data)
 
     def get_history(self, filters):
         """Get history record from the module.
@@ -154,3 +158,30 @@ class Module(object):
             "c_history", "count_with_filter",
             filter_array=FilterList(filters))
         return int(resp.data)
+
+    def join_module_list(self):
+        resp = self.call(
+            'c_module',
+            'get_join_module_list'
+        )
+        return resp.data
+
+    def set_data_with_mypage(self, data):
+        self.call(
+            'c_page', 'set_data_with_my_page',
+            show_data=data
+        )
+
+    def has_permission(self, name):
+        resp = self.call(
+            'c_permission', 'has_permission',
+            permission_name=name,
+        )
+        return resp.data
+
+    def get(self, field):
+        resp = self.call(
+            'c_module', 'get_one_with_module',
+            field=field
+        )
+        return resp.data

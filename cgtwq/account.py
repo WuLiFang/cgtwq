@@ -64,3 +64,10 @@ def login(account, password):
         raise
 
     return AccountInfo(**resp.data)
+
+
+def get_online_account_id(token=None):
+    token = token or server.setting.DEFAULT_TOKEN
+    resp = server.call(
+        'c_token', 'get_all_online_account_id_with_type', token=token)
+    return resp.data

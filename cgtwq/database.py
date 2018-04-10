@@ -6,8 +6,8 @@ from __future__ import (absolute_import, division, print_function,
 import logging
 
 from . import server
-from .filter import FilterList
-from .model import FileBoxCategoryInfo, PipelineInfo
+from .filter import FilterList, Field
+from .model import FileBoxCategoryInfo, PipelineInfo, ModuleInfo, FieldInfo
 from .module import Module
 from .server import setting
 
@@ -131,3 +131,32 @@ class Database(object):
                          'get_user' if is_user else 'get_common',
                          key=key)
         return resp.data
+
+    def delete_note(self, *note_id_list):
+        self.call(
+            'c_note', 'delete_in_id',
+            id_array=note_id_list
+        )
+
+    def delete_field(self, field_id):
+        self.call(
+            'c_field', 'del_one_with_id',
+            id=field_id
+        )
+
+    def get_field(self, filters):
+        filters = FilterList(filters)
+        resp = self.call(
+            'c_field', 'get_one_with_filter',
+            field_array=FieldInfo.fields,
+            filter_array=filters
+        )
+        return tuple(FieldInfo(*i) for i in resp.data)
+
+    def get_module(self):
+        resp = self.call(
+            'c_module', 'get_with_filter',
+            filter_array=FilterList(Field('type') | ('info', 'task')),
+            field_array=ModuleInfo.fields
+        )
+        return tuple(ModuleInfo(*i) for i in resp.data)

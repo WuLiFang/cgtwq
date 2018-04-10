@@ -53,3 +53,28 @@ FileBoxInfo = namedtuple(
      'is_msg_to_first_qc')
 )
 ImageInfo = namedtuple('ImageInfo', ('max', 'min', 'path'))
+
+
+class FieldInfo(
+        namedtuple(
+            'FieldInfo',
+            ('id', 'module', 'sign',
+             'type', 'field_str', 'is_sys',
+             'see_permission', 'edit_permission',
+             'is_required', 'lock', 'edit_is_show')
+        )):
+    """Field information.   """
+
+    fields = ('#id', 'module', 'sign',
+              'type', 'label', 'is_sys',
+              'see_permission', 'edit_permission',
+              'is_required', 'lock', 'edit_is_show')
+
+
+StatusInfo = namedtuple('StatusInfo', ('name', 'color'))
+
+
+class ModuleInfo(namedtuple('ModuleInfo', ('label', 'name', 'type'))):
+    """Module information.   """
+
+    fields = ('module_str', 'module', 'type')

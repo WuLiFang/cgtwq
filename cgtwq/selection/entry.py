@@ -51,5 +51,14 @@ class Entry(Selection):
         except IndexError:
             raise ValueError('No image in this field.', field)
 
+    def get_related(self, *pipeline_id_list):
+        resp = self.call('c_note', 'get_task_id_array',
+                         pipeline_id_array=pipeline_id_list)
+        return self.module.select(*resp.data)
+
+    def label(self):
+        resp = self.call('c_module', 'get_message_field_data')
+        return resp.data
+
     def _to_selection(self):
         return Selection(self.module, *self)

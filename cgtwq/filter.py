@@ -47,12 +47,10 @@ class Field(text_type):
     """Data base field name for filter.  """
 
     def __or__(self, value):
-        if isinstance(value, (str, text_type)):
-            value = [value]
-        return Filter(self, value, 'in')
+        return self.in_(value)
 
     def __and__(self, value):
-        return Filter(self, value, 'has')
+        return self.has(value)
 
     def __eq__(self, value):
         return Filter(self, value, '=')
@@ -62,3 +60,17 @@ class Field(text_type):
 
     def __lt__(self, value):
         return Filter(self, value, '<')
+
+    def in_(self, value):
+        """Represents matched data in value list.  """
+        if isinstance(value, (str, text_type)):
+            value = [value]
+        return Filter(self, value, 'in')
+
+    def has(self, value):
+        """Represents data has value in it.  """
+        return Filter(self, value, 'has')
+
+    def contains(self, value):
+        """Represents value in data item list.  """
+        return Filter(self, value, 'concat')

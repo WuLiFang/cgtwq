@@ -216,6 +216,14 @@ class Selection(tuple):
                 'path': pathnames, 'file_path': filenames},
             text=note)
 
+    def has_permission_on_status(self, field):
+        field = self.module.field(field)
+        resp = self.call(
+            'c_work_flow', 'is_status_field_has_permission',
+            filed_sign=field,
+        )
+        return resp.data
+
     def to_entry(self):
         """Convert selection to one entry.
 
