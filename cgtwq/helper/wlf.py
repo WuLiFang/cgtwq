@@ -16,8 +16,13 @@ LOGGER = logging.getLogger(__name__)
 
 
 class CGTWQHelper(object):
-    """Helper class for cgtwq query.  """
+    """Helper class for cgtwq query.
+
+    Attributes:
+        prefix_filters: Function list that filter project code to prefix.
+    """
     cache = {}
+    prefix_filters = []
 
     @classmethod
     def project_data(cls):
@@ -27,6 +32,15 @@ class CGTWQHelper(object):
             cls.cache['project_data'] = cgtwq.PROJECT.all(
             ).get_fields('code', 'database')
         return cls.cache['project_data']
+
+    @classmethod
+    def get_prefix(cls, code):
+        """Use filters to get prefix from project code.  """
+
+        ret = code
+        for i in cls.prefix_filters:
+            ret = i(ret)
+        return ret
 
     @classmethod
     def get_database(cls, filename):
@@ -44,7 +58,8 @@ class CGTWQHelper(object):
 
         for i in cls.project_data():
             code, database = i
-            if text_type(filename).startswith(code):
+            prefix = cls.get_prefix(code)
+            if text_type(filename).startswith(prefix):
                 return database
         raise DatabaseError(
             'Can not determinate database from filename.', filename)
