@@ -4,15 +4,9 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from collections import namedtuple
-
 from . import server
 from .exceptions import AccountNotFoundError, PasswordError
-
-AccountInfo = namedtuple('AccountInfo',
-                         ('account', 'account_id', 'image',
-                          'update_time', 'file_key', 'token',
-                          'client_type', 'remote_ip', 'name'))
+from .model import AccountInfo
 
 
 def get_account(token):

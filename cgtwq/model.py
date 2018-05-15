@@ -78,3 +78,9 @@ class ModuleInfo(namedtuple('ModuleInfo', ('label', 'name', 'type'))):
     """Module information.   """
 
     fields = ('module_str', 'module', 'type')
+
+
+AccountInfo = namedtuple('AccountInfo',
+                         ('account', 'account_id', 'image',
+                          'update_time', 'file_key', 'token',
+                          'client_type', 'remote_ip', 'name'))
