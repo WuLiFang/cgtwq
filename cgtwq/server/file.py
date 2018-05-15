@@ -120,28 +120,26 @@ def download(pathname, dest, token):
 
     # Convert diraname as dest.
     if unicode(dest).endswith(('\\', '/')):
-        dest = os.path.abspath(
-            os.path.join(
-                dest, os.path.basename(info.server_path)
-            )
-        )
+        dest = os.path.join(dest, os.path.basename(info.server_path))
 
     # Skip if already downloaded.
-    if os.path.exists(dest):
-        if os.path.isfile(dest) and file_md5(dest) == info.file_md5:
-            return dest
-        else:
-            raise ValueError('Local file already exists.', dest)
+    if os.path.isfile(dest) and file_md5(dest) == info.file_md5:
+        return dest
+    elif os.path.exists(dest):
+        raise ValueError('Local file already exists.', dest)
 
     # Create dest_dir.
     dest_dir = os.path.dirname(dest)
-    try:
-        os.makedirs(dest_dir)
-    except OSError as ex:
-        if ex.errno not in (errno.EEXIST, errno.EACCES):
-            raise
+    _makedirs(dest_dir)
 
     # Download to tempfile.
+    filename = _download_file(info, token, dest_dir)
+
+    os.rename(filename, dest)
+    return dest
+
+
+def _download_file(info, token, dest_dir):
     headers = {'Range': 'byte={}-'.format(info.file_size)}
     resp = get(info.server_path, token=token,
                stream=True, verify=False, headers=headers)
@@ -154,9 +152,15 @@ def download(pathname, dest, token):
     if file_md5(filename) != info.file_md5:
         os.remove(filename)
         raise RuntimeError('Downloaded content not match server md5.')
+    return filename
 
-    os.rename(filename, dest)
-    return dest
+
+def _makedirs(path, exist_ok=True):
+    try:
+        os.makedirs(path)
+    except OSError as ex:
+        if not (exist_ok and ex.errno in (errno.EEXIST, errno.EACCES)):
+            raise
 
 
 def file_operation(action, token, **kwargs):
