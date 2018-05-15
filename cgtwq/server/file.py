@@ -46,7 +46,19 @@ def upload(path, pathname, token, ip=None, flags=BACKUP | COUNTINUE):
     # pylint: disable=invalid-name
 
     pathname = '/{}'.format(unicode(pathname).lstrip('\\/'))
-    _post_file(path, pathname, token, ip, flags)
+    prepare_data = _prepare_upload(path, pathname, token, ip)
+    if prepare_data.is_exists and not flags & REPLACE:
+        raise ValueError('File already exists.')
+    elif prepare_data.is_uploaded:
+        pass
+    else:
+        payload = {'file_md5': prepare_data.md5,
+                   'file_size': prepare_data.size,
+                   'upload_des_path': pathname,
+                   'read_pos': prepare_data.pos,
+                   'is_backup_to_history': 'Y' if flags & BACKUP else 'N',
+                   'no_continue_upload': 'N' if flags & COUNTINUE else 'Y'}
+        _post_file(path, payload, token, ip)
     return 'http://{}{}'.format(ip, pathname)
 
 
@@ -74,27 +86,14 @@ def _prepare_upload(path, pathname, token, ip):
                       is_uploaded=result.get('upload'))
 
 
-def _post_file(path, pathname, token, ip, flags):
-    """Prepare and upload file to server.  """
-
-    prepare_data = _prepare_upload(path, pathname, token, ip)
-    if prepare_data.is_exists and not flags & REPLACE:
-        raise ValueError('File already exists.')
-    if prepare_data.is_uploaded:
-        return
-    data = {'file_md5': prepare_data.md5,
-            'file_size': prepare_data.size,
-            'upload_des_path': pathname,
-            'is_backup_to_history': 'Y' if flags & BACKUP else 'N',
-            'no_continue_upload': 'N' if flags & COUNTINUE else 'Y'}
+def _post_file(path, payload, token, ip):
+    payload = dict(payload)
     with open(path, 'rb') as f:
-        pos = prepare_data.pos
-        f.seek(pos)
+        f.seek(payload['read_pos'])
         for chunk in iter(lambda: f.read(UPLOAD_CHUNK_SIZE), b''):
-            data['read_pos'] = pos
-            post('/upload_file', data, token=token,
-                 files={'files': chunk})
-            pos += UPLOAD_CHUNK_SIZE
+            post('/upload_file', payload, token=token,
+                 files={'files': chunk}, ip=ip)
+            payload['read_pos'] += UPLOAD_CHUNK_SIZE
 
 
 def download(pathname, dest, token):
