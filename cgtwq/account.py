@@ -16,19 +16,26 @@ AccountInfo = namedtuple('AccountInfo',
 
 
 def get_account(token):
-    """Get current account.
+    """Get account from token.
+
+    Args:
+        token (str): Server token
 
     Returns:
         str: Account name.
     """
+
     return server.call("c_token", "get_account", token=token).data
 
 
 def get_account_id(token):
-    """Get current acccount id.
+    """Get account id from token.
+
+    Args:
+        token (str): Server token
 
     Returns:
-        unicode: account id.
+        str: Account id.
     """
     return server.call("c_token", "get_account_id", token=token).data
 
