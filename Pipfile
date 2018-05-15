@@ -9,6 +9,7 @@ pylint = "*"
 "autopep8" = "*"
 rope = "*"
 mock = "*"
+pyside = "*"
 
 [packages]
 requests = "*"

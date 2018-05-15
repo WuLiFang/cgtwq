@@ -21,26 +21,12 @@ def ask_login(parent=None):
 
     with application():
         dialog = QDialog(parent)
-        dialog.setWindowTitle('登录CGTeamWork')
         account_input = QLineEdit()
-        account_input.setPlaceholderText('CGTeamwork账号名')
         password_input = QLineEdit()
-        password_input.setEchoMode(QLineEdit.Password)
-        password_input.setPlaceholderText('密码')
-        ok_button = QPushButton('登录')
-        ok_button.setDefault(True)
-        ok_button.clicked.connect(dialog.accept)
-
-        layout = QVBoxLayout(dialog)
-        layout.addWidget(QLabel('帐号'))
-        layout.addWidget(account_input)
-        layout.addWidget(QLabel('密码'))
-        layout.addWidget(password_input)
-        layout.addWidget(ok_button)
-        dialog.setLayout(layout)
-        dialog.exec_()
+        _setup_login_dialog(dialog, account_input, password_input)
 
     while True:
+        dialog.exec_()
         if dialog.result() == QDialog.Rejected:
             raise ValueError('Rejected')
         account, password = account_input.text(), password_input.text()
@@ -49,4 +35,22 @@ def ask_login(parent=None):
         except (ValueError, cgtwq.AccountNotFoundError, cgtwq.PasswordError) as ex:
             msg = text_type(ex)
             QMessageBox.critical(parent, '登录失败', msg)
-            dialog.exec_()
+
+
+def _setup_login_dialog(dialog, account_input, password_input):
+    dialog.setWindowTitle('登录CGTeamWork')
+    account_input.setPlaceholderText('CGTeamwork账号名')
+    password_input.setPlaceholderText('密码')
+    password_input.setEchoMode(QLineEdit.Password)
+
+    ok_button = QPushButton('登录')
+    ok_button.setDefault(True)
+    ok_button.clicked.connect(dialog.accept)
+
+    layout = QVBoxLayout(dialog)
+    layout.addWidget(QLabel('帐号'))
+    layout.addWidget(account_input)
+    layout.addWidget(QLabel('密码'))
+    layout.addWidget(password_input)
+    layout.addWidget(ok_button)
+    dialog.setLayout(layout)
