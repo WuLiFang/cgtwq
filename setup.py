@@ -13,10 +13,10 @@ setup(
     install_requires=[
         'requests>=2.18.4',
         'websocket-client>=0.47.0',
-        'wlf>=0.3.3',
+        'wlf>=0.3.9',
     ],
     dependency_links=[
-        ('https://github.com/WuLiFang/wlf/archive/0.3.3.tar.gz'
-         '#egg=wlf-0.3.3'),
+        ('https://github.com/WuLiFang/wlf/archive/0.3.9.tar.gz'
+         '#egg=wlf-0.3.9'),
     ],
 )
