@@ -22,14 +22,8 @@ class Database(object):
     def __init__(self, name):
         self.name = name
 
-    def call(self, *args, **kwargs):
-        """Call on this database.   """
-
-        kwargs.setdefault('token', self.token)
-        return server.call(*args, db=self.name, **kwargs)
-
     def __getitem__(self, name):
-        return Module(name=name, database=self)
+        return self.module(name)
 
     @property
     def token(self):
@@ -39,6 +33,17 @@ class Database(object):
     @token.setter
     def token(self, value):
         self._token = value
+
+    def module(self, name):
+        """Get module in the database.  """
+
+        return Module(name=name, database=self)
+
+    def call(self, *args, **kwargs):
+        """Call on this database.   """
+
+        kwargs.setdefault('token', self.token)
+        return server.call(*args, db=self.name, **kwargs)
 
     def get_fileboxes(self, filters=None, id_=None):
         """Get fileboxes in this database.
