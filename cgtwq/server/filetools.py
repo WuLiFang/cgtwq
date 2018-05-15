@@ -25,14 +25,13 @@ def genreate_thumb(path, width, height):
     fd, filename = mkstemp('.jpg')
 
     # Generate.
-    cmd = ('ffmpeg -y -hide_banner '
-           '-i "{input}" '
-           '-vf scale=trunc({width}/2)*2:trunc({height}/2)*2:'
-           'force_original_aspect_ratio=decrease,'
-           'pad={width}:{height}:abs(ow-iw)/2:abs(oh-ih)/2,setsar=1 '
-           '-q:v 1 '
-           '"{output}"').format(input=path, output=filename,
-                                width=width, height=height)
+    cmd = ['ffmpeg', '-y', '-hide_banner',
+           '-i', path,
+           '-vf',
+           ('scale=trunc({width}/2)*2:trunc({height}/2)*2:'
+            'force_original_aspect_ratio=decrease,pad={width}:{height}'
+            ':abs(ow-iw)/2:abs(oh-ih)/2,setsar=1').format(width=width, height=height),
+           '-q:v', '1', filename]
 
     _try_run_cmd(cmd, 'Error during generate thumb')
     os.close(fd)
