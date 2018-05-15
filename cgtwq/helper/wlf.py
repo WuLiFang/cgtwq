@@ -65,45 +65,59 @@ class CGTWQHelper(object):
             'Can not determinate database from filename.', filename)
 
     @classmethod
-    def get_entry(cls, filename, pipeline):
+    def get_entry(cls, filename, pipeline, module='shot_task'):
         """Get entry from filename and pipeline
 
         Args:
             filename (str): Filename to determinate shot.
             pipeline (str): Server defined pipline name.
+            module (str): Defaults to `shot_task`, Server defined module name.
 
         Returns:
             cgtwq.Entry: Entry
         """
 
         key = (filename, pipeline)
-        if key not in cls.cache:
-            database = cls.get_database(filename)
-            shot = PurePath(filename).shot
-            module = cgtwq.Database(database)['shot_task']
-            select = module.filter(
-                (cgtwq.Field('pipeline') == pipeline)
-                & (cgtwq.Field('shot.shot') == shot)
-            )
-            try:
-                entry = select.to_entry()
-            except ValueError:
-                LOGGER.warning('Duplicated task: %s', shot)
+        if key in cls.cache:
+            return cls.cache[key]
 
-                current_account_id = cgtwq.current_account_id()
-                data = select.get_fields('id', 'account_id')
-                data = {i[0]: i[1].split(',') for i in data}
+        shot = PurePath(filename).shot
+        database = cgtwq.Database(cls.get_database(filename))
+        select = database.module(module).filter(
+            (cgtwq.Field('pipeline') == pipeline)
+            & (cgtwq.Field('shot.shot') == shot))
+        try:
+            entry = select.to_entry()
+        except ValueError:
+            LOGGER.warning('Duplicated task: %s', shot)
+            entry = CGTWQHelper.guess_entry(select)
 
-                def _by_artist(id_):
-                    task_account_id = data[id_]
-                    if not task_account_id:
-                        return 2
-                    if current_account_id in task_account_id:
-                        return 0
-                    return 1
-                entries = select.to_entries()
-                entry = sorted(entries, key=_by_artist)[0]
+        cls.cache[key] = entry
 
-            cls.cache[key] = entry
+        return entry
 
-        return cls.cache[key]
+    @staticmethod
+    def guess_entry(select):
+        """Get best matched entry from select.
+
+        Args:
+            select (Selection): CGTeamWork selection.
+
+        Returns:
+            Entry: CGTeamWork entry.
+        """
+
+        current_account_id = cgtwq.current_account_id()
+        data = select.get_fields('id', 'account_id')
+        data = {i[0]: i[1].split(',') for i in data}
+
+        def _by_artist(id_):
+            task_account_id = data[id_]
+            if not task_account_id:
+                return 2
+            if current_account_id in task_account_id:
+                return 0
+            return 1
+        entries = select.to_entries()
+        entry = sorted(entries, key=_by_artist)[0]
+        return entry
