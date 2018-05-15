@@ -1,18 +1,12 @@
 language: python
 python:
   - "2.7"
-addons:
-  apt:
-    update: true
-env:
-  - PIP_PROCESS_DEPENDENCY_LINKS=1
 install:
+  - easy_install .
+  - pip install coverage pytest
   - yes "" | sudo add-apt-repository ppa:mc3man/trusty-media &&
     sudo apt-get update &&
     sudo apt-get install ffmpeg && ffmpeg -version
-  - pip install pipenv && pipenv --version
-  - pipenv install -v --system
-  - pip install coverage pytest
 cache:
   - pip
 before_script:
