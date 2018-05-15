@@ -9,7 +9,7 @@ install:
     sudo apt-get update &&
     sudo apt-get install ffmpeg && ffmpeg -version
   - pip install pipenv && pipenv --version
-  - pipenv install --system
+  - pipenv install -v --system
   - pip install coverage pytest
 cache:
   - pip
