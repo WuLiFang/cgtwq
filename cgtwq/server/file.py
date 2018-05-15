@@ -12,6 +12,7 @@ from collections import namedtuple
 
 from six import text_type
 
+from . import setting
 from .filetools import file_md5
 from .http import get, post
 
@@ -24,7 +25,7 @@ REPLACE = 1 << 2
 UPLOAD_CHUNK_SIZE = 2*2**20  # 2MB
 
 
-def upload(path, pathname, token, ip=None, flags=BACKUP | COUNTINUE):
+def upload(path, pathname, **kwargs):
     """Upload file to server.
 
     Args:
@@ -43,7 +44,10 @@ def upload(path, pathname, token, ip=None, flags=BACKUP | COUNTINUE):
     Returns:
         str: Upload path.
     """
-    # pylint: disable=invalid-name
+
+    token = kwargs.get('token', setting.DEFAULT_TOKEN)
+    ip = kwargs.get('ip')
+    flags = kwargs.get('flags', BACKUP | COUNTINUE)
 
     pathname = '/{}'.format(unicode(pathname).lstrip('\\/'))
     prepare_data = _prepare_upload(path, pathname, token, ip)
