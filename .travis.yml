@@ -4,6 +4,8 @@ python:
 addons:
   apt:
     update: true
+env:
+  - PIP_PROCESS_DEPENDENCY_LINKS=1
 install:
   - yes "" | sudo add-apt-repository ppa:mc3man/trusty-media &&
     sudo apt-get update &&

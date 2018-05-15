@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "068804a5c1fe3312f33b39862ac3eaf2071d417090576f633558c5fe122805c2"
+            "sha256": "ea114031d43255fe0baef4c774b3852eaf34fec1fa776c127841cd6865529b3c"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -14,9 +14,6 @@
         ]
     },
     "default": {
-        "58b68b2": {
-            "file": "https://github.com/WuLiFang/wlf/archive/0.3.9.tar.gz"
-        },
         "certifi": {
             "hashes": [
                 "sha256:13e698f54293db9f89122b0581843a782ad0934a4fe0172d2a980ba77fc61bb7",
@@ -75,6 +72,9 @@
             ],
             "index": "pypi",
             "version": "==0.47.0"
+        },
+        "wlf": {
+            "file": "https://github.com/WuLiFang/wlf/archive/0.3.9.tar.gz"
         }
     },
     "develop": {
@@ -137,7 +137,7 @@
                 "sha256:330cc27ccbf7f1e992e69fef78261dc7c6569012cf397db8d3de0234e6c937ca",
                 "sha256:a7bb0f2cf3a3fd1ab2732cb49eba4252c2af4240442415b4abce3b87022a8f50"
             ],
-            "markers": "python_version < '3.3'",
+            "markers": "python_version < '3.0'",
             "version": "==1.0.2"
         },
         "futures": {

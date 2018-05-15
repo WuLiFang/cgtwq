@@ -14,4 +14,4 @@ mock = "*"
 requests = "*"
 websocket-client = "*"
 "Qt.py" = "==1.1.0"
-"58b68b2" = {file = "https://github.com/WuLiFang/wlf/archive/0.3.9.tar.gz"}
+wlf = {file = "https://github.com/WuLiFang/wlf/archive/0.3.9.tar.gz"}
