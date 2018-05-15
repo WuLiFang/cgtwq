@@ -45,54 +45,56 @@ def upload(path, pathname, token, ip=None, flags=BACKUP | COUNTINUE):
     """
     # pylint: disable=invalid-name
 
-    def _prepare():
-        """Prepare upload. """
-
-        file_size = os.path.getsize(path)
-        if not file_size:
-            raise ValueError('File is empty.')
-        hash_ = file_md5(path)
-        result = post('/file.php',
-                      {'file_md5': hash_,
-                       'upload_des_path': pathname,
-                       'action': 'pre_upload'},
-                      token=token,
-                      ip=ip)
-        LOGGER.debug('POST: result: %s', text_type(result))
-        assert isinstance(result, dict)
-        PrepostData = namedtuple(
-            'PrepostData', ('md5', 'size', 'pos', 'is_exists', 'is_uploaded'))
-        return PrepostData(md5=hash_,
-                           size=file_size,
-                           pos=result.get('file_pos'),
-                           is_exists=result.get('is_exist'),
-                           is_uploaded=result.get('upload'))
-
-    def _post_file():
-        """Prepare and upload file to server.  """
-
-        prepare_data = _prepare()
-        if prepare_data.is_exists and not flags & REPLACE:
-            raise ValueError('File already exists.')
-        if prepare_data.is_uploaded:
-            return
-        data = {'file_md5': prepare_data.md5,
-                'file_size': prepare_data.size,
-                'upload_des_path': pathname,
-                'is_backup_to_history': 'Y' if flags & BACKUP else 'N',
-                'no_continue_upload': 'N' if flags & COUNTINUE else 'Y'}
-        with open(path, 'rb') as f:
-            pos = prepare_data.pos
-            f.seek(pos)
-            for chunk in iter(lambda: f.read(UPLOAD_CHUNK_SIZE), b''):
-                data['read_pos'] = pos
-                post('/upload_file', data, token=token,
-                     files={'files': chunk})
-                pos += UPLOAD_CHUNK_SIZE
-
     pathname = '/{}'.format(unicode(pathname).lstrip('\\/'))
-    _post_file()
+    _post_file(path, pathname, token, ip, flags)
     return 'http://{}{}'.format(ip, pathname)
+
+
+def _prepare_upload(path, pathname, token, ip):
+    """Prepare upload. """
+
+    file_size = os.path.getsize(path)
+    if not file_size:
+        raise ValueError('File is empty.')
+    hash_ = file_md5(path)
+    result = post('/file.php',
+                  {'file_md5': hash_,
+                   'upload_des_path': pathname,
+                   'action': 'pre_upload'},
+                  token=token,
+                  ip=ip)
+    LOGGER.debug('POST: result: %s', text_type(result))
+    assert isinstance(result, dict)
+    data_class = namedtuple(
+        'PostPrepareData', ('md5', 'size', 'pos', 'is_exists', 'is_uploaded'))
+    return data_class(md5=hash_,
+                      size=file_size,
+                      pos=result.get('file_pos'),
+                      is_exists=result.get('is_exist'),
+                      is_uploaded=result.get('upload'))
+
+
+def _post_file(path, pathname, token, ip, flags):
+    """Prepare and upload file to server.  """
+
+    prepare_data = _prepare_upload(path, pathname, token, ip)
+    if prepare_data.is_exists and not flags & REPLACE:
+        raise ValueError('File already exists.')
+    if prepare_data.is_uploaded:
+        return
+    data = {'file_md5': prepare_data.md5,
+            'file_size': prepare_data.size,
+            'upload_des_path': pathname,
+            'is_backup_to_history': 'Y' if flags & BACKUP else 'N',
+            'no_continue_upload': 'N' if flags & COUNTINUE else 'Y'}
+    with open(path, 'rb') as f:
+        pos = prepare_data.pos
+        f.seek(pos)
+        for chunk in iter(lambda: f.read(UPLOAD_CHUNK_SIZE), b''):
+            data['read_pos'] = pos
+            post('/upload_file', data, token=token,
+                 files={'files': chunk})
+            pos += UPLOAD_CHUNK_SIZE
 
 
 def download(pathname, dest, token):
