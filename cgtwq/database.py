@@ -7,6 +7,7 @@ import logging
 
 from . import server
 from .filter import FilterList, Field
+from .core import ControllerGetterMixin
 from .model import FileBoxCategoryInfo, PipelineInfo, ModuleInfo, FieldInfo
 from .module import Module
 from .server import setting
@@ -14,7 +15,7 @@ from .server import setting
 LOGGER = logging.getLogger(__name__)
 
 
-class Database(object):
+class Database(ControllerGetterMixin):
     """Database on server.    """
 
     _token = None
@@ -87,11 +88,9 @@ class Database(object):
             tuple[PipelineInfo]: namedtuple for ('id', 'name', 'module')
         """
 
-        resp = self.call(
+        return self._get_model(
             "c_pipeline", "get_with_filter",
-            field_array=PipelineInfo.fields,
-            filter_array=FilterList(filters))
-        return tuple(PipelineInfo(*i) for i in resp.data)
+            PipelineInfo, filters)
 
     def get_software(self, name):
         """Get software path for this database.

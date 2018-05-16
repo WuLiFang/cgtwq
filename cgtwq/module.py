@@ -7,6 +7,7 @@ import logging
 
 from six import text_type
 
+from .core import ControllerGetterMixin
 from .filter import Filter, FilterList
 from .model import HistoryInfo, PipelineInfo
 from .selection import Selection
@@ -14,7 +15,7 @@ from .selection import Selection
 LOGGER = logging.getLogger(__name__)
 
 
-class Module(object):
+class Module(ControllerGetterMixin):
     """Module(Database table) in database.    """
     _token = None
 
@@ -137,11 +138,10 @@ class Module(object):
             tuple[HistoryInfo]: History records.
         """
 
-        resp = self.call(
+        return self._get_model(
             "c_history", "get_with_filter",
-            field_array=HistoryInfo.fields,
-            filter_array=FilterList(filters))
-        return tuple(HistoryInfo(*i) for i in resp.data)
+            HistoryInfo, filters
+        )
 
     def count_history(self, filters):
         """Count history records in the module.
