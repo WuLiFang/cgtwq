@@ -3,8 +3,10 @@ import os
 from setuptools import setup, find_packages
 
 __about__ = {}
-execfile(os.path.join(os.path.dirname(__file__),
-                      'cgtwq', '__about__.py'), __about__)
+with open(os.path.join(os.path.dirname(__file__),
+                       'cgtwq', '__about__.py')) as f:
+    exec(f.read(), __about__)  # pylint: disable=exec-used
+
 setup(
     name='cgtwq',
     version=__about__['__version__'],
