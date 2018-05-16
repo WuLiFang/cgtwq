@@ -25,7 +25,7 @@ REPLACE = 1 << 2
 UPLOAD_CHUNK_SIZE = 2*2**20  # 2MB
 
 
-def upload(path, pathname, **kwargs):
+def upload(path, pathname, token, **kwargs):
     """Upload file to server.
 
     Args:
@@ -45,30 +45,29 @@ def upload(path, pathname, **kwargs):
         str: Upload path.
     """
 
-    token = kwargs.get('token', setting.DEFAULT_TOKEN)
-    ip = kwargs.get('ip')
-    flags = kwargs.get('flags', BACKUP | COUNTINUE)
-
     pathname = '/{}'.format(unicode(pathname).lstrip('\\/'))
-    prepare_data = _prepare_upload(path, pathname, token, ip)
-    if prepare_data.is_exists and not flags & REPLACE:
+
+    kwargs['token'] = token
+    kwargs['path'] = path
+    kwargs['pathname'] = pathname
+    kwargs.setdefault('ip', setting.SERVER_IP)
+    kwargs.setdefault('flags', BACKUP | COUNTINUE)
+
+    prepare_data = _prepare_upload(**kwargs)
+    if prepare_data.is_exists and not kwargs['flags'] & REPLACE:
         raise ValueError('File already exists.')
     elif prepare_data.is_uploaded:
         pass
     else:
-        payload = {'file_md5': prepare_data.md5,
-                   'file_size': prepare_data.size,
-                   'upload_des_path': pathname,
-                   'read_pos': prepare_data.pos,
-                   'is_backup_to_history': 'Y' if flags & BACKUP else 'N',
-                   'no_continue_upload': 'N' if flags & COUNTINUE else 'Y'}
-        _post_file(path, payload, token, ip)
-    return 'http://{}{}'.format(ip, pathname)
+        _post_file(prepare_data, **kwargs)
+    return 'http://{}{}'.format(kwargs['ip'], pathname)
 
 
-def _prepare_upload(path, pathname, token, ip):
+def _prepare_upload(**kwargs):
     """Prepare upload. """
 
+    path = kwargs['path']
+    pathname = kwargs['pathname']
     file_size = os.path.getsize(path)
     if not file_size:
         raise ValueError('File is empty.')
@@ -77,8 +76,8 @@ def _prepare_upload(path, pathname, token, ip):
                   {'file_md5': hash_,
                    'upload_des_path': pathname,
                    'action': 'pre_upload'},
-                  token=token,
-                  ip=ip)
+                  token=kwargs['token'],
+                  ip=kwargs['ip'])
     LOGGER.debug('POST: result: %s', text_type(result))
     assert isinstance(result, dict)
     data_class = namedtuple(
@@ -90,13 +89,21 @@ def _prepare_upload(path, pathname, token, ip):
                       is_uploaded=result.get('upload'))
 
 
-def _post_file(path, payload, token, ip):
-    payload = dict(payload)
+def _post_file(prepare_data, **kwargs):
+    path = kwargs['path']
+    pathname = kwargs['pathname']
+    flags = kwargs['flags']
+    payload = {'file_md5': prepare_data.md5,
+               'file_size': prepare_data.size,
+               'upload_des_path': pathname,
+               'read_pos': prepare_data.pos,
+               'is_backup_to_history': 'Y' if flags & BACKUP else 'N',
+               'no_continue_upload': 'N' if flags & COUNTINUE else 'Y'}
     with open(path, 'rb') as f:
         f.seek(payload['read_pos'])
         for chunk in iter(lambda: f.read(UPLOAD_CHUNK_SIZE), b''):
-            post('/upload_file', payload, token=token,
-                 files={'files': chunk}, ip=ip)
+            post('/upload_file', payload, token=kwargs['token'],
+                 files={'files': chunk}, ip=kwargs['ip'])
             payload['read_pos'] += UPLOAD_CHUNK_SIZE
 
 
