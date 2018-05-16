@@ -26,7 +26,7 @@ class DesktopClientTestCase(TestCase):
         cgtwq.DesktopClient.refresh('proj_big', 'shot_task')
 
     def test_refresh_selected(self):
-        cgtwq.DesktopClient.refresh_select('proj_big', 'shot_task')
+        cgtwq.DesktopClient.refresh_selected('proj_big', 'shot_task')
 
 
 if __name__ == '__main__':

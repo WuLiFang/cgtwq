@@ -116,23 +116,19 @@ class DesktopClientTestCase(TestCase):
                 'method_name': 'refresh',
                 'database': 'proj_big',
                 'module': 'shot_task',
-                'type': 'send'}
-            )
-        )
+                'type': 'send'}))
 
-    def test_refresh_select(self):
+    def test_refresh_selected(self):
         conn = self.conn
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.DesktopClient.refresh_select('proj_big', 'shot_task')
+        cgtwq.DesktopClient.refresh_selected('proj_big', 'shot_task')
         conn.send.assert_called_once_with(
             dumps({
                 'class_name': 'view_control',
                 'method_name': 'refresh_select',
                 'database': 'proj_big',
                 'module': 'shot_task',
-                'type': 'send'}
-            )
-        )
+                'type': 'send'}))
 
     def test_token(self):
         conn = self.conn

@@ -114,6 +114,14 @@ class DesktopClient(object):
         return False
 
     @classmethod
+    def _refresh(cls, database, module, is_selected_only):
+        cls.call('view_control',
+                 'refresh_select' if is_selected_only else 'refresh',
+                 module=module,
+                 database=database,
+                 type='send')
+
+    @classmethod
     def refresh(cls, database, module):
         """
         Refresh specified view in client
@@ -124,13 +132,10 @@ class DesktopClient(object):
             module (text_type): Module of view.
         """
 
-        cls.call('view_control', 'refresh',
-                 module=module,
-                 database=database,
-                 type='send')
+        cls._refresh(database, module, False)
 
     @classmethod
-    def refresh_select(cls, database, module):
+    def refresh_selected(cls, database, module):
         """
         Refresh selected part of specified view in client
         if matched view is opened.
@@ -140,12 +145,7 @@ class DesktopClient(object):
             module (text_type): Module of view.
         """
 
-        cls.call(
-            'view_control', 'refresh_select',
-            module=module,
-            database=database,
-            type='send',
-        )
+        cls._refresh(database, module, True)
 
     @classmethod
     def _cached(cls, key, func, max_age):

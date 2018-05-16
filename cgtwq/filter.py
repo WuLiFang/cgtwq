@@ -30,17 +30,17 @@ class FilterList(list):
             list_ = [list_]
         super(FilterList, self).__init__(list_)
 
-    def __and__(self, other):
+    def _combine(self, other, operator):
         ret = FilterList(self)
-        ret.append('and')
+        ret.append(operator)
         ret += FilterList(other)
         return ret
 
+    def __and__(self, other):
+        return self._combine(other, 'and')
+
     def __or__(self, other):
-        ret = FilterList(self)
-        ret.append('or')
-        ret += FilterList(other)
-        return ret
+        return self._combine(other, 'or')
 
 
 class Field(text_type):

@@ -13,6 +13,12 @@ from . import setting
 LOGGER = logging.getLogger(__file__)
 
 
+def _raise_error(result):
+    if (isinstance(result, dict)
+            and (result.get('code'), result.get('type')) == ('0', 'msg')):
+        raise ValueError(result.get('data', result))
+
+
 def post(pathname, data, token, ip=None, **kwargs):
     """`POST` data to CGTeamWork server.
         pathname (str unicode): Pathname for http host.
@@ -38,12 +44,8 @@ def post(pathname, data, token, ip=None, **kwargs):
                          cookies=cookies,
                          **kwargs)
     json_ = resp.json()
-    result = json_.get('data', json_)
-    if (isinstance(json_, dict)
-            and (json_.get('code'), json_.get('type')) == ('0', 'msg')):
-        raise ValueError(result)
-
-    return result
+    _raise_error(json_)
+    return json_.get('data', json_)
 
 
 def get(pathname, token, ip=None, **kwargs):
@@ -71,8 +73,6 @@ def get(pathname, token, ip=None, **kwargs):
         result = json.loads(resp.content)
     except ValueError:
         result = None
-    if (isinstance(result, dict)
-            and (result.get('code'), result.get('type')) == ('0', 'msg')):
-        raise ValueError(result.get('data', result))
+    _raise_error(result)
     LOGGER.debug('GET: %s', result)
     return resp
