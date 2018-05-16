@@ -17,7 +17,7 @@ def test_file_operation(monkeypatch):
 
     monkeypatch.setattr(server.file, 'post', _mocked_post)
 
-    dummy_data = unicode(uuid.uuid4())
+    dummy_data = six.text_type(uuid.uuid4())
     pathname = '/test_pathname-' + dummy_data
     token = 'token-' + dummy_data
 
@@ -70,7 +70,7 @@ def test_upload(monkeypatch, tmpdir):
 
     monkeypatch.setattr(server.file, 'post', _mocked_post)
 
-    dummy_data = unicode(uuid.uuid4())
+    dummy_data = six.text_type(uuid.uuid4())
     pathname = '/test_pathname-' + dummy_data
     token = 'token-' + dummy_data
 
@@ -110,7 +110,7 @@ def test_download(monkeypatch, tmpdir):
     monkeypatch.setattr(server.file, 'get', _mocked_func)
     monkeypatch.setattr(server.file, 'post', _mocked_func)
 
-    dummy_data = unicode(uuid.uuid4())
+    dummy_data = six.text_type(uuid.uuid4())
     pathname = '/test_pathname-' + dummy_data
     token = 'token-' + dummy_data
     path = tmpdir.join('temp')
@@ -130,7 +130,7 @@ def test_download(monkeypatch, tmpdir):
         @staticmethod
         def iter_content():
             """Return dummy data.  """
-            return (i for i in dummy_data)
+            return (i.encode('utf-8') for i in dummy_data)
     return_value = _DummuyResponse()
     _add_call(pathname,
               headers={'Range': 'byte={}-'.format(file_size)},

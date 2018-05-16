@@ -45,7 +45,7 @@ def upload(path, pathname, token, **kwargs):
         str: Upload path.
     """
 
-    pathname = '/{}'.format(unicode(pathname).lstrip('\\/'))
+    pathname = '/{}'.format(text_type(pathname).lstrip('\\/'))
 
     kwargs['token'] = token
     kwargs['path'] = path
@@ -129,7 +129,7 @@ def download(pathname, dest, token):
         raise ValueError('Server file not exists.', pathname)
 
     # Convert diraname as dest.
-    if unicode(dest).endswith(('\\', '/')):
+    if text_type(dest).endswith(('\\', '/')):
         dest = os.path.join(dest, os.path.basename(info.server_path))
 
     # Skip if already downloaded.
