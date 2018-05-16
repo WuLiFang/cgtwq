@@ -10,6 +10,12 @@ from .base import SelectionAttachment
 class SelectionHistory(SelectionAttachment):
     """Get history of the selection.  """
 
+    def _combine_filters(self, filters):
+        _filters = Filter('#task_id', self.select)
+        if filters:
+            _filters &= filters
+        return _filters
+
     def get(self, filters=None):
         """Get selection related history.
             filters (Filter or FilterList, optional): Defaults to None.
@@ -19,11 +25,8 @@ class SelectionHistory(SelectionAttachment):
             tuple[HistoryInfo]: History records.
         """
 
-        select = self.select
-        _filters = Filter('#task_id', select)
-        if filters:
-            _filters &= filters
-        return select.module.get_history(_filters)
+        return self.select.module.get_history(
+            self._combine_filters(filters))
 
     def count(self, filters=None):
         """Count selection related history records.
@@ -36,8 +39,5 @@ class SelectionHistory(SelectionAttachment):
             int: Records count.
         """
 
-        select = self.select
-        _filters = Filter('#task_id', select)
-        if filters:
-            _filters &= filters
-        return select.module.count_history(_filters)
+        return self.select.module.count_history(
+            self._combine_filters(filters))

@@ -1,71 +1,83 @@
 # -*- coding=UTF-8 -*-
 """Exceptions for cgtwq.  """
 
-from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from six import text_type
+import six
+
+
+def _as_suffix(list_):
+    if not list_:
+        return '.'
+    msg = list_[0] if len(list_) == 1 else list_
+    return ': {}'.format(msg)
+
+
+def _template_meta(__str__, __unciode__):
+
+    class _TemplateMetaClass(type):
+        def __new__(mcs, name, bases, dict_):
+            dict_[b'__str__'] = lambda self: __str__ + _as_suffix(self.args)
+            dict_[b'__unicode__'] = lambda self: __unciode__ + \
+                _as_suffix(self.args)
+            return type.__new__(mcs, name, bases, dict_)
+
+    return _TemplateMetaClass
 
 
 class CGTeamWorkException(Exception):
     """Base exception class for CGTeamWork.  """
 
-    def __init__(self, *args):
-        super(CGTeamWorkException, self).__init__(*args)
-        self.message = args
 
-
+@six.add_metaclass(
+    _template_meta(
+        'Can not found item with matched id',
+        '找不到数据库对象'))
 class IDError(CGTeamWorkException):
     """Indicate can't specify shot id on cgtw."""
 
-    def __str__(self):
-        return 'Can not found item with matched id:{}'.format(self.message)
 
-    def __unicode__(self):
-        return '找不到数据库对象: {}'.format(self.message)
-
-
+@six.add_metaclass(
+    _template_meta(
+        'Can not found matched sign',
+        '缺少数据库标志'))
 class SignError(CGTeamWorkException):
     """Indicate can't found matched sign."""
 
-    def __str__(self):
-        return 'Can not found matched sign: {}'.format(self.message)
 
-    def __unicode__(self):
-        return '缺少数据库标志: {}'.format(self.message)
-
-
+@six.add_metaclass(
+    _template_meta(
+        'No such folder on server',
+        '不存在服务器文件夹'))
 class FolderError(CGTeamWorkException):
-    """Indicate can't found destination folder."""
-
-    def __str__(self):
-        return 'No such folder on server: {}'.format(self.message)
-
-    def __unicode__(self):
-        return '不存在服务器文件夹: {}'.format(self.message)
+    """Indicate can't found destination folder.  """
 
 
+@six.add_metaclass(
+    _template_meta(
+        'Not loged in',
+        '未登录或登录失效'))
 class LoginError(CGTeamWorkException):
-    """Indicate not logged in."""
-
-    def __str__(self):
-        return 'Not loged in.  \n{}'.format(self.message)
-
-    def __unicode__(self):
-        return '未登录或登录失效: {}'.format(self.message)
+    """Indicate not logged in.  """
 
 
+@six.add_metaclass(
+    _template_meta(
+        'Can not found any prefix matched shots',
+        '无镜头匹配此前缀'))
 class PrefixError(CGTeamWorkException):
     """Indicate no shot match the prefix."""
 
-    def __init__(self, prefix):
-        super(PrefixError, self).__init__(prefix)
-        self.prefix = prefix
 
-    def __str__(self):
-        return 'Can not found any prefix matched shots: {}'.format(self.prefix)
+@six.add_metaclass(_template_meta('Wrong password', '密码错误'))
+class PasswordError(CGTeamWorkException):
+    """Inicate password not correct.  """
 
-    def __unicode__(self):
-        return '无镜头匹配此前缀: {}'.format(self.message)
+
+@six.add_metaclass(_template_meta('Account not found', '无此帐号'))
+class AccountNotFoundError(CGTeamWorkException):
+    """Inicate account not found.  """
 
 
 class AccountError(CGTeamWorkException):
@@ -81,29 +93,3 @@ class AccountError(CGTeamWorkException):
 
     def __unicode__(self):
         return '用户不匹配\n\t已分配给:\t{}\n\t当前用户:\t{}'.format(self.owner or '<未分配>', self.current)
-
-
-class PasswordError(CGTeamWorkException):
-    """Inicate password not correct.  """
-
-    def __str__(self):
-        return 'Wrong password.'
-
-    def __unicode__(self):
-        return '密码错误'
-
-
-class AccountNotFoundError(CGTeamWorkException):
-    """Inicate account not found.  """
-
-    def __str__(self):
-        return 'Account not found: {}'.format(self._get_message().encode('ascii', 'replace'))
-
-    def __unicode__(self):
-        return '无此帐号: {}'.format(self._get_message())
-
-    def _get_message(self):
-        msg = self.args
-        if len(msg) == 1:
-            msg = msg[0]
-        return text_type(msg)

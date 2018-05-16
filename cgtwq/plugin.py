@@ -8,6 +8,7 @@ import json
 from functools import partial
 
 from . import server
+from .server import setting
 
 
 class PlugIn(object):
@@ -27,15 +28,17 @@ class PlugIn(object):
                   field_data_array={'argv': json.dumps(data)})
 
     @classmethod
-    def filter(cls, filters):
-        resp = server.call("c_plugin", "get_with_filter",
-                           field_array=['#id'], filter_array=filters)
+    def _get_with(cls, controller, method, **kwargs):
+        kwargs.setdefault('token', setting.DEFAULT_TOKEN)
+        resp = server.call(controller, method,
+                           field_array=['#id'], **kwargs)
 
         return tuple(cls(i) for i in resp.data)
 
     @classmethod
-    def type(cls, name):
-        resp = server.call("c_plugin", "get_with_type",
-                           field_array=['#id'], type=name)
+    def filter(cls, filters):
+        return cls._get_with("c_plugin", "get_with_filter", filter_array=filters)
 
-        return tuple(cls(i) for i in resp.data)
+    @classmethod
+    def type(cls, name):
+        return cls._get_with("c_plugin", "get_with_type", type=name)

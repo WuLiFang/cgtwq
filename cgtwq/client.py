@@ -178,20 +178,22 @@ class DesktopClient(object):
         return cls._cached('server_ip', cls._server_ip, max_age)
 
     @classmethod
+    def _get_typed_data(cls, method, type_):
+        ret = cls.call_main_widget(method)
+        assert isinstance(ret, type_), type(ret)
+        return type_(ret)
+
+    @classmethod
     def _server_ip(cls):
         """Server ip current using by client.  """
 
-        ret = cls.call_main_widget("get_server_ip")
-        assert isinstance(ret, text_type), type(ret)
-        return text_type(ret)
+        return cls._get_typed_data("get_server_ip", text_type)
 
     @classmethod
     def server_http(cls):
         """Server http current using by client.  """
 
-        ret = cls.call_main_widget("get_server_http")
-        assert isinstance(ret, text_type), type(ret)
-        return text_type(ret)
+        return cls._get_typed_data("get_server_http", text_type)
 
     @classmethod
     def get_plugin_data(cls, uuid=''):
