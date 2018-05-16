@@ -1,6 +1,7 @@
 language: python
 python:
   - "2.7"
+  - "3.6"
 install:
   - easy_install .
   - pip install coverage pytest
@@ -10,6 +11,8 @@ install:
 cache:
   - pip
 before_script:
+  - pip install coscmd
+  - coscmd config -a $COS_ID -s $COS_KEY -b codeclimate-cgtwq-1253052102 -r eu-frankfurt
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
@@ -17,4 +20,7 @@ script:
   - coverage run -m pytest tests
 after_script:
   - coverage xml && coverage report
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - ./cc-test-reporter format-coverage --output "coverage/codeclimate.$TRAVIS_JOB_NUMBER.json"
+  - coscmd upload -r coverage /build-$TRAVIS_BUILD_NUMBER
+  - coscmd download -r /build-$TRAVIS_BUILD_NUMBER coverage
+  - ./cc-test-reporter sum-coverage --output - --parts 2 coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
