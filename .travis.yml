@@ -11,7 +11,7 @@ install:
 cache:
   - pip
 before_script:
-  - pip install coscmd
+  - pip2.7 install --user coscmd
   - coscmd config -a $COS_ID -s $COS_KEY -b codeclimate-cgtwq-1253052102 -r eu-frankfurt
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
