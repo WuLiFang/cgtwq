@@ -14,13 +14,14 @@ def _as_suffix(list_):
     return ': {}'.format(msg)
 
 
-def _template_meta(__str__, __unciode__):
+def _template_meta(__bytes__, __str__):
 
     class _TemplateMetaClass(type):
         def __new__(mcs, name, bases, dict_):
-            dict_[b'__str__'] = lambda self: __str__ + _as_suffix(self.args)
-            dict_[b'__unicode__'] = lambda self: __unciode__ + \
-                _as_suffix(self.args)
+            dict_[b'__str__' if six.PY2 else '__bytes__'] = lambda self: (
+                __bytes__ + _as_suffix(self.args)).encode('utf-8')
+            dict_[b'__unicode__'if six.PY2 else '__str__'] = lambda self: (
+                __str__ + _as_suffix(self.args))
             return type.__new__(mcs, name, bases, dict_)
 
     return _TemplateMetaClass
