@@ -10,9 +10,11 @@ import uuid
 from tempfile import mkdtemp, mkstemp
 from unittest import TestCase, main
 
-from util import skip_if_not_logged_in
-from cgtwq import server, DesktopClient
+import six
+
 import cgtwq
+from cgtwq import DesktopClient, server
+from util import skip_if_not_logged_in
 
 
 @skip_if_not_logged_in
@@ -29,7 +31,7 @@ class ServerTestCase(TestCase):
         self.addCleanup(os.rmdir, tempdir)
         fd, tempfile = mkstemp(dir=tempdir)  # pylint: disable=invalid-name
         self.addCleanup(os.remove, tempfile)
-        dummy_data = unicode(uuid.uuid4())
+        dummy_data = six.text_type(uuid.uuid4())
         with io.open(fd, 'w') as f:
             f.write(dummy_data)
         dir_pathname = '/_pytest_{}'.format(dummy_data)

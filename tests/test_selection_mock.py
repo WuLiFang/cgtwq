@@ -14,7 +14,7 @@ from cgtwq.server.websocket import Response
 if six.PY3:
     from unittest.mock import patch  # pylint: disable=import-error,no-name-in-module
 else:
-    from mock import patch
+    from mock import patch  # pylint: disable=import-error,no-name-in-module
 
 
 class SelectionTestCase(TestCase):

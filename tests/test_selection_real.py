@@ -7,10 +7,11 @@ from __future__ import (absolute_import, division, print_function,
 import uuid
 from unittest import TestCase, main
 
-from util import skip_if_not_logged_in
-from cgtwq import database, model
-from cgtwq import Filter
+import six
+
 import cgtwq
+from cgtwq import database, model
+from util import skip_if_not_logged_in
 
 
 @skip_if_not_logged_in
@@ -34,7 +35,7 @@ class SelectionTestCase(TestCase):
         self.assertEqual(len(result), 2)
         self.assertRaises(ValueError,
                           select.get_folder,
-                          unicode(uuid.uuid4()))
+                          six.text_type(uuid.uuid4()))
 
     def test_get_filebox(self):
         select = self.select
@@ -44,7 +45,7 @@ class SelectionTestCase(TestCase):
         # Test wrong sign.
         self.assertRaises(ValueError,
                           select.filebox.get,
-                          unicode(uuid.uuid4()))
+                          six.text_type(uuid.uuid4()))
 
     def test_get_fields(self):
         result = self.select.get_fields('id', 'shot.shot')

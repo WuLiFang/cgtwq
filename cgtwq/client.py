@@ -92,8 +92,8 @@ class DesktopClient(object):
         try:
             cls.token(-1)
             return True
-        except (socket.error, socket.timeout):
-            pass
+        except (socket.error, socket.timeout) as ex:
+            cls._handle_error_10042(ex)
 
         return False
 
@@ -108,10 +108,19 @@ class DesktopClient(object):
         try:
             if cls.token(-1):
                 return True
-        except (socket.error, socket.timeout):
-            pass
-
+        except (socket.error, socket.timeout) as ex:
+            cls._handle_error_10042(ex)
         return False
+
+    @staticmethod
+    def _handle_error_10042(exception):
+        if (isinstance(exception, OSError)
+                and exception.errno == 10042):
+            print("""
+This is a bug of websocket-client 0.47.0 with python 3.6.4,
+see: https://github.com/websocket-client/websocket-client/issues/404
+""")
+            raise exception
 
     @classmethod
     def _refresh(cls, database, module, is_selected_only):

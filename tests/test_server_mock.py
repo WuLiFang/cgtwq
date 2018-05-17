@@ -76,20 +76,21 @@ def test_upload(monkeypatch, tmpdir):
 
     path = tmpdir.join('testfile')
     path.write(dummy_data)
+    file_md5 = path.computehash()
 
     return_value = {'file_pos': 0, 'is_exist': False}
     _add_call('/file.php', {'action': 'pre_upload',
-                            'file_md5': path.computehash(),
+                            'file_md5': file_md5,
                             'upload_des_path': pathname},
               ip=server.setting.SERVER_IP, token=token)
     _add_call('/upload_file', {'is_backup_to_history': 'Y',
                                'no_continue_upload': 'N',
                                'read_pos': 0,
                                'file_size': path.size(),
-                               'file_md5': path.computehash(),
+                               'file_md5': file_md5,
                                'upload_des_path': pathname},
               ip=server.setting.SERVER_IP, token=token,
-              files={'files': dummy_data})
+              files={'files': dummy_data.encode('utf-8')})
     server.upload(six.text_type(path), pathname, token)
 
 
