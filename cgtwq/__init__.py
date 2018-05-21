@@ -16,3 +16,4 @@ from .selection import Selection, Entry
 from .resultset import ResultSet
 from .util import update_setting, current_account_id, current_account
 from .account import login, get_account, get_account_id
+from .status import get_all as get_all_status

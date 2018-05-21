@@ -71,7 +71,7 @@ class FieldInfo(
               'is_required', 'lock', 'edit_is_show')
 
 
-StatusInfo = namedtuple('StatusInfo', ('name', 'color'))
+StatusInfo = namedtuple('StatusInfo', ('status', 'color'))
 
 
 class ModuleInfo(namedtuple('ModuleInfo', ('label', 'name', 'type'))):
