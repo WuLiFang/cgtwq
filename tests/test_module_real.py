@@ -11,6 +11,7 @@ import util
 
 
 @pytest.fixture(name='module')
+@util.skip_if_not_logged_in
 def _module():
     cgtwq.update_setting()
     return cgtwq.Database('proj_mt').module('shot_task')

@@ -101,6 +101,7 @@ class SelectionTestCase(TestCase):
 
 
 @pytest.fixture(name='select')
+@skip_if_not_logged_in
 def _select():
     cgtwq.update_setting()
     return cgtwq.Database('proj_mt').module('shot_task').select(
