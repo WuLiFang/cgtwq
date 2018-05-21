@@ -217,10 +217,20 @@ class Selection(tuple):
             text=note)
 
     def has_permission_on_status(self, field):
+        """Return if user has permission to edit field.
+
+        Args:
+            field (str): Field name.
+
+        Returns:
+            bool
+        """
+
         field = self.module.field(field)
         resp = self.call(
             'c_work_flow', 'is_status_field_has_permission',
-            filed_sign=field,
+            field_sign=field,
+            task_id_array=self
         )
         return resp.data
 

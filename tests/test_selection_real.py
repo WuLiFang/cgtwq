@@ -91,6 +91,11 @@ class SelectionTestCase(TestCase):
         result = select.filebox.get_submit()
         self.assertIsInstance(result, cgtwq.model.FileBoxInfo)
 
+    def test_has_permission_on_status(self):
+        select = self.select
+        result = select.has_permission_on_status('leader_status')
+        self.assertIsInstance(result, bool)
+
 
 if __name__ == '__main__':
     main()
