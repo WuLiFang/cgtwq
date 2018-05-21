@@ -59,16 +59,40 @@ class FieldInfo(
         namedtuple(
             'FieldInfo',
             ('id', 'module', 'sign',
-             'type', 'field_str', 'is_sys',
+             'type', 'label', 'is_sys',
              'see_permission', 'edit_permission',
-             'is_required', 'lock', 'edit_is_show')
+             'is_required', 'is_lock', 'is_show_edit',
+             'sort_id')
         )):
     """Field information.   """
 
     fields = ('#id', 'module', 'sign',
-              'type', 'label', 'is_sys',
+              'type', 'field_str', 'is_sys',
               'see_permission', 'edit_permission',
-              'is_required', 'lock', 'edit_is_show')
+              'is_required', 'lock', 'edit_is_show',
+              'sort_id')
+
+    def __new__(cls, *args, **kwargs):
+        raw = super(FieldInfo, cls).__new__(cls, *args, **kwargs)
+        new_kwargs = raw._asdict()
+        _format_yn_str_in_dict(new_kwargs)
+        return super(FieldInfo, cls).__new__(cls, **new_kwargs)
+
+
+def _format_yn_str_in_dict(dict_):
+    for k, v in dict_.items():
+        if k.startswith('is_'):
+            dict_[k] = _format_yn_str(v)
+
+
+def _format_yn_str(text):
+    try:
+        return {'Y': True,
+                'N': False,
+                '': None,
+                None: None}[text]
+    except KeyError:
+        raise ValueError(text)
 
 
 StatusInfo = namedtuple('StatusInfo', ('status', 'color'))

@@ -93,8 +93,9 @@ class SelectionTestCase(TestCase):
 
     def test_has_permission_on_status(self):
         select = self.select
-        result = select.has_permission_on_status('leader_status')
+        result = select.has_permission_on_status('artist')
         self.assertIsInstance(result, bool)
+        raise RuntimeError(result)
 
 
 if __name__ == '__main__':

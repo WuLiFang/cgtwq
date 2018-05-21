@@ -9,7 +9,7 @@ from six import text_type
 
 from .core import ControllerGetterMixin
 from .filter import Filter, FilterList
-from .model import HistoryInfo, PipelineInfo
+from .model import HistoryInfo, PipelineInfo, FieldInfo
 from .selection import Selection
 
 LOGGER = logging.getLogger(__name__)
@@ -185,3 +185,13 @@ class Module(ControllerGetterMixin):
             field=field
         )
         return resp.data
+
+    def get_fields(self):
+        """Get fields in this module.  """
+
+        resp = self.call(
+            'c_field', 'get_in_module',
+            module_array=[self.name],
+            field_array=FieldInfo.fields
+        )
+        return tuple(FieldInfo(*i) for i in resp.data)
