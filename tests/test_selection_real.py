@@ -4,9 +4,11 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import logging
 import uuid
 from unittest import TestCase, main
 
+import pytest
 import six
 
 import cgtwq
@@ -96,6 +98,25 @@ class SelectionTestCase(TestCase):
         result = select.has_permission_on_status('artist')
         self.assertIsInstance(result, bool)
         raise RuntimeError(result)
+
+
+@pytest.fixture(name='select')
+def _select():
+    cgtwq.update_setting()
+    return cgtwq.Database('proj_mt').module('shot_task').select(
+        'F950A26F-DD4E-E88B-88EE-9C09EF3F7695')
+
+
+logging.basicConfig(level=10)
+
+
+@skip_if_not_logged_in
+@pytest.mark.skip('TODO')
+def test_flow(select):
+    # select.flow.approve('leader_status', 'test approve')
+    select.flow.retake('leader_status', 'test retake')
+    # select.flow.close('leader_status', 'test close')
+    raise RuntimeError(select.flow._qc_data('leader_status'))
 
 
 if __name__ == '__main__':

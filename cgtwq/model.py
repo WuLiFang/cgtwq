@@ -12,9 +12,9 @@ class FileBoxCategoryInfo(namedtuple('FileBoxInfo', ('id', 'pipeline_id', 'title
     fields = ('#id', '#pipeline_id', 'title')
 
 
-class PipelineInfo(namedtuple('PipelineInfo', ('id', 'name', 'module'))):
+class PipelineInfo(namedtuple('PipelineInfo', ('id', 'name', 'module', 'description', 'color'))):
     """Pipeline information.  """
-    fields = ('#id', 'name', 'module')
+    fields = ('#id', 'name', 'module', 'description', 'color')
 
 
 class NoteInfo(namedtuple('NoteInfo',
@@ -108,3 +108,6 @@ AccountInfo = namedtuple('AccountInfo',
                          ('account', 'account_id', 'image',
                           'update_time', 'file_key', 'token',
                           'client_type', 'remote_ip', 'name'))
+
+FlowInfo = namedtuple('FlowInfo',
+                      ('flow_id', 'pipeline_id'))

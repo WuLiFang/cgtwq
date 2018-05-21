@@ -3,13 +3,32 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
-import util
+
+import pytest
+
 import cgtwq
+import util
+
+
+@pytest.fixture(name='module')
+def _module():
+    cgtwq.update_setting()
+    return cgtwq.Database('proj_mt').module('shot_task')
 
 
 @util.skip_if_not_logged_in
-def test_module_fileds():
-    cgtwq.update_setting()
-    module = cgtwq.Database('proj_mt').module('shot_task')
-    result = module.get_fields()
+def test_module_fileds(module):
+    result = module.fields()
+    print(result)
+
+
+@util.skip_if_not_logged_in
+def test_module_flow(module):
+    result = module.flow()
+    print(result)
+
+
+@util.skip_if_not_logged_in
+def test_module_pipeline(module):
+    result = module.pipelines()
     print(result)

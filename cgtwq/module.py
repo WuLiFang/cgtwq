@@ -9,7 +9,7 @@ from six import text_type
 
 from .core import ControllerGetterMixin
 from .filter import Filter, FilterList
-from .model import HistoryInfo, PipelineInfo, FieldInfo
+from .model import HistoryInfo, PipelineInfo, FieldInfo, FlowInfo
 from .selection import Selection
 
 LOGGER = logging.getLogger(__name__)
@@ -173,6 +173,7 @@ class Module(ControllerGetterMixin):
         )
 
     def has_permission(self, name):
+
         resp = self.call(
             'c_permission', 'has_permission',
             permission_name=name,
@@ -186,7 +187,7 @@ class Module(ControllerGetterMixin):
         )
         return resp.data
 
-    def get_fields(self):
+    def fields(self):
         """Get fields in this module.  """
 
         resp = self.call(
@@ -195,3 +196,18 @@ class Module(ControllerGetterMixin):
             field_array=FieldInfo.fields
         )
         return tuple(FieldInfo(*i) for i in resp.data)
+
+    def flow(self):
+        """Workflow of the module.  """
+
+        resp = self.call('c_flow', 'get_data')
+        return tuple(FlowInfo(*i) for i in resp.data)
+
+    def is_field_in_flow(self, field):
+        """Return if field in workflow.  """
+
+        field = self.field(field)
+        resp = self.call(
+            'c_work_flow', 'is_status_field_in_flow',
+            field_sign=field)
+        return resp.data

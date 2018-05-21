@@ -18,6 +18,7 @@ from .filebox import SelectionFilebox
 from .history import SelectionHistory
 from .link import SelectionLink
 from .notify import SelectionNotify
+from .flow import SelectionFlow
 
 
 class Selection(tuple):
@@ -49,6 +50,7 @@ class Selection(tuple):
         self.history = SelectionHistory(self)
         self.link = SelectionLink(self)
         self.notify = SelectionNotify(self)
+        self.flow = SelectionFlow(self)
 
     def __getitem__(self, name):
         if isinstance(name, int):
