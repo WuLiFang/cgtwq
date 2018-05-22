@@ -109,15 +109,17 @@ class CGTWQHelper(object):
 
         current_account_id = cgtwq.current_account_id()
         data = select.get_fields('id', 'account_id')
-        data = {i[0]: i[1].split(',') for i in data}
+        data = {i[0]: i[1] and i[1].split(',') for i in data}
+        entries = select.to_entries()
 
-        def _by_artist(id_):
-            task_account_id = data[id_]
+        def _by_artist(entry):
+            task_account_id = data[entry[0]]
             if not task_account_id:
                 return 2
             if current_account_id in task_account_id:
                 return 0
             return 1
-        entries = select.to_entries()
-        entry = sorted(entries, key=_by_artist)[0]
-        return entry
+
+        entries = sorted(entries, key=_by_artist)
+
+        return entries[0]
