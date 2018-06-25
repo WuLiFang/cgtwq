@@ -97,7 +97,6 @@ class SelectionTestCase(TestCase):
         select = self.select
         result = select.has_permission_on_status('artist')
         self.assertIsInstance(result, bool)
-        raise RuntimeError(result)
 
 
 @pytest.fixture(name='select')
