@@ -7,10 +7,11 @@ from __future__ import (absolute_import, division, print_function,
 import uuid
 from unittest import TestCase, main
 
-from util import skip_if_not_logged_in
-from cgtwq import database, model
-from cgtwq import Filter
+import six
+
 import cgtwq
+from cgtwq import Filter, database, model
+from util import skip_if_not_logged_in
 
 
 @skip_if_not_logged_in
@@ -31,10 +32,10 @@ class DataBaseTestCase(TestCase):
 
     def test_get_software(self):
         result = self.database.get_software('maya')
-        self.assertIsInstance(result, unicode)
+        self.assertIsInstance(result, six.text_type)
 
     def test_data(self):
-        dummy_data = unicode(uuid.uuid4())
+        dummy_data = six.text_type(uuid.uuid4())
         key = '_test_temp'
         self.database.set_data(key, dummy_data)
         result = self.database.get_data(key)
@@ -75,7 +76,7 @@ class ProjectTestCase(TestCase):
         result = cgtwq.PROJECT.names()
         self.assertIsInstance(result, tuple)
         for i in result:
-            self.assertIsInstance(i, unicode)
+            self.assertIsInstance(i, six.text_type)
 
 
 @skip_if_not_logged_in
@@ -84,7 +85,7 @@ class AccountTestCase(TestCase):
         result = cgtwq.ACCOUNT.names()
         self.assertIsInstance(result, tuple)
         for i in result:
-            self.assertIsInstance(i, unicode)
+            self.assertIsInstance(i, six.text_type)
 
 
 if __name__ == '__main__':
