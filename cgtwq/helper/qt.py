@@ -8,7 +8,7 @@ from Qt.QtWidgets import (QDialog, QLabel, QLineEdit, QMessageBox, QPushButton,
 from six import text_type
 
 import cgtwq
-from wlf.qttools import application
+from wlf.uitools import application
 
 
 def ask_login(parent=None):
@@ -19,11 +19,11 @@ def ask_login(parent=None):
         cgtwq.AccountInfo: Account logged in.
     """
 
-    with application():
-        dialog = QDialog(parent)
-        account_input = QLineEdit()
-        password_input = QLineEdit()
-        _setup_login_dialog(dialog, account_input, password_input)
+    _app = application()
+    dialog = QDialog(parent)
+    account_input = QLineEdit()
+    password_input = QLineEdit()
+    _setup_login_dialog(dialog, account_input, password_input)
 
     while True:
         dialog.exec_()
