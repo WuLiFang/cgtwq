@@ -59,8 +59,8 @@ def post(pathname, data, token, ip=None, **kwargs):
                          data=data,
                          cookies=cookies,
                          **kwargs)
+    LOGGER.debug('RECV: %s', resp.text)
     json_ = resp.json()
-    LOGGER.debug('RECV: %s', json_)
     _raise_error(json_)
     return json_.get('data', json_)
 
