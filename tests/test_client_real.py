@@ -23,10 +23,10 @@ class DesktopClientTestCase(TestCase):
         self.assertIsInstance(result, cgtwq.client.DesktopClientStatus)
 
     def test_refresh(self):
-        cgtwq.DesktopClient.refresh('proj_big', 'shot_task')
+        cgtwq.DesktopClient.refresh('proj_big', 'shot')
 
     def test_refresh_selected(self):
-        cgtwq.DesktopClient.refresh_selected('proj_big', 'shot_task')
+        cgtwq.DesktopClient.refresh_selected('proj_big', 'shot')
 
 
 if __name__ == '__main__':

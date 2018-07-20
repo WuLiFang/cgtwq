@@ -109,25 +109,25 @@ class DesktopClientTestCase(TestCase):
     def test_refresh(self):
         conn = self.conn
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.DesktopClient.refresh('proj_big', 'shot_task')
+        cgtwq.DesktopClient.refresh('proj_big', 'shot')
         conn.send.assert_called_once_with(
             dumps({
                 'sign': 'view_control',
                 'method': 'refresh',
                 'database': 'proj_big',
-                'module': 'shot_task',
+                'module': 'shot',
                 'type': 'send'}))
 
     def test_refresh_selected(self):
         conn = self.conn
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.DesktopClient.refresh_selected('proj_big', 'shot_task')
+        cgtwq.DesktopClient.refresh_selected('proj_big', 'shot')
         conn.send.assert_called_once_with(
             dumps({
                 'sign': 'view_control',
                 'method': 'refresh_select',
                 'database': 'proj_big',
-                'module': 'shot_task',
+                'module': 'shot',
                 'type': 'send'}))
 
     def test_token(self):

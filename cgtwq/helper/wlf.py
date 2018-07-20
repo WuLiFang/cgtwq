@@ -65,13 +65,13 @@ class CGTWQHelper(object):
             'Can not determinate database from filename.', filename)
 
     @classmethod
-    def get_entry(cls, filename, pipeline, module='shot_task'):
+    def get_entry(cls, filename, pipeline, module='shot'):
         """Get entry from filename and pipeline
 
         Args:
             filename (str): Filename to determinate shot.
             pipeline (str): Server defined pipline name.
-            module (str): Defaults to `shot_task`, Server defined module name.
+            module (str): Defaults to `shot`, Server defined module name.
 
         Returns:
             cgtwq.Entry: Entry

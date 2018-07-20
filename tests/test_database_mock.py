@@ -20,9 +20,9 @@ class DatabaseTestCase(TestCase):
     def test_getitem(self):
         database = cgtwq.Database('dummy_db')
         self.assertEqual(database.name, 'dummy_db')
-        result = database['shot_task']
+        result = database['shot']
         self.assertIsInstance(result, cgtwq.database.Module)
-        self.assertEqual(result.name, 'shot_task')
+        self.assertEqual(result.name, 'shot')
 
 
 class ModuleTestCase(TestCase):
