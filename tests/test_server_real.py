@@ -79,6 +79,7 @@ class ServerTestCase(TestCase):
         self.assertIs(server.exists(dir_pathname, token), False)
 
 
+@skip_if_not_logged_in
 def test_login():
     with pytest.raises(cgtwq.PasswordError):
         cgtwq.login('admin', 'default')
