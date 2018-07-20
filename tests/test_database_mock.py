@@ -9,7 +9,6 @@ from unittest import TestCase, main
 import six
 
 import cgtwq
-from cgtwq.server.websocket import Response
 
 if six.PY3:
     from unittest.mock import MagicMock, patch  # pylint: disable=import-error,no-name-in-module
@@ -37,7 +36,7 @@ class ModuleTestCase(TestCase):
             self.addCleanup(i.stop)
             i.start()
 
-        self.module = cgtwq.Database('dummy_db')['shot_task']
+        self.module = cgtwq.Database('dummy_db')['shot']
 
     def test_select(self):
         module = self.module
@@ -53,16 +52,17 @@ class ModuleTestCase(TestCase):
     def test_filter(self):
         module = self.module
         method = self.call_method
-        dummy_resp = Response(['0', '1'], 1, 'json')
+        dummy_resp = ['0', '1']
         method.return_value = dummy_resp
 
         select = module.filter(cgtwq.Filter('key', 'value'))
         method.assert_called_with('c_orm', 'get_with_filter',
                                   db='dummy_db',
-                                  module='shot_task',
-                                  sign_array=['shot_task.id'],
+                                  module='shot',
+                                  module_type='task',
+                                  sign_array=('task.id',),
                                   sign_filter_array=[
-                                      ['shot_task.key', '=', 'value']],
+                                      ['task.key', '=', 'value']],
                                   token=select.token)
         self.assertIsInstance(select, cgtwq.Selection)
 

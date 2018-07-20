@@ -54,11 +54,11 @@ class Entry(Selection):
     def get_related(self, *pipeline_id_list):
         resp = self.call('c_note', 'get_task_id_array',
                          pipeline_id_array=pipeline_id_list)
-        return self.module.select(*resp.data)
+        return self.module.select(*resp)
 
     def label(self):
         resp = self.call('c_module', 'get_message_field_data')
-        return resp.data
+        return resp
 
     def _to_selection(self):
         return Selection(self.module, *self)

@@ -26,8 +26,8 @@ class DataBaseTestCase(TestCase):
         # id
         self.database.get_fileboxes(id_='271')
 
-    def test_get_pipline(self):
-        result = self.database.get_pipelines(cgtwq.Filter('name', '合成'))
+    def test_get_pipeline(self):
+        result = self.database.get_pipelines(cgtwq.Filter('entity_name', '合成'))
         self.assertIsInstance(result[0], database.PipelineInfo)
 
     def test_get_software(self):
@@ -51,10 +51,11 @@ class DataBaseTestCase(TestCase):
 class ModuleTestCase(TestCase):
     def setUp(self):
         cgtwq.update_setting()
-        self.module = database.Database('proj_big')['shot_task']
+        self.module = database.Database('proj_big').module('shot')
 
     def test_pipeline(self):
         result = self.module.pipelines()
+        assert result
         for i in result:
             self.assertIsInstance(i, database.PipelineInfo)
 
@@ -73,6 +74,7 @@ class ModuleTestCase(TestCase):
 @skip_if_not_logged_in
 class ProjectTestCase(TestCase):
     def test_names(self):
+        cgtwq.update_setting()
         result = cgtwq.PROJECT.names()
         self.assertIsInstance(result, tuple)
         for i in result:
@@ -82,6 +84,7 @@ class ProjectTestCase(TestCase):
 @skip_if_not_logged_in
 class AccountTestCase(TestCase):
     def test_names(self):
+        cgtwq.update_setting()
         result = cgtwq.ACCOUNT.names()
         self.assertIsInstance(result, tuple)
         for i in result:

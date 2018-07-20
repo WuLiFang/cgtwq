@@ -9,7 +9,7 @@ from six import text_type
 
 from .core import ControllerGetterMixin
 from .filter import Filter, FilterList
-from .model import HistoryInfo, PipelineInfo, FieldInfo, FlowInfo
+from .model import FieldInfo, HistoryInfo
 from .selection import Selection
 
 LOGGER = logging.getLogger(__name__)
@@ -17,9 +17,10 @@ LOGGER = logging.getLogger(__name__)
 
 class Module(ControllerGetterMixin):
     """Module(Database table) in database.    """
-    _token = None
 
-    def __init__(self, name, database):
+    default_field_namespace = 'task'
+
+    def __init__(self, name, database, module_type='task'):
         """
         Args:
             name (text_type): Server defined module name.
@@ -31,6 +32,8 @@ class Module(ControllerGetterMixin):
         from .database import Database
         assert isinstance(database, Database)
         self.database = database
+        self.module_type = module_type
+        self._token = None
 
     def __getitem__(self, name):
         if isinstance(name, (Filter, FilterList)):
@@ -50,7 +53,10 @@ class Module(ControllerGetterMixin):
         """Call on this module.   """
 
         kwargs.setdefault('token', self.token)
-        return self.database.call(*args, module=self.name, **kwargs)
+        return self.database.call(*args,
+                                  module=self.name,
+                                  module_type=self.module_type,
+                                  **kwargs)
 
     def select(self, *id_list):
         """Create selection on this module.
@@ -76,10 +82,10 @@ class Module(ControllerGetterMixin):
 
         _filters = self.format_filters(filters)
         resp = self.call('c_orm', 'get_with_filter',
-                         sign_array=[self.field('id')],
+                         sign_array=(self.field('id'),),
                          sign_filter_array=_filters)
-        if resp.data:
-            id_list = [i[0] for i in resp.data]
+        if resp:
+            id_list = [i[0] for i in resp]
         else:
             id_list = []
         return Selection(self, *id_list)
@@ -98,7 +104,7 @@ class Module(ControllerGetterMixin):
         if ('.' in name
                 or '#' in name):
             return name
-        return '{}.{}'.format(self.name, name)
+        return '{}.{}'.format(self.default_field_namespace, name)
 
     def format_filters(self, filters):
         """Format field name in filters.
@@ -124,11 +130,7 @@ class Module(ControllerGetterMixin):
             tuple[Pipeline]: namedtuple for ('id', 'name', 'module').
         """
 
-        resp = self.call(
-            'c_pipeline', 'get_with_module',
-            field_array=PipelineInfo.fields
-        )
-        return tuple(PipelineInfo(*i) for i in resp.data)
+        return self.database.get_pipelines(Filter('module', self.name))
 
     def get_history(self, filters):
         """Get history record from the module.
@@ -157,14 +159,14 @@ class Module(ControllerGetterMixin):
         resp = self.call(
             "c_history", "count_with_filter",
             filter_array=FilterList(filters))
-        return int(resp.data)
+        return int(resp)
 
     def join_module_list(self):
         resp = self.call(
             'c_module',
             'get_join_module_list'
         )
-        return resp.data
+        return resp
 
     def set_data_with_mypage(self, data):
         self.call(
@@ -178,14 +180,14 @@ class Module(ControllerGetterMixin):
             'c_permission', 'has_permission',
             permission_name=name,
         )
-        return resp.data
+        return resp
 
     def get(self, field):
         resp = self.call(
             'c_module', 'get_one_with_module',
             field=field
         )
-        return resp.data
+        return resp
 
     def fields(self):
         """Get fields in this module.  """
@@ -195,19 +197,20 @@ class Module(ControllerGetterMixin):
             module_array=[self.name],
             field_array=FieldInfo.fields
         )
-        return tuple(FieldInfo(*i) for i in resp.data)
+        return tuple(FieldInfo(*i) for i in resp)
 
-    def flow(self):
-        """Workflow of the module.  """
+    # TODO
+    # def flow(self):
+    #     """Workflow of the module.  """
 
-        resp = self.call('c_flow', 'get_data')
-        return tuple(FlowInfo(*i) for i in resp.data)
+    #     resp = self.call('c_flow', 'get_data')
+    #     return tuple(FlowInfo(*i) for i in resp)
 
-    def is_field_in_flow(self, field):
-        """Return if field in workflow.  """
+    # def is_field_in_flow(self, field):
+    #     """Return if field in workflow.  """
 
-        field = self.field(field)
-        resp = self.call(
-            'c_work_flow', 'is_status_field_in_flow',
-            field_sign=field)
-        return resp.data
+    #     field = self.field(field)
+    #     resp = self.call(
+    #         'c_work_flow', 'is_status_field_in_flow',
+    #         field_sign=field)
+    #     return resp

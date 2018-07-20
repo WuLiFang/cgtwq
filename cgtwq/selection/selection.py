@@ -4,21 +4,19 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import json
-import os
 
 from six import text_type
 
 from ..filter import Field
 from ..model import ImageInfo
 from ..resultset import ResultSet
-from ..server import upload
-from ..server.filetools import file_md5, genreate_thumb
+from ..server.web import upload_image
 from .base import _OS
 from .filebox import SelectionFilebox
+from .flow import SelectionFlow
 from .history import SelectionHistory
 from .link import SelectionLink
 from .notify import SelectionNotify
-from .flow import SelectionFlow
 
 
 class Selection(tuple):
@@ -103,7 +101,7 @@ class Selection(tuple):
         resp = self.call("c_orm", "get_in_id",
                          sign_array=server_fields,
                          order_sign_array=server_fields)
-        return ResultSet(server_fields, resp.data, self.module)
+        return ResultSet(server_fields, resp, self.module)
 
     def set_fields(self, **data):
         """Set field data for the selection.
@@ -115,42 +113,28 @@ class Selection(tuple):
         data = {
             self.module.field(k): v for k, v in data.items()
         }
-        resp = self.call("c_orm", "set_in_id",
-                         sign_data_array=data)
-        if resp.code == 0:
-            raise ValueError(resp)
+        self.call("c_orm", "set_in_id",
+                  sign_data_array=data)
 
     def delete(self):
         """Delete the selected item on database.  """
 
         self.call("c_orm", "del_in_id")
 
-    def set_image(self, path, field='image', http_server=None):
+    def set_image(self, path, field='image'):
         """Set image for the field.
 
         Args:
             field (text_type): Defaults to 'image', Server defined field name,
             path (text_type): File path.
-            http_server (text_type, optional): Defaults to None. Http server address,
-                if `http_server` is None, will use value from client.
         """
 
         select = self
-        pathname = "/upload/image/{}/".format(
-            select.module.database.name
-        )
 
+        resp = upload_image(path, self.module.database.name, self.token)
         data = {'path': path}
-        # Exactly same with CGTeamwork UI resolution.
-        for key, width, height in (('min', 160, 120), ('max', 308, 186)):
-            thumb = genreate_thumb(path, width, height)
-            try:
-                thumb_pathname = '{}{}.jpg'.format(pathname, file_md5(thumb))
-                upload(thumb, thumb_pathname,
-                       select.token, ip=http_server)
-            finally:
-                os.remove(thumb)
-            data[key] = thumb_pathname
+        data['max'] = [resp['max']]
+        data['min'] = [resp['min']]
 
         select.set_fields(**{field: data})
 
@@ -170,10 +154,9 @@ class Selection(tuple):
             try:
                 data = json.loads(i)
                 assert isinstance(data, dict)
-                # TODO: Remove `image_path` support at next major version.
                 info = ImageInfo(max=data['max'],
                                  min=data['min'],
-                                 path=data.get('path', data.get('image_path')))
+                                 path=data.get('path'))
                 ret.add(info)
             except (TypeError, KeyError):
                 continue
@@ -184,7 +167,7 @@ class Selection(tuple):
 
         Args:
             sign_list (text_type): Sign name defined in CGTeemWork:
-                `设置` -> `目录文件` -> `标识`
+                `项目设置` -> `目录文件` -> `标识`
 
         Returns:
             dict: Server returned path dictionary.
@@ -198,8 +181,8 @@ class Selection(tuple):
             sign_array=sign_list,
             task_id_array=self,
             os=_OS)
-        assert isinstance(resp.data, dict), type(resp.data)
-        return dict(resp.data)
+        assert isinstance(resp, dict), type(resp)
+        return resp
 
     def submit(self, pathnames=(), filenames=(), note=""):
         """Submit file to task, then change status to `Check`.
@@ -234,7 +217,7 @@ class Selection(tuple):
             field_sign=field,
             task_id_array=self
         )
-        return resp.data
+        return resp
 
     def to_entry(self):
         """Convert selection to one entry.

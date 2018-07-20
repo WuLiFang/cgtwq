@@ -12,9 +12,11 @@ class FileBoxCategoryInfo(namedtuple('FileBoxInfo', ('id', 'pipeline_id', 'title
     fields = ('#id', '#pipeline_id', 'title')
 
 
-class PipelineInfo(namedtuple('PipelineInfo', ('id', 'name', 'module', 'description', 'color'))):
+class PipelineInfo(namedtuple('PipelineInfo',
+                              ('id', 'name', 'module',
+                               'module_type', "description"))):
     """Pipeline information.  """
-    fields = ('#id', 'name', 'module', 'description', 'color')
+    fields = ("#id", "entity_name", "module", "module_type", "description")
 
 
 class NoteInfo(namedtuple('NoteInfo',
@@ -42,16 +44,28 @@ class HistoryInfo(
               'text', 'create_by', 'time')
 
 
-FileBoxInfo = namedtuple(
-    'FileBoxInfo',
-    ('path',
-     'classify', 'title',
-     'sign', 'color', 'rule', 'rule_view',
-     'is_submit', 'is_move_old_to_history',
-     'is_move_same_to_history', 'is_in_history_add_version',
-     'is_in_history_add_datetime', 'is_cover_disable',
-     'is_msg_to_first_qc')
-)
+class FileBoxInfo(namedtuple(
+        'FileBoxInfo',
+        ('id', 'path', 'classify',
+         'title', 'sign', 'color', 'rule',
+         'rule_view', 'show_type', 'server', 'drag_in',
+         'is_submit', 'is_move_old_to_history',
+         'is_move_same_to_history', 'is_in_history_add_version',
+         'is_in_history_add_datetime', 'is_cover_disable',
+         'is_msg_to_first_qc'))):
+    """Filebox information.   """
+    def __new__(cls, *args, **kwargs):
+        kwargs['id'] = kwargs.pop('#id')
+        return super(FileBoxInfo, cls).__new__(cls, *args, **kwargs)
+    fileds = ('#id', 'path', 'classify',
+              'title', 'sign', 'color', 'rule',
+              'rule_view', 'show_type', 'server', 'drag_in',
+              'is_submit', 'is_move_old_to_history',
+              'is_move_same_to_history', 'is_in_history_add_version',
+              'is_in_history_add_datetime', 'is_cover_disable',
+              'is_msg_to_first_qc')
+
+
 ImageInfo = namedtuple('ImageInfo', ('max', 'min', 'path'))
 
 

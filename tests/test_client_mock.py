@@ -47,8 +47,8 @@ class DesktopClientTestCase(TestCase):
         self.assertIs(result, True)
         conn.send.assert_called_once_with(
             dumps({
-                'class_name': 'main_widget',
-                'method_name': 'get_token',
+                'sign': 'main_widget',
+                'method': 'get_token',
                 'database': 'main_widget',
                 'module': 'main_widget',
                 'type': 'get'}
@@ -75,8 +75,8 @@ class DesktopClientTestCase(TestCase):
         self.assertIs(result, True)
         conn.send.assert_called_once_with(
             dumps({
-                'class_name': 'main_widget',
-                'method_name': 'get_token',
+                'sign': 'main_widget',
+                'method': 'get_token',
                 'database': 'main_widget',
                 'module': 'main_widget',
                 'type': 'get'}
@@ -112,8 +112,8 @@ class DesktopClientTestCase(TestCase):
         cgtwq.DesktopClient.refresh('proj_big', 'shot_task')
         conn.send.assert_called_once_with(
             dumps({
-                'class_name': 'view_control',
-                'method_name': 'refresh',
+                'sign': 'view_control',
+                'method': 'refresh',
                 'database': 'proj_big',
                 'module': 'shot_task',
                 'type': 'send'}))
@@ -124,8 +124,8 @@ class DesktopClientTestCase(TestCase):
         cgtwq.DesktopClient.refresh_selected('proj_big', 'shot_task')
         conn.send.assert_called_once_with(
             dumps({
-                'class_name': 'view_control',
-                'method_name': 'refresh_select',
+                'sign': 'view_control',
+                'method': 'refresh_select',
                 'database': 'proj_big',
                 'module': 'shot_task',
                 'type': 'send'}))
@@ -140,8 +140,8 @@ class DesktopClientTestCase(TestCase):
         cgtwq.DesktopClient._token()
         conn.send.assert_called_once_with(
             dumps({
-                'class_name': 'main_widget',
-                'method_name': 'get_token',
+                'sign': 'main_widget',
+                'method': 'get_token',
                 'database': 'main_widget',
                 'module': 'main_widget',
                 'type': 'get'})
@@ -168,8 +168,8 @@ class DesktopClientTestCase(TestCase):
         conn.send.assert_called_once_with(
             dumps(
                 {
-                    'class_name': 'main_widget',
-                    'method_name': 'get_server_ip',
+                    'sign': 'main_widget',
+                    'method': 'get_server_ip',
                     'database': 'main_widget',
                     'module': 'main_widget',
                     'type': 'get'
@@ -186,8 +186,8 @@ class DesktopClientTestCase(TestCase):
         conn.send.assert_called_once_with(
             dumps(
                 {
-                    'class_name': 'main_widget',
-                    'method_name': 'get_server_http',
+                    'sign': 'main_widget',
+                    'method': 'get_server_http',
                     'database': 'main_widget',
                     'module': 'main_widget',
                     'type': 'get'
@@ -211,8 +211,8 @@ class DesktopClientTestCase(TestCase):
         conn.send.assert_called_once_with(
             dumps(
                 {
-                    'class_name': 'main_widget',
-                    'method_name': 'get_plugin_data',
+                    'sign': 'main_widget',
+                    'method': 'get_plugin_data',
                     'database': 'main_widget',
                     'module': 'main_widget',
                     'type': 'get',
@@ -230,10 +230,10 @@ class DesktopClientTestCase(TestCase):
         conn.send.assert_called_once_with(
             dumps(
                 {
-                    "method_name": "exec_plugin_result",
+                    "method": "exec_plugin_result",
                     "result": False,
                     "database": "main_widget",
-                    "class_name": "main_widget",
+                    "sign": "main_widget",
                     "type": "send",
                     "module": "main_widget",
                     "uuid": uuid_

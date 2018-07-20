@@ -11,11 +11,12 @@ from .module import Module
 class PublicModule(Module):
     """Module in special `public` database.    """
 
-    def __init__(self, name, active_filter, name_field):
+    def __init__(self, name, active_filter, name_field, module_type='info'):
         self.database = Database('public')
         self.active_filter = active_filter
         self.name_field = name_field
-        super(PublicModule, self).__init__(name, self.database)
+        self.default_field_namespace = name
+        super(PublicModule, self).__init__(name, self.database, module_type)
 
     def all(self):
         """All active entries.

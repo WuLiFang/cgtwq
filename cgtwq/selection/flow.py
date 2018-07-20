@@ -47,7 +47,7 @@ class SelectionFlow(SelectionAttachment):
         resp = self.call('c_work_flow', 'get_click_qc_data',
                          field_sign=field,
                          task_id_array=self.select)
-        return resp.data
+        return resp
 
     def _update_flow(self, node_data, message):
         # pipeline = self._pipeline()
@@ -67,7 +67,7 @@ class SelectionFlow(SelectionAttachment):
                          node_data_array=node_data,
                          task_id_array=self.select,
                          text=message,)
-        assert resp.data
+        assert resp
 
     def has_field_permission(self, field):
         """Return if current user has permission to edit the field.  """
@@ -78,4 +78,4 @@ class SelectionFlow(SelectionAttachment):
             field_sign=field,
             task_id_array=self.select
         )
-        return resp.data
+        return resp

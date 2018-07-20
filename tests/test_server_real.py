@@ -8,8 +8,9 @@ import io
 import os
 import uuid
 from tempfile import mkdtemp, mkstemp
-from unittest import TestCase, main
+from unittest import TestCase, main, skip
 
+import pytest
 import six
 
 import cgtwq
@@ -25,8 +26,10 @@ class ServerTestCase(TestCase):
         account_id = cgtwq.get_account_id(token)
         print('# account: <id: {}: {}>'.format(account_id, account))
 
+    @skip('Not avaliable on cgtw5.2')
     def test_file_operation(self):
         # Prepare
+        cgtwq.update_setting()
         tempdir = mkdtemp()
         self.addCleanup(os.rmdir, tempdir)
         fd, tempfile = mkstemp(dir=tempdir)  # pylint: disable=invalid-name
@@ -75,9 +78,10 @@ class ServerTestCase(TestCase):
         server.delete(dir_pathname, token)
         self.assertIs(server.exists(dir_pathname, token), False)
 
-    def test_login(self):
-        self.assertRaises(cgtwq.PasswordError,
-                          cgtwq.login, 'admin', 'default')
+
+def test_login():
+    with pytest.raises(cgtwq.PasswordError):
+        cgtwq.login('admin', 'default')
 
 
 if __name__ == '__main__':

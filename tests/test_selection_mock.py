@@ -9,7 +9,6 @@ from unittest import TestCase, main
 import six
 
 import cgtwq
-from cgtwq.server.websocket import Response
 
 if six.PY3:
     from unittest.mock import patch  # pylint: disable=import-error,no-name-in-module
@@ -19,22 +18,18 @@ else:
 
 class SelectionTestCase(TestCase):
     def setUp(self):
-        patcher = patch('cgtwq.server.call',
-                        return_value=Response('Testing', 1, 'json'))
+        patcher = patch('cgtwq.server.call', return_value='Testing')
         self.addCleanup(patcher.stop)
 
         self.call_method = patcher.start()
         self.select = cgtwq.Selection(
-            cgtwq.Database('dummy_db')['shot_task'],
-            '1', '2')
+            cgtwq.Database('dummy_db').module('shot'), '1', '2')
 
     def test_getter(self):
         select = self.select
         call_method = self.call_method
-        call_method.return_value = Response(
-            [["1", "monkey", 'banana'],
-             ["2", "dog", 'bone']],
-            1, 'json')
+        call_method.return_value = [["1", "monkey", 'banana'],
+                                    ["2", "dog", 'bone']]
 
         # Test `get_fields`.
         result = select.get_fields('id', 'artist', 'task_name')
@@ -42,26 +37,26 @@ class SelectionTestCase(TestCase):
         self.assertEqual(result.column('artist'), ('dog', 'monkey'))
         call_method.assert_called_once_with(
             'c_orm', 'get_in_id',
-            db='dummy_db', id_array=('1', '2'), module='shot_task',
-            order_sign_array=['shot_task.id',
-                              'shot_task.artist', 'shot_task.task_name'],
-            sign_array=['shot_task.id',
-                        'shot_task.artist', 'shot_task.task_name'],
+            db='dummy_db', id_array=('1', '2'),
+            module='shot',
+            module_type='task',
+            order_sign_array=['task.id',
+                              'task.artist', 'task.task_name'],
+            sign_array=['task.id', 'task.artist', 'task.task_name'],
             token=select.token)
 
         # Test `__getitem__`.
-        call_method.return_value = Response(
-            [['banana'],
-             ['bone']],
-            1, 'json')
+        call_method.return_value = [['banana'], ['bone']]
         call_method.reset_mock()
         result = select['task_name']
         self.assertEqual(result, ('banana', 'bone'))
         call_method.assert_called_once_with(
             'c_orm', 'get_in_id',
-            db='dummy_db', id_array=('1', '2'), module='shot_task',
-            order_sign_array=['shot_task.task_name'],
-            sign_array=['shot_task.task_name'],
+            db='dummy_db', id_array=('1', '2'),
+            module='shot',
+            module_type='task',
+            order_sign_array=['task.task_name'],
+            sign_array=['task.task_name'],
             token=select.token)
 
     def test_setter(self):
@@ -73,8 +68,10 @@ class SelectionTestCase(TestCase):
         select.set_fields(artist='Yuri')
         call_method.assert_called_once_with(
             'c_orm', 'set_in_id',
-            db='dummy_db', id_array=('1', '2'), module='shot_task',
-            sign_data_array={'shot_task.artist': 'Yuri'},
+            db='dummy_db', id_array=('1', '2'),
+            module='shot',
+            module_type='task',
+            sign_data_array={'task.artist': 'Yuri'},
             token=select.token)
 
         # Test `__setitem__`.
@@ -83,8 +80,9 @@ class SelectionTestCase(TestCase):
         call_method.assert_called_once_with(
             'c_orm', 'set_in_id',
             db='dummy_db', id_array=('1', '2'),
-            module='shot_task',
-            sign_data_array={'shot_task.artist': 'Monika'},
+            module='shot',
+            module_type='task',
+            sign_data_array={'task.artist': 'Monika'},
             token=select.token)
 
     def test_delete(self):
@@ -95,22 +93,23 @@ class SelectionTestCase(TestCase):
         call_method.assert_called_once_with(
             'c_orm', 'del_in_id',
             db='dummy_db', id_array=('1', '2'),
-            module='shot_task',
+            module='shot',
+            module_type='task',
             token=select.token)
 
     def test_get_dir(self):
         select = self.select
         call_method = self.call_method
 
-        call_method.return_value = Response(
-            data={'path': 'E:/temp'}, code=1, type='json'
-        )
+        call_method.return_value = {'path': 'E:/temp'}
         select.get_folder('test')
         call_method.assert_called_once_with(
             'c_folder',
             'get_replace_path_in_sign',
             db='dummy_db', id_array=('1', '2'),
-            module='shot_task', os=cgtwq.selection.base._OS,  # pylint: disable=protected-access
+            module='shot',
+            module_type='task',
+            os=cgtwq.selection.base._OS,  # pylint: disable=protected-access
             sign_array=('test',),
             task_id_array=('1', '2'),
             token=select.token)
@@ -120,24 +119,27 @@ class SelectionTestCase(TestCase):
         select = self.select
         call_method = self.call_method
 
-        call_method.return_value = Response(
-            data={"path": "E:/test", "classify": "测试", "title": "测试box",
-                  "sign": "test_fb", "color": "#005500",
-                  "rule": [], "rule_view": [], "is_submit": "N",
-                  "is_move_old_to_history": "",
-                  "is_move_same_to_history": "Y",
-                  "is_in_history_add_version": "Y",
-                  "is_in_history_add_datetime": "",
-                  "is_cover_disable": "",
-                  "is_msg_to_first_qc": ""}, code=1, type='json'
-        )
+        call_method.return_value = {
+            "path": "E:/test", "classify": "测试", "title": "测试box",
+            "sign": "test_fb", "color": "#005500",
+            "rule": [], "rule_view": [], "is_submit": "N",
+            "is_move_old_to_history": "",
+            "is_move_same_to_history": "Y",
+            "is_in_history_add_version": "Y",
+            "is_in_history_add_datetime": "",
+            "is_cover_disable": "",
+            "is_msg_to_first_qc": "",
+            '#id': "dummy_id",
+            'show_type': 'File',
+            'server': 'Y:/', 'drag_in': {}}
         select.filebox.get('test_fb')
         call_method.assert_called_once_with(
             'c_file',
             'filebox_get_one_with_sign',
             db='dummy_db',
             id_array=('1', '2'),
-            module='shot_task',
+            module='shot',
+            module_type='task',
             os=cgtwq.selection.base._OS,
             sign='test_fb',
             task_id='1',
@@ -160,7 +162,8 @@ class SelectionTestCase(TestCase):
             'submit',
             db='dummy_db',
             id_array=('1', '2'),
-            module='shot_task',
+            module='shot',
+            module_type='task',
             submit_file_path_array={'path': (), 'file_path': ['somefile']},
             task_id='1', text='submit_note',
             token=select.token)
@@ -169,19 +172,17 @@ class SelectionTestCase(TestCase):
 class EntryTestCase(TestCase):
     def setUp(self):
         patcher = patch('cgtwq.server.call',
-                        return_value=Response('Testing', 1, 'json'))
+                        return_value='Testing')
         self.addCleanup(patcher.stop)
 
         self.call_method = patcher.start()
         self.task = cgtwq.Entry(
-            cgtwq.Database('dummy_db')['shot_task'], '1')
+            cgtwq.Database('dummy_db')['shot'], '1')
 
     def test_getter(self):
         task = self.task
         call_method = self.call_method
-        call_method.return_value = Response(
-            [['1', "unity"]],
-            1, 'json')
+        call_method.return_value = [['1', "unity"]]
 
         # Test `get_fields`.
         result = task.get_fields('id', 'artist')
@@ -189,23 +190,25 @@ class EntryTestCase(TestCase):
         self.assertEqual(result, ('1', 'unity'))
         call_method.assert_called_once_with(
             'c_orm', 'get_in_id',
-            db='dummy_db', id_array=('1',), module='shot_task',
-            order_sign_array=['shot_task.id', 'shot_task.artist'],
-            sign_array=['shot_task.id', 'shot_task.artist'],
+            db='dummy_db', id_array=('1',),
+            module='shot',
+            module_type='task',
+            order_sign_array=['task.id', 'task.artist'],
+            sign_array=['task.id', 'task.artist'],
             token=task.token)
 
         # Test `__getitem__`.
-        call_method.return_value = Response(
-            [["build"]],
-            1, 'json')
+        call_method.return_value = [["build"]]
         call_method.reset_mock()
         result = task['task_name']
         self.assertEqual(result, 'build')
         call_method.assert_called_once_with(
             'c_orm', 'get_in_id',
-            db='dummy_db', id_array=('1',), module='shot_task',
-            order_sign_array=['shot_task.task_name'],
-            sign_array=['shot_task.task_name'],
+            db='dummy_db', id_array=('1',),
+            module='shot',
+            module_type='task',
+            order_sign_array=['task.task_name'],
+            sign_array=['task.task_name'],
             token=task.token)
 
 

@@ -5,9 +5,6 @@ python:
 install:
   - easy_install .
   - pip install coverage pytest
-  - yes "" | sudo add-apt-repository ppa:mc3man/trusty-media &&
-    sudo apt-get update &&
-    sudo apt-get install ffmpeg && ffmpeg -version
 cache:
   - pip
 before_script:

@@ -12,16 +12,21 @@ import pytest
 import six
 
 import cgtwq
-from cgtwq import database, model
+import cgtwq.database
+import cgtwq.model
+import util
 from util import skip_if_not_logged_in
+
+database = cgtwq.database  # pylint: disable=invalid-name
+model = cgtwq.model  # pylint: disable=invalid-name
 
 
 @skip_if_not_logged_in
 class SelectionTestCase(TestCase):
     def setUp(self):
         cgtwq.update_setting()
-        module = database.Database('proj_big')['shot_task']
-        select = module.filter(cgtwq.Filter('pipeline', '合成') &
+        module = database.Database('proj_big').module('shot')
+        select = module.filter(cgtwq.Filter('flow_name', '合成') &
                                cgtwq.Filter('shot.shot',
                                             ['SNJYW_EP26_06_sc349', 'SNJYW_EP26_06_sc350']))
         assert isinstance(select, cgtwq.Selection)
@@ -62,7 +67,11 @@ class SelectionTestCase(TestCase):
     def test_set_image(self):
         for i in self.select.to_entries():
             assert isinstance(i, cgtwq.Entry)
-            path = i.get_image().path
+            try:
+                path = i.get_image().path
+                i.set_image(path)
+            except ValueError:
+                path = util.path('resource', 'gray.png')
             i.set_image(path)
 
     def test_get_notes(self):
@@ -103,20 +112,20 @@ class SelectionTestCase(TestCase):
 @skip_if_not_logged_in
 def _select():
     cgtwq.update_setting()
-    return cgtwq.Database('proj_mt').module('shot_task').select(
+    return cgtwq.Database('proj_mt').module('task').select(
         'F950A26F-DD4E-E88B-88EE-9C09EF3F7695')
 
 
 logging.basicConfig(level=10)
 
 
-@skip_if_not_logged_in
-@pytest.mark.skip('TODO')
-def test_flow(select):
-    # select.flow.approve('leader_status', 'test approve')
-    select.flow.retake('leader_status', 'test retake')
-    # select.flow.close('leader_status', 'test close')
-    raise RuntimeError(select.flow._qc_data('leader_status'))
+# @skip_if_not_logged_in
+# @pytest.mark.skip('TODO')
+# def test_flow(select):
+#     # select.flow.approve('leader_status', 'test approve')
+#     select.flow.retake('leader_status', 'test retake')
+#     # select.flow.close('leader_status', 'test close')
+#     raise RuntimeError(select.flow._qc_data('leader_status'))
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 # -*- coding=UTF-8 -*-
-"""Create connection with cgtw server.  """
+"""Library from cgtw offical client.  """
+
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from .http import call
+from . import http

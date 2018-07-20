@@ -9,14 +9,29 @@ import logging
 import requests
 
 from . import setting
+from .. import exceptions
 
 LOGGER = logging.getLogger(__file__)
 
 
 def _raise_error(result):
-    if (isinstance(result, dict)
-            and (result.get('code'), result.get('type')) == ('0', 'msg')):
-        raise ValueError(result.get('data', result))
+    if not isinstance(result, dict):
+        return
+    code, type_, data = (result.get('code'), result.get(
+        'type'), result.get('data', result))
+    if code == '1':
+        return
+
+    if (code, type_, data) == ('2', 'msg', 'please login!!!'):
+        raise exceptions.LoginError
+    raise ValueError(data)
+
+
+def call(controller, method, token, ip=None, **data):
+    data['controller'] = controller
+    data['method'] = method
+
+    return post('api.php', data, token, ip)
 
 
 def post(pathname, data, token, ip=None, **kwargs):
@@ -35,15 +50,17 @@ def post(pathname, data, token, ip=None, **kwargs):
     assert 'cookies' not in kwargs
     assert 'data' not in kwargs
 
-    data['token'] = token
     ip = ip or setting.SERVER_IP
     cookies = {'token': token}
-
+    LOGGER.debug('POST: %s: %s', pathname, data)
+    if data is not None:
+        data = {'data': json.dumps(data)}
     resp = requests.post('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
-                         data={'data': json.dumps(data)},
+                         data=data,
                          cookies=cookies,
                          **kwargs)
     json_ = resp.json()
+    LOGGER.debug('RECV: %s', json_)
     _raise_error(json_)
     return json_.get('data', json_)
 

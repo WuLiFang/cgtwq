@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from ..model import FileBoxInfo
-from .base import SelectionAttachment, _OS
+from .base import _OS, SelectionAttachment
 
 
 class SelectionFilebox(SelectionAttachment):
@@ -43,9 +43,10 @@ class SelectionFilebox(SelectionAttachment):
             raise ValueError(
                 'Need at least one of (sign, id_) to get filebox.')
 
-        if not resp.data:
+        if not resp:
             raise ValueError('No matched filebox.')
-        return FileBoxInfo(**resp.data)
+
+        return FileBoxInfo(**resp)
 
     def get_submit(self):
         """Get filebox that set to submit.
@@ -59,5 +60,5 @@ class SelectionFilebox(SelectionAttachment):
             'c_file', 'filebox_get_submit_data',
             task_id=select[0],
             os=_OS)
-        assert isinstance(resp.data, dict), resp
-        return FileBoxInfo(**resp.data)
+        assert isinstance(resp, dict), resp
+        return FileBoxInfo(**resp)

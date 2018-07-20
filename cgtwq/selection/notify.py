@@ -21,9 +21,9 @@ class SelectionNotify(SelectionAttachment):
         resp = select.call("c_note", "get_with_task_id",
                            task_id=select[0],
                            field_array=NoteInfo.fields)
-        return tuple(NoteInfo(*i) for i in resp.data)
+        return tuple(NoteInfo(*i) for i in resp)
 
-    def add(self, text, account):
+    def add(self, text, account, images=()):
         """Add note to selected items.
 
         Args:
@@ -34,12 +34,15 @@ class SelectionNotify(SelectionAttachment):
             ValueError: When no item selected.
         """
 
+        # TODO: Support image.
+
         select = self.select
         select.call("c_note", "create",
                     field_data_array={
                         "module": select.module.name,
+                        "module_type": select.module.module_type,
                         "#task_id": ",".join(select),
-                        "text": text,
+                        "text": {'data': text, 'image': images},
                         "#from_account_id": account})
 
     def send(self, title, content, *to, **kwargs):

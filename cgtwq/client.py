@@ -276,8 +276,8 @@ see: https://github.com/websocket-client/websocket-client/issues/404
             'type': 'get'
         }
         _kwargs.update(kwargs)
-        _kwargs['class_name'] = controller
-        _kwargs['method_name'] = method
+        _kwargs['sign'] = controller
+        _kwargs['method'] = method
 
         payload = json.dumps(_kwargs, indent=4, sort_keys=True)
         conn = create_connection(cls.url, cls.time_out)

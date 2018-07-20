@@ -28,4 +28,4 @@ class ControllerGetterMixin(object):
             controller, method,
             field_array=fields,
             filter_array=FilterList(filters))
-        return tuple(model(*i) for i in resp.data)
+        return tuple(model(*i) for i in resp)

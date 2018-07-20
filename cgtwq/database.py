@@ -6,9 +6,9 @@ from __future__ import (absolute_import, division, print_function,
 import logging
 
 from . import server
-from .filter import FilterList, Field
 from .core import ControllerGetterMixin
-from .model import FileBoxCategoryInfo, PipelineInfo, ModuleInfo, FieldInfo
+from .filter import Field, Filter, FilterList
+from .model import FieldInfo, FileBoxCategoryInfo, ModuleInfo, PipelineInfo
 from .module import Module
 from .server import setting
 
@@ -35,10 +35,10 @@ class Database(ControllerGetterMixin):
     def token(self, value):
         self._token = value
 
-    def module(self, name):
+    def module(self, name, module_type='task'):
         """Get module in the database.  """
 
-        return Module(name=name, database=self)
+        return Module(name=name, database=self, module_type=module_type)
 
     def call(self, *args, **kwargs):
         """Call on this database.   """
@@ -60,25 +60,21 @@ class Database(ControllerGetterMixin):
         """
 
         if id_:
-            resp = self.call("c_file", "get_one_with_id",
+            ret = [self.call("c_file", "get_one_with_id",
                              id=id_,
-                             field_array=FileBoxCategoryInfo.fields)
-            ret = [resp.data]
+                             field_array=FileBoxCategoryInfo.fields)]
         elif filters:
-            resp = self.call("c_file", "get_with_filter",
-                             filter_array=FilterList(filters),
-                             field_array=FileBoxCategoryInfo.fields)
-            ret = resp.data
+            ret = self.call("c_file", "get_with_filter",
+                            filter_array=FilterList(filters),
+                            field_array=FileBoxCategoryInfo.fields)
         else:
             raise ValueError(
                 'Need at least one of (id_, filters) to get filebox.')
 
-        if not resp.data:
-            raise ValueError('No matched filebox.')
-        assert all(isinstance(i, list) for i in ret), resp
+        assert all(isinstance(i, list) for i in ret), ret
         return tuple(FileBoxCategoryInfo(*i) for i in ret)
 
-    def get_pipelines(self, filters):
+    def get_pipelines(self, filters=None):
         """Get piplines from database.
 
         Args:
@@ -88,6 +84,7 @@ class Database(ControllerGetterMixin):
             tuple[PipelineInfo]: namedtuple for ('id', 'name', 'module')
         """
 
+        filters = filters or Field('entity_name').has('%')
         return self._get_model(
             "c_pipeline", "get_with_filter",
             PipelineInfo, filters)
@@ -99,11 +96,10 @@ class Database(ControllerGetterMixin):
             name (text_type): Software name.
 
         Returns:
-            path: Path set in `设置` -> `软件`.
+            path: Path set in `系统设置` -> `软件设置`.
         """
 
-        resp = self.call("c_software", "get_path", name=name)
-        return resp.data
+        return self.call("c_software", "get_software_path", name=name)
 
     def set_data(self, key, value, is_user=True):
         """Set addtional data in this database.
@@ -131,10 +127,9 @@ class Database(ControllerGetterMixin):
             text_type: Data value.
         """
 
-        resp = self.call("c_api_data",
+        return self.call("c_api_data",
                          'get_user' if is_user else 'get_common',
                          key=key)
-        return resp.data
 
     def delete_note(self, *note_id_list):
         self.call(
@@ -155,7 +150,7 @@ class Database(ControllerGetterMixin):
             field_array=FieldInfo.fields,
             filter_array=filters
         )
-        return tuple(FieldInfo(*i) for i in resp.data)
+        return tuple(FieldInfo(*i) for i in resp)
 
     def get_module(self):
         resp = self.call(
@@ -163,4 +158,4 @@ class Database(ControllerGetterMixin):
             filter_array=FilterList(Field('type') | ('info', 'task')),
             field_array=ModuleInfo.fields
         )
-        return tuple(ModuleInfo(*i) for i in resp.data)
+        return tuple(ModuleInfo(*i) for i in resp)

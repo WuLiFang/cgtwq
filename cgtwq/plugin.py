@@ -33,7 +33,7 @@ class PlugIn(object):
         resp = server.call(controller, method,
                            field_array=['#id'], **kwargs)
 
-        return tuple(cls(i) for i in resp.data)
+        return tuple(cls(i) for i in resp)
 
     @classmethod
     def filter(cls, filters):

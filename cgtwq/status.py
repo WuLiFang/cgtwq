@@ -16,4 +16,4 @@ def get_all():
     token = server.setting.DEFAULT_TOKEN
     resp = server.call('c_status', 'get_all', token=token,
                        field_array=StatusInfo._fields)
-    return tuple(StatusInfo(*i) for i in resp.data)
+    return tuple(StatusInfo(*i) for i in resp)

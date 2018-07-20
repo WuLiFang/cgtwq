@@ -14,7 +14,7 @@ import util
 @util.skip_if_not_logged_in
 def _module():
     cgtwq.update_setting()
-    return cgtwq.Database('proj_mt').module('shot_task')
+    return cgtwq.Database('proj_mt').module('shot')
 
 
 @util.skip_if_not_logged_in
@@ -22,11 +22,11 @@ def test_module_fileds(module):
     result = module.fields()
     print(result)
 
-
-@util.skip_if_not_logged_in
-def test_module_flow(module):
-    result = module.flow()
-    print(result)
+# TODO
+# @util.skip_if_not_logged_in
+# def test_module_flow(module):
+#     result = module.flow()
+#     print(result)
 
 
 @util.skip_if_not_logged_in

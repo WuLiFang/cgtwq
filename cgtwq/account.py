@@ -19,7 +19,7 @@ def get_account(token):
         str: Account name.
     """
 
-    return server.call("c_token", "get_account", token=token).data
+    return server.call("c_token", "get_account", token=token)
 
 
 def get_account_id(token):
@@ -31,7 +31,7 @@ def get_account_id(token):
     Returns:
         str: Account id.
     """
-    return server.call("c_token", "get_account_id", token=token).data
+    return server.call("c_token", "get_account_id", token=token)
 
 
 def login(account, password):
@@ -52,7 +52,7 @@ def login(account, password):
         resp = server.call("c_token", "login",
                            account=account,
                            password=password,
-                           token='',
+                           token="",
                            client_type="py")
     except ValueError as ex:
         try:
@@ -64,11 +64,11 @@ def login(account, password):
             pass
         raise
 
-    return AccountInfo(**resp.data)
+    return AccountInfo(**resp)
 
 
 def get_online_account_id(token=None):
     token = token or server.setting.DEFAULT_TOKEN
     resp = server.call(
         'c_token', 'get_all_online_account_id_with_type', token=token)
-    return resp.data
+    return resp
