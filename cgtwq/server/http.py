@@ -12,7 +12,7 @@ from . import setting
 from .. import exceptions
 
 LOGGER = logging.getLogger(__file__)
-
+SESSION = requests.Session()
 
 def _raise_error(result):
     if not isinstance(result, dict):
@@ -55,7 +55,7 @@ def post(pathname, data, token, ip=None, **kwargs):
     LOGGER.debug('POST: %s: %s', pathname, data)
     if data is not None:
         data = {'data': json.dumps(data)}
-    resp = requests.post('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
+    resp = SESSION.post('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
                          data=data,
                          cookies=cookies,
                          **kwargs)
@@ -83,7 +83,7 @@ def get(pathname, token, ip=None, **kwargs):
     cookies = {'token': token}
 
     LOGGER.debug('GET: kwargs: %s', kwargs)
-    resp = requests.get('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
+    resp = SESSION.get('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
                         cookies=cookies,
                         **kwargs)
     try:
