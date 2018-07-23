@@ -3,6 +3,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import json
+
 from .. import exceptions
 from .base import SelectionAttachment
 
@@ -10,7 +12,7 @@ from .base import SelectionAttachment
 class SelectionFlow(SelectionAttachment):
     """Flow operation on selection.  """
 
-    def update(self, field, status, message=''):
+    def update(self, field, status, message='', images=()):
         """Update flow status.  """
 
         select = self.select
@@ -18,7 +20,7 @@ class SelectionFlow(SelectionAttachment):
             self.call('c_work_flow', 'python_update_flow',
                       field_sign=select.module.field(field),
                       status=status,
-                      text=message,
+                      text=json.dumps({'data': message, 'image': images}),
                       task_id=select[0])
         except ValueError as ex:
             if (ex.args
@@ -38,17 +40,17 @@ class SelectionFlow(SelectionAttachment):
         )
         return resp
 
-    def close(self, field, message=''):
+    def close(self, field, message='', images=()):
         """Shorthand method to set take status to `Close`.  """
 
-        return self.update(field, 'Close', message)
+        return self.update(field, 'Close', message, images)
 
-    def approve(self, field, message=''):
+    def approve(self, field, message='', images=()):
         """Shorthand method to set take status to `Approve`.  """
 
-        return self.update(field, 'Approve', message)
+        return self.update(field, 'Approve', message, images)
 
-    def retake(self, field, message=''):
+    def retake(self, field, message='', images=()):
         """Shorthand method to set take status to `Retake`.  """
 
-        return self.update(field, 'Retake', message)
+        return self.update(field, 'Retake', message, images)
