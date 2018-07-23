@@ -14,6 +14,7 @@ from .. import exceptions
 LOGGER = logging.getLogger(__file__)
 SESSION = requests.Session()
 
+
 def _raise_error(result):
     if not isinstance(result, dict):
         return
@@ -56,10 +57,10 @@ def post(pathname, data, token, ip=None, **kwargs):
     if data is not None:
         data = {'data': json.dumps(data)}
     resp = SESSION.post('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
-                         data=data,
-                         cookies=cookies,
-                         **kwargs)
-    LOGGER.debug('RECV: %s', resp.text)
+                        data=data,
+                        cookies=cookies,
+                        **kwargs)
+    LOGGER.debug('RECV: %s', resp.text.strip())
     json_ = resp.json()
     _raise_error(json_)
     return json_.get('data', json_)
@@ -84,8 +85,8 @@ def get(pathname, token, ip=None, **kwargs):
 
     LOGGER.debug('GET: kwargs: %s', kwargs)
     resp = SESSION.get('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
-                        cookies=cookies,
-                        **kwargs)
+                       cookies=cookies,
+                       **kwargs)
     try:
         result = json.loads(resp.content)
     except ValueError:
