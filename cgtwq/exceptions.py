@@ -100,3 +100,11 @@ class AccountError(CGTeamWorkException):
 
     def __unicode__(self):
         return '用户不匹配\n\t已分配给:\t{}\n\t当前用户:\t{}'.format(self.owner or '<未分配>', self.current)
+
+
+@six.add_metaclass(
+    _template_meta(
+        'Suffcient permission',
+        '权限不足'))
+class PermissionError(CGTeamWorkException):
+    """Indicate suffcient permission.  """

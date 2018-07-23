@@ -112,20 +112,25 @@ class SelectionTestCase(TestCase):
 @skip_if_not_logged_in
 def _select():
     cgtwq.update_setting()
-    return cgtwq.Database('proj_mt').module('task').select(
+    return cgtwq.Database('proj_mt').module('shot').select(
         'F950A26F-DD4E-E88B-88EE-9C09EF3F7695')
 
 
 logging.basicConfig(level=10)
 
 
-# @skip_if_not_logged_in
-# @pytest.mark.skip('TODO')
-# def test_flow(select):
-#     # select.flow.approve('leader_status', 'test approve')
-#     select.flow.retake('leader_status', 'test retake')
-#     # select.flow.close('leader_status', 'test close')
-#     raise RuntimeError(select.flow._qc_data('leader_status'))
+@skip_if_not_logged_in
+def test_flow(select):
+    for i in ('leader_status', 'director_status', 'client_status'):
+        try:
+            select.flow.approve(i, 'test approve')
+            assert select[i] == ('Approve',)
+            select.flow.retake(i, 'test retake')
+            assert select[i] == ('Retake',)
+            select.flow.close(i, 'test close')
+            assert select[i] == ('Close',)
+        except cgtwq.PermissionError:
+            continue
 
 
 if __name__ == '__main__':

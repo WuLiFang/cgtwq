@@ -41,3 +41,5 @@ class SelectionHistory(SelectionAttachment):
 
         return self.select.module.count_history(
             self._combine_filters(filters))
+
+    # TODO: undo_data
