@@ -8,6 +8,8 @@ import uuid
 
 import six
 
+from wlf.codectools import get_encoded as e
+
 from .. import account, exceptions
 from ..message import Message
 from .base import SelectionAttachment
@@ -36,7 +38,7 @@ class SelectionFlow(SelectionAttachment):
                 raise exceptions.PermissionError
             raise
 
-    def submit(self, pathnames=(), filenames=(), message="", account_id=None):
+    def submit(self, filenames=(), message="", account_id=None):
         """Submit file to task, then change status to `Check`.
 
         Args:
@@ -49,13 +51,17 @@ class SelectionFlow(SelectionAttachment):
         message = Message.load(message)
         account_id = account_id or account.get_account_id(select.token)
 
+        # Create path data.
+        path_data = {'path': [], 'file_path': []}
+        for i in filenames:
+            path_data['path' if os.path.isdir(e(i)) else 'file_path'].append(i)
+
         select.call(
             "c_work_flow", "submit",
             task_id=select[0],
             account_id=account_id,
             version_id=self.create_version(filenames),
-            submit_file_path_array={
-                'path': pathnames, 'file_path': filenames},
+            submit_file_path_array=path_data,
             text=message.dumps())
 
     def create_version(self, filenames, sign='Api Submit', version_id=None):

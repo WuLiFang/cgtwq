@@ -196,7 +196,7 @@ class Selection(tuple):
         """
 
         # TODO: Remove at next major version.
-        self.flow.submit(pathnames, filenames, message=note)
+        self.flow.submit(pathnames + filenames, message=note)
 
     submit = deprecated(_submit, 'Use `Selection.flow.submit` insted.')
 
