@@ -142,7 +142,7 @@ class Selection(tuple):
         data['min'] = [resp['min']]
 
         select.set_fields(**{field: data})
-        return ImageInfo(**data)
+        return ImageInfo(max=resp['max'], min=resp['min'], path=path)
 
     def get_image(self, field='image'):
         """Get imageinfo used on the field.
@@ -160,8 +160,8 @@ class Selection(tuple):
             try:
                 data = json.loads(i)
                 assert isinstance(data, dict)
-                info = ImageInfo(max=data['max'],
-                                 min=data['min'],
+                info = ImageInfo(max=data['max'][0],
+                                 min=data['min'][0],
                                  path=data.get('path'))
                 ret.add(info)
             except (TypeError, KeyError):
