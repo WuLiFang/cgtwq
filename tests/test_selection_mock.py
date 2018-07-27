@@ -151,23 +151,6 @@ class SelectionTestCase(TestCase):
         result = cgtwq.Database('test')['m'].select('1').to_entry()
         self.assertIsInstance(result, cgtwq.Entry)
 
-    def test_submit(self):
-        call_method = self.call_method
-        select = self.select
-
-        select.submit(filenames=['somefile'],
-                      note='submit_note')
-        call_method.assert_called_once_with(
-            'c_work_flow',
-            'submit',
-            db='dummy_db',
-            id_array=('1', '2'),
-            module='shot',
-            module_type='task',
-            submit_file_path_array={'path': (), 'file_path': ['somefile']},
-            task_id='1', text='submit_note',
-            token=select.token)
-
 
 class EntryTestCase(TestCase):
     def setUp(self):
