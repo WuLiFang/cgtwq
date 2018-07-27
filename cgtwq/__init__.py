@@ -12,6 +12,7 @@ from .exceptions import (AccountError, AccountNotFoundError,
                          PasswordError, PermissionError, PrefixError,
                          SignError)
 from .filter import Field, Filter, FilterList
+from .message import Message
 from .module import Module
 from .public_module import ACCOUNT, PROJECT
 from .resultset import ResultSet
