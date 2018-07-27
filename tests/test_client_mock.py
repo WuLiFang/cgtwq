@@ -200,14 +200,12 @@ class DesktopClientTestCase(TestCase):
         dummy_data = {'id_list': ['1', '2']}
         uuid_ = six.text_type(uuid.uuid4())
         conn = self.conn
-        json.loads
         conn.recv.return_value = server_dumps(1, dummy_data)
         result = cgtwq.DesktopClient.get_plugin_data(uuid_)
+        dummy_data2 = dict.fromkeys(cgtwq.client.PluginData._fields)
+        dummy_data2.update(dummy_data)
         self.assertEqual(result,
-                         cgtwq.client.PluginData(
-                             plugin_id=None, filebox_id=None, database=None,
-                             module=None, id_list=['1', '2'], folder=None,
-                             file_path_list=None, argv=None))
+                         cgtwq.client.PluginData(**dummy_data2))
         conn.send.assert_called_once_with(
             dumps(
                 {

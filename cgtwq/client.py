@@ -26,10 +26,12 @@ PluginData = namedtuple(
      'filebox_id',
      'database',
      'module',
+     'module_type',
      'id_list',
      'folder',
      'file_path_list',
-     'argv')
+     'argv',
+     'retake_pipeline_id_list')
 )
 LOGGER = logging.getLogger(__name__)
 
