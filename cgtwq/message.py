@@ -12,9 +12,10 @@ import six
 class Message(six.text_type):
     """CGTeamWork style message, support image.  """
 
-    def __init__(self, obj):
-        super(Message, self).__init__(obj)
-        self.images = []
+    def __new__(cls, obj):
+        ret = super(Message, cls).__new__(cls, obj)
+        ret.images = []
+        return ret
 
     def dumps(self):
         """Dump data to string in server defined format.  """
