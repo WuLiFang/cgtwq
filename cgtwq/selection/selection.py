@@ -129,6 +129,9 @@ class Selection(tuple):
         Args:
             field (text_type): Defaults to 'image', Server defined field name,
             path (text_type): File path.
+
+        Returns:
+            ImageInfo: Uploaded image.
         """
 
         select = self
@@ -139,6 +142,7 @@ class Selection(tuple):
         data['min'] = [resp['min']]
 
         select.set_fields(**{field: data})
+        return ImageInfo(**data)
 
     def get_image(self, field='image'):
         """Get imageinfo used on the field.
