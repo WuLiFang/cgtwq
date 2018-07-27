@@ -3,6 +3,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from ..message import Message
 from ..model import NoteInfo
 from .base import SelectionAttachment
 
@@ -34,7 +35,9 @@ class SelectionNotify(SelectionAttachment):
             ValueError: When no item selected.
         """
 
-        # TODO: Support image.
+        # TODO: Refactor arguments at next major version.
+        message = Message.load(text)
+        message.images += images
 
         select = self.select
         select.call("c_note", "create",
@@ -42,7 +45,7 @@ class SelectionNotify(SelectionAttachment):
                         "module": select.module.name,
                         "module_type": select.module.module_type,
                         "#task_id": ",".join(select),
-                        "text": {'data': text, 'image': images},
+                        "text": message.dumps(),
                         "#from_account_id": account})
 
     def send(self, title, content, *to, **kwargs):

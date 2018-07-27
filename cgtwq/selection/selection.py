@@ -7,6 +7,8 @@ import json
 
 from six import text_type
 
+from wlf.decorators import deprecated
+
 from ..filter import Field
 from ..model import ImageInfo
 from ..resultset import ResultSet
@@ -184,7 +186,7 @@ class Selection(tuple):
         assert isinstance(resp, dict), type(resp)
         return resp
 
-    def submit(self, pathnames=(), filenames=(), note=""):
+    def _submit(self, pathnames=(), filenames=(), note=""):
         """Submit file to task, then change status to `Check`.
 
         Args:
@@ -193,13 +195,10 @@ class Selection(tuple):
             note (str, optional): Defaults to "". Submit note.
         """
 
-        select = self
-        select.call(
-            "c_work_flow", "submit",
-            task_id=select[0],
-            submit_file_path_array={
-                'path': pathnames, 'file_path': filenames},
-            text=note)
+        # TODO: Remove at next major version.
+        self.flow.submit(pathnames, filenames, message=note)
+
+    submit = deprecated(_submit, 'Use `Selection.flow.submit` insted.')
 
     def has_permission_on_status(self, field):
         """Return if user has permission to edit field.

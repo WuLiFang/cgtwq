@@ -133,5 +133,19 @@ def test_flow(select):
             continue
 
 
+@skip_if_not_logged_in
+def test_flow_submit(select):
+    select.flow.submit(message='test submit')
+    # TODO:Remove below test at next major version.
+    select.submit(note='test submit old')
+
+
+@skip_if_not_logged_in
+def test_flow_assign(select):
+    accounts = [cgtwq.account.get_account_id(
+        cgtwq.server.setting.DEFAULT_TOKEN)]
+    select.flow.assign(accounts)
+
+
 if __name__ == '__main__':
     main()

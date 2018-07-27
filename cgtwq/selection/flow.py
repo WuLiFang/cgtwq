@@ -3,9 +3,13 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import json
+import os
+import uuid
 
-from .. import exceptions
+import six
+
+from .. import account, exceptions
+from ..message import Message
 from .base import SelectionAttachment
 
 
@@ -14,13 +18,16 @@ class SelectionFlow(SelectionAttachment):
 
     def update(self, field, status, message='', images=()):
         """Update flow status.  """
+        # TODO: refactor arguments at next major version.
 
         select = self.select
+        message = Message.load(message)
+        message.images += images
         try:
             self.call('c_work_flow', 'python_update_flow',
                       field_sign=select.module.field(field),
                       status=status,
-                      text=json.dumps({'data': message, 'image': images}),
+                      text=message.dumps(),
                       task_id=select[0])
         except ValueError as ex:
             if (ex.args
@@ -28,6 +35,77 @@ class SelectionFlow(SelectionAttachment):
                                        'no permission to qc')):
                 raise exceptions.PermissionError
             raise
+
+    def submit(self, pathnames=(), filenames=(), message="", account_id=None):
+        """Submit file to task, then change status to `Check`.
+
+        Args:
+            pathnames (tuple, optional): Defaults to (). Server pathnames.
+            filenames (tuple, optional): Defaults to (). Local filenames.
+            message (Message, optional): Defaults to "". Submit note(and images).
+        """
+
+        select = self.select
+        message = Message.load(message)
+        account_id = account_id or account.get_account_id(select.token)
+
+        select.call(
+            "c_work_flow", "submit",
+            task_id=select[0],
+            account_id=account_id,
+            version_id=self.create_version(filenames),
+            submit_file_path_array={
+                'path': pathnames, 'file_path': filenames},
+            text=message.dumps())
+
+    def create_version(self, filenames, sign='Api Submit', version_id=None):
+        """Create new task version.
+
+        Args:
+            filenames (list): Filename list.
+            sign (str, optional): Defaults to 'Api Submit'. Server version sign.
+            version_id (str, optional): Defaults to None. Wanted version id.
+
+        Returns:
+            str: Created version id.
+        """
+
+        select = self.select
+        version_id = version_id or uuid.uuid4().hex
+        select.call(
+            'c_version', 'create',
+            field_data_array={
+                "#link_id": select[0],
+                "version": "",
+                "filename": [os.path.basename(i) for i in filenames],
+                "local_path": filenames,
+                "web_path": [],
+                "sign": sign,
+                "image": "",
+                "from_version": "",
+                "is_upload_web": "N",
+                "#id": version_id,
+            }
+        )
+        return version_id
+
+    def assign(self, accounts, start='', end=''):
+        """Assgin tasks.
+
+        Args:
+            account (list): Account id list.
+            start (str, optional): Defaults to ''. Task start date.
+            end (str, optional): Defaults to ''. Task end date.
+        """
+
+        if isinstance(accounts, six.text_type):
+            accounts = [accounts]
+        select = self.select
+        select.call('c_work_flow', 'assign_to',
+                    assign_account_id=','.join(accounts),
+                    start_date=start,
+                    end_date=end,
+                    task_id_array=select)
 
     def has_field_permission(self, field):
         """Return if current user has permission to edit the field.  """
