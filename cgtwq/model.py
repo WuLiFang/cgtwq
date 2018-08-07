@@ -3,7 +3,10 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import logging
 from collections import namedtuple
+
+import six
 
 
 class FileBoxCategoryInfo(namedtuple('FileBoxInfo', ('id', 'pipeline_id', 'title'))):
@@ -66,7 +69,24 @@ class FileBoxInfo(namedtuple(
               'is_msg_to_first_qc')
 
 
-ImageInfo = namedtuple('ImageInfo', ('max', 'min', 'path'))
+class ImageInfo(namedtuple('ImageInfo', ('max', 'min', 'path'))):
+    """Image infromation.  """
+
+    def __new__(cls, max, min, path=None):
+        # pylint: disable=redefined-builtin
+        return super(ImageInfo, cls).__new__(cls, max, min, path)
+
+    def __getitem__(self, index):
+        # TODO: remove at next major version.
+        if index in self._fields:
+            LOGGER.warning('Use ImageInfo.%s to get value from namedtuple, '
+                           'this compatibility support will '
+                           'deprecate at next major version.', index)
+            return getattr(self, index)
+        return super(ImageInfo, self).__getitem__(index)
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class FieldInfo(

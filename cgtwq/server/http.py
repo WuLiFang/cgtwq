@@ -75,7 +75,7 @@ def get(pathname, token, ip=None, **kwargs):
         **kwargs: kwargs for `requests.get`
 
     Returns:
-        [type]: [description]
+        json server response .
     """
     # pylint: disable=invalid-name
 
@@ -87,10 +87,7 @@ def get(pathname, token, ip=None, **kwargs):
     resp = SESSION.get('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
                        cookies=cookies,
                        **kwargs)
-    try:
-        result = json.loads(resp.content)
-    except ValueError:
-        result = None
-    _raise_error(result)
-    LOGGER.debug('GET: %s', result)
-    return resp
+    LOGGER.debug('GET: %s', resp.text.strip())
+    json_ = resp.json()
+    _raise_error(json_)
+    return json_.get('data', json_)
