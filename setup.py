@@ -20,7 +20,7 @@ setup(
         'Qt.py~=1.1'
     ],
     dependency_links=[
-        ('https://github.com/WuLiFang/wlf/archive/0.4.0.tar.gz'
-         '#egg=wlf-0.4.0'),
+        ('https://github.com/WuLiFang/wlf/archive/0.4.1.tar.gz'
+         '#egg=wlf-0.4.1'),
     ],
 )

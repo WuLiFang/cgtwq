@@ -15,4 +15,4 @@ pyside = "*"
 requests = "*"
 websocket-client = "*"
 "Qt.py" = "~=1.1"
-"ef1480d" = {file = "https://github.com/WuLiFang/wlf/archive/0.4.0.tar.gz"}
+wlf = {file = "https://github.com/WuLiFang/wlf/archive/0.4.1.tar.gz"}
