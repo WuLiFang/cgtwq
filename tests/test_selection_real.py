@@ -84,11 +84,6 @@ class SelectionTestCase(TestCase):
                                 'test <b>message</b>',
                                 cgtwq.util.current_account_id())
 
-    def test_get_history(self):
-        result = self.select.history.get()
-        for i in result:
-            assert isinstance(i, model.HistoryInfo)
-
     def test_count_history(self):
         result = self.select.history.count()
         self.assertIsInstance(result, int)
@@ -145,6 +140,14 @@ def test_flow_assign(select):
     accounts = [cgtwq.account.get_account_id(
         cgtwq.server.setting.DEFAULT_TOKEN)]
     select.flow.assign(accounts)
+
+
+@skip_if_not_logged_in
+def test_get_history(select):
+    result = select.history.get()
+    for i in result:
+        assert isinstance(i, model.HistoryInfo)
+        assert isinstance(i.text, cgtwq.Message)
 
 
 if __name__ == '__main__':
