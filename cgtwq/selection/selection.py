@@ -133,16 +133,11 @@ class Selection(tuple):
         Returns:
             ImageInfo: Uploaded image.
         """
+        image = upload_image(path, self.module.database.name, self.token)
 
-        select = self
-
-        resp = upload_image(path, self.module.database.name, self.token)
-        data = {'path': path}
-        data['max'] = [resp['max']]
-        data['min'] = [resp['min']]
-
-        select.set_fields(**{field: data})
-        return ImageInfo(max=resp['max'], min=resp['min'], path=path)
+        # Server need strange data format for image field in cgteamwork5.2
+        self.set_fields(path=path, max=[image.max], min=[image.min])
+        return image
 
     def get_image(self, field='image'):
         """Get imageinfo used on the field.
