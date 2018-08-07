@@ -136,7 +136,8 @@ class Selection(tuple):
         image = upload_image(path, self.module.database.name, self.token)
 
         # Server need strange data format for image field in cgteamwork5.2
-        self.set_fields(path=path, max=[image.max], min=[image.min])
+        self.set_fields(
+            **{field: dict(path=path, max=[image.max], min=[image.min])})
         return image
 
     def get_image(self, field='image'):
