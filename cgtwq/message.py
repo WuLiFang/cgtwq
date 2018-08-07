@@ -5,11 +5,14 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import json
+import logging
 
 import six
 
 from . import server
 from .model import ImageInfo
+
+LOGGER = logging.getLogger(__name__)
 
 
 class Message(six.text_type):
@@ -19,6 +22,15 @@ class Message(six.text_type):
         ret = super(Message, cls).__new__(cls, obj)
         ret.images = []
         return ret
+
+    def __getitem__(self, index):
+        # TODO: remove at next major version.
+        if index in self._fields:
+            LOGGER.warning('Use Message.%s to get value from namedtuple, '
+                           'this compatibility support will '
+                           'deprecate at next major version.', index)
+            return getattr(self, index)
+        return super(Message, self).__getitem__(index)
 
     def _check_images(self):
         if any(not isinstance(i, ImageInfo) for i in self.images):
