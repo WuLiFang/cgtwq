@@ -6,8 +6,6 @@ from __future__ import (absolute_import, division, print_function,
 import logging
 from collections import namedtuple
 
-import six
-
 
 class FileBoxCategoryInfo(namedtuple('FileBoxInfo', ('id', 'pipeline_id', 'title'))):
     """Filebox catagory information.  """
@@ -45,6 +43,13 @@ class HistoryInfo(
     fields = ('#id', '#task_id', '#account_id',
               'step', 'status', 'file',
               'text', 'create_by', 'time')
+
+    def __new__(cls, *args, **kwargs):
+        from .message import Message
+        raw = super(HistoryInfo, cls).__new__(cls, *args, **kwargs)
+        data = raw._asdict()
+        data['text'] = Message.load(raw.text)
+        return super(HistoryInfo, cls).__new__(cls, **data)
 
 
 class FileBoxInfo(namedtuple(
