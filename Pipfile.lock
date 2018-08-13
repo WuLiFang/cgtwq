@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b836bf7e24e4883ff743cf8e850bed5b51a9a4b6a26d7a4d0ba4283b848e06c6"
+            "sha256": "fa04dc64ce9d9ebecb85666964e5fc947df5832edb3940157594f95075f80eb4"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -74,7 +74,7 @@
             "version": "==0.48.0"
         },
         "wlf": {
-            "file": "https://github.com/WuLiFang/wlf/archive/0.4.1.tar.gz"
+            "file": "https://github.com/WuLiFang/wlf/archive/0.5.0.tar.gz"
         }
     },
     "develop": {
