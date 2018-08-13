@@ -146,7 +146,8 @@ class ModuleInfo(namedtuple('ModuleInfo', ('label', 'name', 'type'))):
 AccountInfo = namedtuple('AccountInfo',
                          ('account', 'account_id', 'image',
                           'update_time', 'file_key', 'token',
-                          'client_type', 'remote_ip', 'name'))
+                          'client_type', 'remote_ip', 'name',
+                          'password_comlexity'))
 
 FlowInfo = namedtuple('FlowInfo',
                       ('flow_id', 'pipeline_id'))

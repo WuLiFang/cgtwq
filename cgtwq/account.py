@@ -63,7 +63,8 @@ def login(account, password):
         except (KeyError, IndexError):
             pass
         raise
-
+    assert isinstance(resp, dict), type(resp)
+    _ = [resp.setdefault(i, None) for i in AccountInfo._fields]
     return AccountInfo(**resp)
 
 
