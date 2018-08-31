@@ -5,7 +5,7 @@ name = "pypi"
 
 [dev-packages]
 pytest = "*"
-pylint = "*"
+pylint = "~=1.9.3"
 "autopep8" = "*"
 rope = "*"
 mock = "*"
