@@ -15,6 +15,7 @@ from subprocess import Popen
 from six import text_type
 from websocket import create_connection
 
+from .database import Database
 from .exceptions import IDError
 
 DesktopClientStatus = namedtuple(
@@ -225,6 +226,22 @@ see: https://github.com/websocket-client/websocket-client/issues/404
         for i in PluginData._fields:
             data.setdefault(i, None)
         return PluginData(**data)
+
+    @classmethod
+    def current_select(cls):
+        """Get current select from plugin data.
+
+        Returns:
+            Selection: Current selection.
+        """
+
+        plugin_data = cls.get_plugin_data()
+        select = Database(
+            plugin_data.database
+        ).module(
+            plugin_data.module, module_type=plugin_data.module_type
+        ).select(*plugin_data.id_list)
+        return select
 
     @classmethod
     def send_plugin_result(cls, uuid, result=False):
