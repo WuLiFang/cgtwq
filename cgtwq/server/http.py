@@ -32,6 +32,18 @@ def _raise_error(result):
 
 
 def call(controller, method, token, ip=None, **data):
+    """Call method on server controller.
+
+    Args:
+        controller (str): Controller name.
+        method (str): Method name.
+        token (str): User token.
+        ip (str, optional): Defaults to None. Server IP.
+
+    Returns:
+        Method result.
+    """
+
     data['controller'] = controller
     data['method'] = method
 
