@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
+import six
 from six import text_type
 
 from . import core
@@ -16,6 +17,7 @@ from .selection import Selection
 LOGGER = logging.getLogger(__name__)
 
 
+@six.python_2_unicode_compatible
 class Module(ControllerGetterMixin):
     """Module(Database table) in database.    """
 
@@ -34,12 +36,18 @@ class Module(ControllerGetterMixin):
         assert isinstance(database, Database)
         self.database = database
         self.module_type = module_type
+        self.label = None
         self._token = None
 
     def __getitem__(self, name):
         if isinstance(name, (Filter, FilterList)):
             return self.filter(name)
         return self.select(name)
+
+    def __str__(self):
+        return ('Module<database={0.database.name}, '
+                'name={0.name}, type={0.module_type}, '
+                'label={0.label}>').format(self)
 
     @property
     def token(self):

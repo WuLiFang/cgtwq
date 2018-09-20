@@ -101,5 +101,11 @@ def test_get_software(database):
     assert isinstance(path, six.text_type)
 
 
+@skip_if_not_logged_in
+def test_database_modules(database):
+    result = database.modules()
+    assert all(isinstance(i, cgtwq.Module) for i in result)
+
+
 if __name__ == '__main__':
     main()

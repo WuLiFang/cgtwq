@@ -144,10 +144,22 @@ class Database(core.ControllerGetterMixin):
         )
         return tuple(FieldInfo(*i) for i in resp)
 
-    def get_module(self):
+    def modules(self):
+        """All modules in this database.
+
+        Returns:
+            tuple[Module]: Modules
+        """
+
         resp = self.call(
             'c_module', 'get_with_filter',
-            filter_array=FilterList(Field('type') | ('info', 'task')),
+            filter_array=FilterList(Field('module').has('%')),
             field_array=ModuleInfo.fields
         )
-        return tuple(ModuleInfo(*i) for i in resp)
+        return tuple(self._get_module(ModuleInfo(*i)) for i in resp)
+
+    def _get_module(self, info):
+        assert isinstance(info, ModuleInfo)
+        ret = self.module(info.name, module_type=info.type)
+        ret.label = info.label
+        return ret
