@@ -22,11 +22,11 @@ def test_module_fileds(module):
     result = module.fields()
     print(result)
 
-# TODO
-# @util.skip_if_not_logged_in
-# def test_module_flow(module):
-#     result = module.flow()
-#     print(result)
+
+@util.skip_if_not_logged_in
+def test_module_flow(module):
+    result = module.flow()
+    print(result)
 
 
 @util.skip_if_not_logged_in

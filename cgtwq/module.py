@@ -9,7 +9,7 @@ from six import text_type
 
 from .core import ControllerGetterMixin
 from .filter import Filter, FilterList
-from .model import FieldInfo, HistoryInfo
+from .model import FieldInfo, FlowInfo, HistoryInfo
 from .selection import Selection
 
 LOGGER = logging.getLogger(__name__)
@@ -199,18 +199,17 @@ class Module(ControllerGetterMixin):
         )
         return tuple(FieldInfo(*i) for i in resp)
 
-    # TODO
-    # def flow(self):
-    #     """Workflow of the module.  """
+    def flow(self):
+        """Workflow of the module.  """
 
-    #     resp = self.call('c_flow', 'get_data')
-    #     return tuple(FlowInfo(*i) for i in resp)
+        resp = self.call('c_flow', 'get_data')
+        return tuple(FlowInfo(*i) for i in resp)
 
-    # def is_field_in_flow(self, field):
-    #     """Return if field in workflow.  """
+    def is_field_in_flow(self, field):
+        """Return if field in workflow.  """
 
-    #     field = self.field(field)
-    #     resp = self.call(
-    #         'c_work_flow', 'is_status_field_in_flow',
-    #         field_sign=field)
-    #     return resp
+        field = self.field(field)
+        resp = self.call(
+            'c_work_flow', 'is_status_field_in_flow',
+            field_sign=field)
+        return resp
