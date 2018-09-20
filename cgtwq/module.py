@@ -233,6 +233,7 @@ class Module(ControllerGetterMixin):
             id_ (str): Field id.
         """
 
+        # Old api using: 'c_field', 'del_one_with_id',
         self.call(
             "v_main_window",
             "del_field_with_id",

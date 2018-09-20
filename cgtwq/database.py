@@ -135,14 +135,38 @@ class Database(core.ControllerGetterMixin):
             id=field_id
         )
 
+    def get_fields(self, filters=None):
+        """Get fields in the database.
+            filters (Filter or FilterList, optional): Defaults to None. Filter.
+
+        Returns:
+            tuple[FieldInfo]: Field informations.
+        """
+
+        filters = filters or Field('sign').has('%')
+        filters = FilterList(filters)
+        resp = self.call(
+            'c_field', 'get_with_filter',
+            field_array=FieldInfo.fields,
+            filter_array=filters
+        )
+        return tuple(FieldInfo(*i) for i in resp)
+
     def get_field(self, filters):
+        """Get one field in the database.
+            filters (Filter or FilterList): Filter.
+
+        Returns:
+            FieldInfo: Field information.
+        """
+
         filters = FilterList(filters)
         resp = self.call(
             'c_field', 'get_one_with_filter',
             field_array=FieldInfo.fields,
             filter_array=filters
         )
-        return tuple(FieldInfo(*i) for i in resp)
+        return FieldInfo(*resp)
 
     def modules(self):
         """All modules in this database.

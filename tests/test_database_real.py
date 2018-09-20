@@ -107,5 +107,13 @@ def test_database_modules(database):
     assert all(isinstance(i, cgtwq.Module) for i in result)
 
 
+@skip_if_not_logged_in
+def test_database_fields(database):
+    result = database.get_fields()
+    assert all(isinstance(i, cgtwq.model.FieldInfo) for i in result)
+    result = database.get_field(cgtwq.Field('sign') == 'shot.shot')
+    assert isinstance(result, cgtwq.model.FieldInfo)
+
+
 if __name__ == '__main__':
     main()
