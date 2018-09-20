@@ -8,7 +8,6 @@ import logging
 import six
 from six import text_type
 
-from . import core
 from .core import ControllerGetterMixin
 from .filter import Filter, FilterList
 from .model import FieldInfo, FlowInfo, HistoryInfo
@@ -210,21 +209,11 @@ class Module(ControllerGetterMixin):
             label (str, optional): Defaults to None. Field chinese name.
         """
 
-        assert type_ in core.FIELD_TYPES,\
-            'Field type must in {}'.format(core.FIELD_TYPES)
-        label = label or sign
-        name = name or sign
-
-        module = self.name if self.module_type != 'task' else 'task'
-        self.call(
-            "c_field", "python_create",
-            module=module,
-            field_str=label,
-            en_name=name,
-            sign=sign,
-            type=type_,
-            field_name=sign,
-        )
+        if '.' not in sign:
+            module = self.name if self.module_type != 'task' else 'task'
+            sign = '{}.{}'.format(module, sign)
+        self.database.create_field(
+            sign=sign, type_=type_, name=name, label=label)
 
     def delete_field(self, id_):
         """Delte field in the module.
