@@ -84,10 +84,6 @@ class SelectionTestCase(TestCase):
                                 'test <b>message</b>',
                                 cgtwq.util.current_account_id())
 
-    def test_count_history(self):
-        result = self.select.history.count()
-        self.assertIsInstance(result, int)
-
     def test_get_filebox_submit(self):
         select = self.select
         result = select.filebox.get_submit()
@@ -139,11 +135,24 @@ def test_flow_assign(select):
 
 
 @skip_if_not_logged_in
-def test_get_history(select):
+def test_history(select):
+
+    # Count
+    result = select.history.count()
+    assert isinstance(result, int)
+    # Get
     result = select.history.get()
     for i in result:
         assert isinstance(i, model.HistoryInfo)
         assert isinstance(i.text, cgtwq.Message)
+
+    # Undo
+    select.flow.close('leader_status')
+    select.flow.retake('leader_status')
+    select.history.undo(select.history.get()[-1])
+    assert select['leader_status'][0] == 'Wait'
+    select.flow.close('leader_status')
+    assert select['leader_status'][0] == 'Close'
 
 
 @skip_if_not_logged_in

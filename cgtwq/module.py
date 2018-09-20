@@ -161,6 +161,21 @@ class Module(ControllerGetterMixin):
             filter_array=FilterList(filters))
         return int(resp)
 
+    def undo_history(self, history):
+        """Undo a history.
+
+        Args:
+            history (HistoryInfo): History information.
+        """
+        assert isinstance(history, HistoryInfo), type(history)
+
+        self.call(
+            'v_history', "undo_data",
+            id=history.id,
+            task_id=history.task_id,
+            show_field_sign_arr=[],
+        )
+
     def join_module_list(self):
         resp = self.call(
             'c_module',
