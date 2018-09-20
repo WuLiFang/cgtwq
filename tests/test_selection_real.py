@@ -88,10 +88,6 @@ class SelectionTestCase(TestCase):
         result = self.select.history.count()
         self.assertIsInstance(result, int)
 
-    def test_add_note(self):
-        select = self.select
-        select.notify.add('test', cgtwq.util.current_account_id())
-
     def test_get_filebox_submit(self):
         select = self.select
         result = select.filebox.get_submit()
@@ -148,6 +144,22 @@ def test_get_history(select):
     for i in result:
         assert isinstance(i, model.HistoryInfo)
         assert isinstance(i.text, cgtwq.Message)
+
+
+@skip_if_not_logged_in
+def test_note(select):
+    assert isinstance(select, cgtwq.Selection)
+    note_message = 'TEST-{}'.format(uuid.uuid4().hex)
+    select.notify.add(note_message)
+    notes = select.notify.get()
+    note = None
+    for i in notes:
+        assert isinstance(i, cgtwq.model.NoteInfo)
+        if i.message == note_message:
+            note = i
+    assert note
+    select.notify.delete(note.id)
+    assert list(set(notes).difference(select.notify.get()))[0] is note
 
 
 if __name__ == '__main__':

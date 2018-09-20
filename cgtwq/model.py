@@ -22,13 +22,20 @@ class PipelineInfo(namedtuple('PipelineInfo',
 
 class NoteInfo(namedtuple('NoteInfo',
                           ('id', 'task_id', 'account_id',
-                           'html', 'time', 'account_name',
+                           'message', 'time', 'account_name',
                            'module'))):
     """Note informatiom.  """
 
     fields = ('#id', '#task_id', '#from_account_id',
               'text', 'time', 'create_by',
               'module')
+
+    def __new__(cls, *args, **kwargs):
+        from .message import Message
+        raw = super(NoteInfo, cls).__new__(cls, *args, **kwargs)
+        data = raw._asdict()
+        data['message'] = Message.load(raw.message)
+        return super(NoteInfo, cls).__new__(cls, **data)
 
 
 class HistoryInfo(

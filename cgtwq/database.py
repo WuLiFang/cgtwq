@@ -129,12 +129,6 @@ class Database(core.ControllerGetterMixin):
                          'get_user' if is_user else 'get_common',
                          key=key)
 
-    def delete_note(self, *note_id_list):
-        self.call(
-            'c_note', 'delete_in_id',
-            id_array=note_id_list
-        )
-
     def delete_field(self, field_id):
         self.call(
             'c_field', 'del_one_with_id',

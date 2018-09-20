@@ -3,6 +3,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from ..account import get_account_id
 from ..message import Message
 from ..model import NoteInfo
 from .base import SelectionAttachment
@@ -24,7 +25,7 @@ class SelectionNotify(SelectionAttachment):
                            field_array=NoteInfo.fields)
         return tuple(NoteInfo(*i) for i in resp)
 
-    def add(self, text, account, images=()):
+    def add(self, text, account=None, images=()):
         """Add note to selected items.
 
         Args:
@@ -34,6 +35,8 @@ class SelectionNotify(SelectionAttachment):
         Raises:
             ValueError: When no item selected.
         """
+
+        account = account or get_account_id(self.select.token)
 
         # TODO: Refactor arguments at next major version.
         message = Message.load(text)
@@ -70,4 +73,14 @@ class SelectionNotify(SelectionAttachment):
             title=title,
             content=content,
             from_account_id=from_
+        )
+
+    def delete(self, *note_id_list):
+        """Delete note on selection.  """
+
+        self.call(
+            'v_note', 'del_in_id',
+            id_array=note_id_list,
+            task_id_array=self.select,
+            show_sign_array=[],
         )

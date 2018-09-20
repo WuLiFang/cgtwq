@@ -75,7 +75,8 @@ class Selection(tuple):
         """Call on this selection.   """
 
         kwargs.setdefault('token', self.token)
-        return self.module.call(*args, id_array=self, **kwargs)
+        kwargs.setdefault('id_array', self)
+        return self.module.call(*args, **kwargs)
 
     def filter(self, filters):
         """Filter selection again.

@@ -62,6 +62,8 @@ def post(pathname, data, token, ip=None, **kwargs):
     LOGGER.debug('RECV: %s', resp.text.strip())
     json_ = resp.json()
     _raise_error(json_)
+    if not isinstance(json_, dict):
+        return json_
     return json_.get('data', json_)
 
 
@@ -89,4 +91,6 @@ def get(pathname, token, ip=None, **kwargs):
     LOGGER.debug('GET: %s', resp.text.strip())
     json_ = resp.json()
     _raise_error(json_)
+    if not isinstance(json_, dict):
+        return json_
     return json_.get('data', json_)
