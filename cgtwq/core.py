@@ -14,6 +14,7 @@ CONFIG = {
     'DESKTOP_CLIENT_HTTP_URL': 'ws://127.0.0.1:64998',  # NOT USED
     'CLIENT_TIMEOUT': 1,
 }
+FIELD_TYPES = ("int", "decimal", "lineedit", "textedit", "checkbox", "list")
 
 
 class ControllerGetterMixin(object):

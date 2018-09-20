@@ -4,6 +4,9 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import random
+import string
+
 import pytest
 
 import cgtwq
@@ -33,3 +36,13 @@ def test_module_flow(module):
 def test_module_pipeline(module):
     result = module.pipelines()
     print(result)
+
+
+@util.skip_if_not_logged_in
+def test_module_field(module):
+    field_sign = 'python_test_{}'.format(
+        ''.join([random.choice(string.letters) for i in range(20)]))
+    module.create_field(sign=field_sign, type_='int')
+    field = next(i for i in module.fields()
+                 if i.sign == module.field(field_sign))
+    module.delete_field(field.id)

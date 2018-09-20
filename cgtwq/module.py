@@ -7,6 +7,7 @@ import logging
 
 from six import text_type
 
+from . import core
 from .core import ControllerGetterMixin
 from .filter import Filter, FilterList
 from .model import FieldInfo, FlowInfo, HistoryInfo
@@ -53,10 +54,9 @@ class Module(ControllerGetterMixin):
         """Call on this module.   """
 
         kwargs.setdefault('token', self.token)
-        return self.database.call(*args,
-                                  module=self.name,
-                                  module_type=self.module_type,
-                                  **kwargs)
+        kwargs.setdefault('module', self.name)
+        kwargs.setdefault('module_type', self.module_type)
+        return self.database.call(*args, **kwargs)
 
     def select(self, *id_list):
         """Create selection on this module.
@@ -176,18 +176,57 @@ class Module(ControllerGetterMixin):
             show_field_sign_arr=[],
         )
 
-    def fields(self):
-        """Get fields in this module.  """
-
-        resp = self.call(
-            'c_field', 'get_in_module',
-            module_array=[self.name],
-            field_array=FieldInfo.fields
-        )
-        return tuple(FieldInfo(*i) for i in resp)
-
     def flow(self):
         """Workflow of the module.  """
 
         resp = self.call('c_flow', 'get_data')
         return tuple(FlowInfo(*i) for i in resp)
+
+    def fields(self):
+        """Get fields in this module.  """
+
+        resp = self.call(
+            'c_field', 'get_join_module_data',
+            field_array=FieldInfo.fields,
+            order_field_array=["module", "sort_id"],
+        )
+        return tuple(FieldInfo(*i) for i in resp)
+
+    def create_field(self, sign, type_, name=None, label=None):
+        """Create new field in the module.
+
+        Args:
+            sign (str): Field sign
+            type_ (str): Field type, see `core.FIELD_TYPES`.
+            name (str, optional): Defaults to None. Field english name.
+            label (str, optional): Defaults to None. Field chinese name.
+        """
+
+        assert type_ in core.FIELD_TYPES,\
+            'Field type must in {}'.format(core.FIELD_TYPES)
+        label = label or sign
+        name = name or sign
+
+        module = self.name if self.module_type != 'task' else 'task'
+        self.call(
+            "c_field", "python_create",
+            module=module,
+            field_str=label,
+            en_name=name,
+            sign=sign,
+            type=type_,
+            field_name=sign,
+        )
+
+    def delete_field(self, id_):
+        """Delte field in the module.
+
+        Args:
+            id_ (str): Field id.
+        """
+
+        self.call(
+            "v_main_window",
+            "del_field_with_id",
+            field_id=id_,
+        )
