@@ -151,3 +151,17 @@ AccountInfo = namedtuple('AccountInfo',
 
 FlowInfo = namedtuple('FlowInfo',
                       ('flow_id', 'pipeline_id'))
+
+PluginData = namedtuple(
+    'PulginData',
+    ('plugin_id',
+     'filebox_id',
+     'database',
+     'module',
+     'module_type',
+     'id_list',
+     'folder',
+     'file_path_list',
+     'argv',
+     'retake_pipeline_id_list')
+)

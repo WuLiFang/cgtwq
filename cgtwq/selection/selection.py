@@ -243,3 +243,22 @@ class Selection(tuple):
 
         from .entry import Entry
         return tuple(Entry(self.module, i) for i in self)
+
+    @classmethod
+    def from_data(cls, **kwargs):
+        """Get selection from dictionary-like data.
+
+        Arguments:
+            **kwargs:
+                database(str): Databse name.
+                module(str): Module name.
+                module_type(str): Module type.
+                id_list(list): Id list.
+        """
+
+        from ..database import Database
+        return Database(
+            kwargs['database']
+        ).module(
+            kwargs['module'], module_type=kwargs['module_type']
+        ).select(*kwargs['id_list'])

@@ -8,30 +8,19 @@ import logging
 import os
 import socket
 import time
-from collections import namedtuple
 from functools import partial
 from subprocess import Popen
 
 from six import text_type
 from websocket import create_connection
 
-from . import core
-from .database import Database
-from .exceptions import IDError
+from wlf.decorators import deprecated
 
-PluginData = namedtuple(
-    'PulginData',
-    ('plugin_id',
-     'filebox_id',
-     'database',
-     'module',
-     'module_type',
-     'id_list',
-     'folder',
-     'file_path_list',
-     'argv',
-     'retake_pipeline_id_list')
-)
+from . import core
+from .exceptions import IDError
+from .model import PluginData
+from .selection import Selection
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -193,20 +182,18 @@ class DesktopClient(object):
             data.setdefault(i, None)
         return PluginData(**data)
 
-    def current_select(self):
-        """Get current select from plugin data.
+    def selection(self):
+        """Get current selection from client.
 
         Returns:
             Selection: Current selection.
         """
 
         plugin_data = self.get_plugin_data()
-        select = Database(
-            plugin_data.database
-        ).module(
-            plugin_data.module, module_type=plugin_data.module_type
-        ).select(*plugin_data.id_list)
-        return select
+        return Selection.from_data(**plugin_data._asdict())
+
+    current_select = deprecated(
+        selection, reason='Use `Desktop.selection` instead.')
 
     def send_plugin_result(self, uuid, result=False):
         """
