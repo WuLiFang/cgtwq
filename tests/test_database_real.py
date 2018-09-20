@@ -9,10 +9,9 @@ import string
 import uuid
 from unittest import TestCase, main
 
+import cgtwq
 import pytest
 import six
-
-import cgtwq
 from cgtwq import Filter, model
 from util import skip_if_not_logged_in
 
@@ -91,6 +90,7 @@ class AccountTestCase(TestCase):
 
 
 @pytest.fixture(name='database')
+@skip_if_not_logged_in
 def _database():
     cgtwq.update_setting()
     return cgtwq.Database('proj_mt')
