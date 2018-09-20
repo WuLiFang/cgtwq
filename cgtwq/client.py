@@ -24,7 +24,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class DesktopClient(core.CachedFunctionMixin):
-    """Get information from CGTeamWork offical GUI clients.  """
+    """Communicate with a CGTeamWork offical GUI clients.  """
 
     def __init__(self, socket_url=None):
         super(DesktopClient, self).__init__()
