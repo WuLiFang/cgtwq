@@ -17,12 +17,16 @@ SESSION = requests.Session()
 def _raise_error(result):
     if not isinstance(result, dict):
         return
-    code, type_, data = (result.get('code'), result.get(
-        'type'), result.get('data', result))
-    if code == '1':
-        return
 
-    if (code, type_, data) == ('2', 'msg', 'please login!!!'):
+    code, type_, data = (result.get('code'),
+                         result.get('type'),
+                         result.get('data', result))
+
+    if code is None:
+        return
+    elif code == '1':
+        return
+    elif (code, type_, data) == ('2', 'msg', 'please login!!!'):
         raise exceptions.LoginError
     raise ValueError(data)
 
