@@ -204,12 +204,3 @@ class Module(ControllerGetterMixin):
 
         resp = self.call('c_flow', 'get_data')
         return tuple(FlowInfo(*i) for i in resp)
-
-    def is_field_in_flow(self, field):
-        """Return if field in workflow.  """
-
-        field = self.field(field)
-        resp = self.call(
-            'c_work_flow', 'is_status_field_in_flow',
-            field_sign=field)
-        return resp
