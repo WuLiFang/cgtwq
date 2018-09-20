@@ -176,34 +176,6 @@ class Module(ControllerGetterMixin):
             show_field_sign_arr=[],
         )
 
-    def join_module_list(self):
-        resp = self.call(
-            'c_module',
-            'get_join_module_list'
-        )
-        return resp
-
-    def set_data_with_mypage(self, data):
-        self.call(
-            'c_page', 'set_data_with_my_page',
-            show_data=data
-        )
-
-    def has_permission(self, name):
-
-        resp = self.call(
-            'c_permission', 'has_permission',
-            permission_name=name,
-        )
-        return resp
-
-    def get(self, field):
-        resp = self.call(
-            'c_module', 'get_one_with_module',
-            field=field
-        )
-        return resp
-
     def fields(self):
         """Get fields in this module.  """
 
