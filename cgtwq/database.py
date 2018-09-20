@@ -5,17 +5,15 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
-from . import server
-from .core import ControllerGetterMixin
-from .filter import Field, Filter, FilterList
+from . import core, server
+from .filter import Field, FilterList
 from .model import FieldInfo, FileBoxCategoryInfo, ModuleInfo, PipelineInfo
 from .module import Module
-from .server import setting
 
 LOGGER = logging.getLogger(__name__)
 
 
-class Database(ControllerGetterMixin):
+class Database(core.ControllerGetterMixin):
     """Database on server.    """
 
     _token = None
@@ -29,7 +27,7 @@ class Database(ControllerGetterMixin):
     @property
     def token(self):
         """User token.   """
-        return self._token or setting.DEFAULT_TOKEN
+        return self._token or core.CONFIG['DEFAULT_TOKEN']
 
     @token.setter
     def token(self, value):

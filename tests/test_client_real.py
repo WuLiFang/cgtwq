@@ -13,25 +13,21 @@ from util import skip_if_not_logged_in
 class DesktopClientTestCase(TestCase):
     def test_plugin_data(self):
         try:
-            result = cgtwq.DesktopClient.get_plugin_data()
+            result = cgtwq.DesktopClient().get_plugin_data()
             self.assertIsInstance(result, cgtwq.client.PluginData)
         except cgtwq.IDError:
             pass
 
-    def test_status(self):
-        result = cgtwq.DesktopClient().status
-        self.assertIsInstance(result, cgtwq.client.DesktopClientStatus)
-
     def test_refresh(self):
-        cgtwq.DesktopClient.refresh('proj_big', 'shot')
+        cgtwq.DesktopClient().refresh('proj_big', 'shot')
 
     def test_refresh_selected(self):
-        cgtwq.DesktopClient.refresh_selected('proj_big', 'shot')
+        cgtwq.DesktopClient().refresh_selected('proj_big', 'shot')
 
 
 @skip_if_not_logged_in
 def test_current_select():
-    select = cgtwq.DesktopClient.current_select()
+    select = cgtwq.DesktopClient().current_select()
     assert isinstance(select, cgtwq.Selection)
 
 

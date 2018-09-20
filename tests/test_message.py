@@ -42,7 +42,7 @@ def test_message_upload():
     item.images.append(filename)
     with pytest.raises(ValueError):
         item.dumps()
-    item.upload_images('_temp', cgtwq.server.setting.DEFAULT_TOKEN)
+    item.upload_images('_temp', cgtwq.core.CONFIG['DEFAULT_TOKEN'])
     assert len(item.images) == 1
     assert all(isinstance(i, cgtwq.model.ImageInfo) for i in item.images)
     assert item.images[0].path == filename

@@ -138,7 +138,7 @@ def test_flow_submit(select):
 @skip_if_not_logged_in
 def test_flow_assign(select):
     accounts = [cgtwq.account.get_account_id(
-        cgtwq.server.setting.DEFAULT_TOKEN)]
+        cgtwq.core.CONFIG['DEFAULT_TOKEN'])]
     select.flow.assign(accounts)
 
 

@@ -21,7 +21,7 @@ else:
     from mock import patch
 
 
-# Same argument with json.dumps used in `DesktopClient.call`.
+# Same argument with json.dumps used in `DesktopClient().call`.
 dumps = partial(json.dumps, sort_keys=True, indent=4)
 
 
@@ -43,7 +43,7 @@ class DesktopClientTestCase(TestCase):
 
         # Logged in.
         conn.recv.return_value = server_dumps(1, six.text_type(uuid.uuid4()))
-        result = cgtwq.DesktopClient.is_running()
+        result = cgtwq.DesktopClient().is_running()
         self.assertIs(result, True)
         conn.send.assert_called_once_with(
             dumps({
@@ -57,12 +57,12 @@ class DesktopClientTestCase(TestCase):
 
         # Running but not logged in.
         conn.recv.return_value = server_dumps(1, True)
-        result = cgtwq.DesktopClient.is_running()
+        result = cgtwq.DesktopClient().is_running()
         self.assertIs(result, True)
 
         # Not running.
         conn.recv.side_effect = socket.timeout
-        result = cgtwq.DesktopClient.is_running()
+        result = cgtwq.DesktopClient().is_running()
         self.assertIs(result, False)
 
     def test_is_logged_in(self):
@@ -71,7 +71,7 @@ class DesktopClientTestCase(TestCase):
         # Logged in.
         conn.recv.return_value = server_dumps(
             1, six.text_type(uuid.uuid4()))
-        result = cgtwq.DesktopClient.is_logged_in()
+        result = cgtwq.DesktopClient().is_logged_in()
         self.assertIs(result, True)
         conn.send.assert_called_once_with(
             dumps({
@@ -85,16 +85,16 @@ class DesktopClientTestCase(TestCase):
 
         # Running but not logged in.
         conn.recv.return_value = server_dumps(1, True)
-        result = cgtwq.DesktopClient.is_logged_in()
+        result = cgtwq.DesktopClient().is_logged_in()
         self.assertIs(result, False)
 
         # Not running.
         conn.recv.side_effect = socket.timeout
-        result = cgtwq.DesktopClient.is_logged_in()
+        result = cgtwq.DesktopClient().is_logged_in()
         self.assertIs(result, False)
 
     def test_executable(self):
-        result = cgtwq.DesktopClient.executable()
+        result = cgtwq.DesktopClient().executable()
         if result is not None:
             self.assertIsInstance(result, (six.text_type))
         self.conn.assert_not_called()
@@ -102,14 +102,14 @@ class DesktopClientTestCase(TestCase):
     def test_start(self):
         conn = self.conn
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.DesktopClient.start()
-        if cgtwq.DesktopClient.executable():
+        cgtwq.DesktopClient().start()
+        if cgtwq.DesktopClient().executable():
             self.conn.send.assert_called_once()
 
     def test_refresh(self):
         conn = self.conn
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.DesktopClient.refresh('proj_big', 'shot')
+        cgtwq.DesktopClient().refresh('proj_big', 'shot')
         conn.send.assert_called_once_with(
             dumps({
                 'sign': 'view_control',
@@ -121,7 +121,7 @@ class DesktopClientTestCase(TestCase):
     def test_refresh_selected(self):
         conn = self.conn
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.DesktopClient.refresh_selected('proj_big', 'shot')
+        cgtwq.DesktopClient().refresh_selected('proj_big', 'shot')
         conn.send.assert_called_once_with(
             dumps({
                 'sign': 'view_control',
@@ -137,7 +137,7 @@ class DesktopClientTestCase(TestCase):
 
         # pylint: disable=protected-access
         # Logged in.
-        cgtwq.DesktopClient._token()
+        cgtwq.DesktopClient()._token()
         conn.send.assert_called_once_with(
             dumps({
                 'sign': 'main_widget',
@@ -147,24 +147,24 @@ class DesktopClientTestCase(TestCase):
                 'type': 'get'})
         )
 
-        result = cgtwq.DesktopClient._token()
+        result = cgtwq.DesktopClient()._token()
         self.assertEqual(result, uuid_)
 
         # Running but not logged in.
         conn.recv.return_value = server_dumps(1, True)
-        result = cgtwq.DesktopClient._token()
+        result = cgtwq.DesktopClient()._token()
         self.assertEqual(result, '')
 
         # Not running.
         self.create_connection.side_effect = socket.timeout
-        self.assertRaises(socket.timeout, cgtwq.DesktopClient._token)
+        self.assertRaises(socket.timeout, cgtwq.DesktopClient()._token)
 
     def test_server_ip(self):
         # pylint: disable=protected-access
         dummy_ip = '192.168.55.55'
         conn = self.conn
         conn.recv.return_value = server_dumps(1, dummy_ip)
-        result = cgtwq.DesktopClient._server_ip()
+        result = cgtwq.DesktopClient()._server_ip()
         conn.send.assert_called_once_with(
             dumps(
                 {
@@ -182,7 +182,7 @@ class DesktopClientTestCase(TestCase):
         dummy_http = '192.168.55.55'
         conn = self.conn
         conn.recv.return_value = server_dumps(1, dummy_http)
-        result = cgtwq.DesktopClient.server_http()
+        result = cgtwq.DesktopClient().server_http()
         conn.send.assert_called_once_with(
             dumps(
                 {
@@ -201,7 +201,7 @@ class DesktopClientTestCase(TestCase):
         uuid_ = six.text_type(uuid.uuid4())
         conn = self.conn
         conn.recv.return_value = server_dumps(1, dummy_data)
-        result = cgtwq.DesktopClient.get_plugin_data(uuid_)
+        result = cgtwq.DesktopClient().get_plugin_data(uuid_)
         dummy_data2 = dict.fromkeys(cgtwq.client.PluginData._fields)
         dummy_data2.update(dummy_data)
         self.assertEqual(result,
@@ -224,7 +224,7 @@ class DesktopClientTestCase(TestCase):
         conn = self.conn
 
         conn.recv.return_value = server_dumps(1, True)
-        cgtwq.DesktopClient.send_plugin_result(uuid_)
+        cgtwq.DesktopClient().send_plugin_result(uuid_)
         conn.send.assert_called_once_with(
             dumps(
                 {

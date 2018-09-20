@@ -15,12 +15,10 @@ from subprocess import Popen
 from six import text_type
 from websocket import create_connection
 
+from . import core
 from .database import Database
 from .exceptions import IDError
 
-DesktopClientStatus = namedtuple(
-    'DesktopClientStatus',
-    ('server_ip', 'server_http', 'token'))
 PluginData = namedtuple(
     'PulginData',
     ('plugin_id',
@@ -40,18 +38,15 @@ LOGGER = logging.getLogger(__name__)
 class DesktopClient(object):
     """Get information from CGTeamWork offical GUI clients.  """
 
-    url = "ws://127.0.0.1:64999"
-    qt_url = 'ws://127.0.0.1:64998'
-    time_out = 1
-    cache = {}
+    def __init__(self, socket_url=None):
+        self.socket_url = socket_url or core.CONFIG['DESKTOP_CLIENT_SOCKET_URL']
+        self.cache = {}
 
-    def __init__(self):
-        self.start()
-        self.status = DesktopClientStatus(
-            server_ip=self.server_ip(),
-            server_http=self.server_http(),
-            token=self.token(),
-        )
+    def connect(self):
+        """Update module config from desktop client.  """
+
+        core.CONFIG['SERVER_IP'] = self.server_ip()
+        core.CONFIG['DEFAULT_TOKEN'] = self.token()
 
     @staticmethod
     def executable():
@@ -74,18 +69,16 @@ class DesktopClient(object):
             executable = None
         return executable
 
-    @classmethod
-    def start(cls):
+    def start(self):
         """Start client if not running.  """
 
-        executable = cls.executable()
-        if executable and not cls.is_running():
+        executable = self.executable()
+        if executable and not self.is_running():
             Popen(executable,
                   cwd=os.path.dirname(executable),
                   close_fds=True)
 
-    @classmethod
-    def is_running(cls):
+    def is_running(self):
         """Check if client is running.
 
         Returns:
@@ -93,15 +86,14 @@ class DesktopClient(object):
         """
 
         try:
-            cls.token(-1)
+            self.token(-1)
             return True
         except (socket.error, socket.timeout) as ex:
-            cls._handle_error_10042(ex)
+            _handle_error_10042(ex)
 
         return False
 
-    @classmethod
-    def is_logged_in(cls):
+    def is_logged_in(self):
         """Check if client is logged in.
 
         Returns:
@@ -109,32 +101,20 @@ class DesktopClient(object):
         """
 
         try:
-            if cls.token(-1):
+            if self.token(-1):
                 return True
         except (socket.error, socket.timeout) as ex:
-            cls._handle_error_10042(ex)
+            _handle_error_10042(ex)
         return False
 
-    @staticmethod
-    def _handle_error_10042(exception):
-        if (isinstance(exception, OSError)
-                and exception.errno == 10042):
-            print("""
-This is a bug of websocket-client 0.47.0 with python 3.6.4,
-see: https://github.com/websocket-client/websocket-client/issues/404
-""")
-            raise exception
+    def _refresh(self, database, module, is_selected_only):
+        self.call('view_control',
+                  'refresh_select' if is_selected_only else 'refresh',
+                  module=module,
+                  database=database,
+                  type='send')
 
-    @classmethod
-    def _refresh(cls, database, module, is_selected_only):
-        cls.call('view_control',
-                 'refresh_select' if is_selected_only else 'refresh',
-                 module=module,
-                 database=database,
-                 type='send')
-
-    @classmethod
-    def refresh(cls, database, module):
+    def refresh(self, database, module):
         """
         Refresh specified view in client
         if matched view is opened.
@@ -144,10 +124,9 @@ see: https://github.com/websocket-client/websocket-client/issues/404
             module (text_type): Module of view.
         """
 
-        cls._refresh(database, module, False)
+        self._refresh(database, module, False)
 
-    @classmethod
-    def refresh_selected(cls, database, module):
+    def refresh_selected(self, database, module):
         """
         Refresh selected part of specified view in client
         if matched view is opened.
@@ -157,65 +136,52 @@ see: https://github.com/websocket-client/websocket-client/issues/404
             module (text_type): Module of view.
         """
 
-        cls._refresh(database, module, True)
+        self._refresh(database, module, True)
 
-    @classmethod
-    def _cached(cls, key, func, max_age):
+    def _cached(self, key, func, max_age):
         now = time.time()
-        if (key not in cls.cache
-                or cls.cache[key][1] + max_age < now):
-            cls.cache[key] = (func(), now)
-        return cls.cache[key][0]
+        if (key not in self.cache
+                or self.cache[key][1] + max_age < now):
+            self.cache[key] = (func(), now)
+        return self.cache[key][0]
 
-    @classmethod
-    def token(cls, max_age=2):
+    def token(self, max_age=2):
         """Cached client token.  """
 
-        return cls._cached('token', cls._token, max_age)
+        return self._cached('token', self._token, max_age)
 
-    @classmethod
-    def _token(cls):
+    def _token(self):
         """Client token.  """
 
-        ret = cls.call_main_widget("get_token")
+        ret = self.call_main_widget("get_token")
         if ret is True:
             return ''
         assert isinstance(ret, text_type), type(ret)
         return text_type(ret)
 
-    @classmethod
-    def server_ip(cls, max_age=5):
+    def server_ip(self, max_age=5):
         """Cached server ip.  """
 
-        return cls._cached('server_ip', cls._server_ip, max_age)
+        return self._cached('server_ip', self._server_ip, max_age)
 
-    @classmethod
-    def _get_typed_data(cls, method, type_):
-        ret = cls.call_main_widget(method)
-        assert isinstance(ret, type_), type(ret)
-        return type_(ret)
-
-    @classmethod
-    def _server_ip(cls):
+    def _server_ip(self):
         """Server ip current using by client.  """
 
-        return cls._get_typed_data("get_server_ip", text_type)
+        return _get_typed_data(self.call_main_widget("get_server_ip"), text_type)
 
-    @classmethod
-    def server_http(cls):
+    def server_http(self):
         """Server http current using by client.  """
 
-        return cls._get_typed_data("get_server_http", text_type)
+        return _get_typed_data(self.call_main_widget("get_server_http"), text_type)
 
-    @classmethod
-    def get_plugin_data(cls, uuid=''):
+    def get_plugin_data(self, uuid=''):
         """Get plugin data for uuid.
 
         Args:
             uuid (text_type): Plugin uuid.
         """
 
-        data = cls.call_main_widget("get_plugin_data", plugin_uuid=uuid)
+        data = self.call_main_widget("get_plugin_data", plugin_uuid=uuid)
         if not data:
             msg = 'No matched plugin'
             if uuid:
@@ -227,15 +193,14 @@ see: https://github.com/websocket-client/websocket-client/issues/404
             data.setdefault(i, None)
         return PluginData(**data)
 
-    @classmethod
-    def current_select(cls):
+    def current_select(self):
         """Get current select from plugin data.
 
         Returns:
             Selection: Current selection.
         """
 
-        plugin_data = cls.get_plugin_data()
+        plugin_data = self.get_plugin_data()
         select = Database(
             plugin_data.database
         ).module(
@@ -243,8 +208,7 @@ see: https://github.com/websocket-client/websocket-client/issues/404
         ).select(*plugin_data.id_list)
         return select
 
-    @classmethod
-    def send_plugin_result(cls, uuid, result=False):
+    def send_plugin_result(self, uuid, result=False):
         """
         Tell client plugin execution result.
         if result is `False`, following operation will been abort.
@@ -254,13 +218,12 @@ see: https://github.com/websocket-client/websocket-client/issues/404
             result (bool, optional): Defaults to False. Plugin execution result.
         """
 
-        cls.call_main_widget("exec_plugin_result",
-                             uuid=uuid,
-                             result=result,
-                             type='send')
+        self.call_main_widget("exec_plugin_result",
+                              uuid=uuid,
+                              result=result,
+                              type='send')
 
-    @classmethod
-    def call_main_widget(cls, *args, **kwargs):
+    def call_main_widget(self, *args, **kwargs):
         """Send data to main widget.
 
         Args:
@@ -271,14 +234,13 @@ see: https://github.com/websocket-client/websocket-client/issues/404
         """
 
         method = partial(
-            cls.call, "main_widget",
+            self.call, "main_widget",
             module="main_widget",
             database="main_widget")
 
         return method(*args, **kwargs)
 
-    @classmethod
-    def call(cls, controller, method, **kwargs):
+    def call(self, controller, method, **kwargs):
         """Call method on the cgteawork client.
 
         Args:
@@ -299,7 +261,8 @@ see: https://github.com/websocket-client/websocket-client/issues/404
         _kwargs['method'] = method
 
         payload = json.dumps(_kwargs, indent=4, sort_keys=True)
-        conn = create_connection(cls.url, cls.time_out)
+        conn = create_connection(
+            self.socket_url, core.CONFIG['CLIENT_TIMEOUT'])
 
         try:
             conn.send(payload)
@@ -315,3 +278,18 @@ see: https://github.com/websocket-client/websocket-client/issues/404
             return ret
         finally:
             conn.close()
+
+
+def _get_typed_data(data, type_):
+    assert isinstance(data, type_), type(data)
+    return type_(data)
+
+
+def _handle_error_10042(exception):
+    if (isinstance(exception, OSError)
+            and exception.errno == 10042):
+        print("""
+This is a bug of websocket-client 0.47.0 with python 3.6.4,
+see: https://github.com/websocket-client/websocket-client/issues/404
+""")
+        raise exception

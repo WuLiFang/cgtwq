@@ -21,9 +21,8 @@ from util import skip_if_not_logged_in
 @skip_if_not_logged_in
 class ServerTestCase(TestCase):
     def test_account(self):
-        token = cgtwq.DesktopClient.token()
-        account = cgtwq.get_account(token)
-        account_id = cgtwq.get_account_id(token)
+        account = cgtwq.get_account()
+        account_id = cgtwq.get_account_id()
         print('# account: <id: {}: {}>'.format(account_id, account))
 
     @skip('Not avaliable on cgtw5.2')

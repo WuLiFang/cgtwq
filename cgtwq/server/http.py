@@ -8,8 +8,7 @@ import logging
 
 import requests
 
-from . import setting
-from .. import exceptions
+from .. import core, exceptions
 
 LOGGER = logging.getLogger(__file__)
 SESSION = requests.Session()
@@ -51,7 +50,7 @@ def post(pathname, data, token, ip=None, **kwargs):
     assert 'cookies' not in kwargs
     assert 'data' not in kwargs
 
-    ip = ip or setting.SERVER_IP
+    ip = ip or core.CONFIG['SERVER_IP']
     cookies = {'token': token}
     LOGGER.debug('POST: %s: %s', pathname, data)
     if data is not None:
@@ -80,7 +79,7 @@ def get(pathname, token, ip=None, **kwargs):
     # pylint: disable=invalid-name
 
     assert 'cookies' not in kwargs
-    ip = ip or setting.SERVER_IP
+    ip = ip or core.CONFIG['SERVER_IP']
     cookies = {'token': token}
 
     LOGGER.debug('GET: kwargs: %s', kwargs)

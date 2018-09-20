@@ -29,3 +29,12 @@ class ControllerGetterMixin(object):
             field_array=fields,
             filter_array=FilterList(filters))
         return tuple(model(*i) for i in resp)
+
+
+CONFIG = {
+    'SERVER_IP': '192.168.55.11',
+    'DEFAULT_TOKEN': None,
+    'DESKTOP_CLIENT_SOCKET_URL': 'ws://127.0.0.1:64999',
+    'DESKTOP_CLIENT_HTTP_URL': 'ws://127.0.0.1:64998',  # NOT USED
+    'CLIENT_TIMEOUT': 1,
+}

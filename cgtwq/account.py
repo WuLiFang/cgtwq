@@ -4,12 +4,12 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from . import server
+from . import core, server
 from .exceptions import AccountNotFoundError, PasswordError
 from .model import AccountInfo
 
 
-def get_account(token):
+def get_account(token=None):
     """Get account from token.
 
     Args:
@@ -19,10 +19,11 @@ def get_account(token):
         str: Account name.
     """
 
+    token = core.CONFIG['DEFAULT_TOKEN']
     return server.call("c_token", "get_account", token=token)
 
 
-def get_account_id(token):
+def get_account_id(token=None):
     """Get account id from token.
 
     Args:
@@ -31,6 +32,8 @@ def get_account_id(token):
     Returns:
         str: Account id.
     """
+
+    token = core.CONFIG['DEFAULT_TOKEN']
     return server.call("c_token", "get_account_id", token=token)
 
 
@@ -69,7 +72,7 @@ def login(account, password):
 
 
 def get_online_account_id(token=None):
-    token = token or server.setting.DEFAULT_TOKEN
+    token = token or core.CONFIG['DEFAULT_TOKEN']
     resp = server.call(
         'c_token', 'get_all_online_account_id_with_type', token=token)
     return resp
