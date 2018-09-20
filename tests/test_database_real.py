@@ -7,10 +7,11 @@ from __future__ import (absolute_import, division, print_function,
 import uuid
 from unittest import TestCase, main
 
+import pytest
 import six
 
 import cgtwq
-from cgtwq import Filter, database, model
+from cgtwq import Filter, model
 from util import skip_if_not_logged_in
 
 
@@ -18,7 +19,7 @@ from util import skip_if_not_logged_in
 class DataBaseTestCase(TestCase):
     def setUp(self):
         cgtwq.update_setting()
-        self.database = database.Database('proj_big')
+        self.database = cgtwq.Database('proj_big')
 
     def test_get_filebox(self):
         # filters.
@@ -28,11 +29,7 @@ class DataBaseTestCase(TestCase):
 
     def test_get_pipeline(self):
         result = self.database.get_pipelines(cgtwq.Filter('entity_name', '合成'))
-        self.assertIsInstance(result[0], database.PipelineInfo)
-
-    def test_get_software(self):
-        result = self.database.get_software('maya')
-        self.assertIsInstance(result, six.text_type)
+        self.assertIsInstance(result[0], cgtwq.database.PipelineInfo)
 
     def test_data(self):
         dummy_data = six.text_type(uuid.uuid4())
@@ -51,13 +48,13 @@ class DataBaseTestCase(TestCase):
 class ModuleTestCase(TestCase):
     def setUp(self):
         cgtwq.update_setting()
-        self.module = database.Database('proj_big').module('shot')
+        self.module = cgtwq.Database('proj_big').module('shot')
 
     def test_pipeline(self):
         result = self.module.pipelines()
         assert result
         for i in result:
-            self.assertIsInstance(i, database.PipelineInfo)
+            self.assertIsInstance(i, cgtwq.database.PipelineInfo)
 
     def test_get_history(self):
 
@@ -89,6 +86,19 @@ class AccountTestCase(TestCase):
         self.assertIsInstance(result, tuple)
         for i in result:
             self.assertIsInstance(i, six.text_type)
+
+
+@pytest.fixture(name='database')
+def _database():
+    cgtwq.update_setting()
+    return cgtwq.Database('proj_mt')
+
+
+@skip_if_not_logged_in
+def test_get_software(database):
+    assert isinstance(database, cgtwq.Database)
+    path = database.get_software('maya')
+    assert isinstance(path, six.text_type)
 
 
 if __name__ == '__main__':
