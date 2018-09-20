@@ -7,7 +7,6 @@ import json
 import logging
 import os
 import socket
-import time
 from functools import partial
 from subprocess import Popen
 
@@ -24,12 +23,12 @@ from .selection import Selection
 LOGGER = logging.getLogger(__name__)
 
 
-class DesktopClient(object):
+class DesktopClient(core.CachedFunctionMixin):
     """Get information from CGTeamWork offical GUI clients.  """
 
     def __init__(self, socket_url=None):
+        super(DesktopClient, self).__init__()
         self.socket_url = socket_url or core.CONFIG['DESKTOP_CLIENT_SOCKET_URL']
-        self.cache = {}
 
     def connect(self):
         """Update module config from desktop client.  """
@@ -126,13 +125,6 @@ class DesktopClient(object):
         """
 
         self._refresh(database, module, True)
-
-    def _cached(self, key, func, max_age):
-        now = time.time()
-        if (key not in self.cache
-                or self.cache[key][1] + max_age < now):
-            self.cache[key] = (func(), now)
-        return self.cache[key][0]
 
     def token(self, max_age=2):
         """Cached client token.  """
