@@ -4,6 +4,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import random
+import string
 import uuid
 from unittest import TestCase, main
 
@@ -109,10 +111,20 @@ def test_database_modules(database):
 
 @skip_if_not_logged_in
 def test_database_fields(database):
+    # Get
     result = database.get_fields()
     assert all(isinstance(i, cgtwq.model.FieldInfo) for i in result)
     result = database.get_field(cgtwq.Field('sign') == 'shot.shot')
     assert isinstance(result, cgtwq.model.FieldInfo)
+
+    # Create
+    field_sign = 'task.python_test_{}'.format(
+        ''.join([random.choice(string.letters) for _ in range(20)]))
+    database.create_field(sign=field_sign, type_='int')
+
+    # Delete
+    field = database.get_field(cgtwq.Field('sign') == field_sign)
+    database.delete_field(field.id)
 
 
 if __name__ == '__main__':

@@ -129,12 +129,6 @@ class Database(core.ControllerGetterMixin):
                          'get_user' if is_user else 'get_common',
                          key=key)
 
-    def delete_field(self, field_id):
-        self.call(
-            'c_field', 'del_one_with_id',
-            id=field_id
-        )
-
     def get_fields(self, filters=None):
         """Get fields in the database.
             filters (Filter or FilterList, optional): Defaults to None. Filter.
@@ -167,6 +161,45 @@ class Database(core.ControllerGetterMixin):
             filter_array=filters
         )
         return FieldInfo(*resp)
+
+    def create_field(self, sign, type_, name=None, label=None):
+        """Create new field in the module.
+
+        Args:
+            sign (str): Field sign
+            type_ (str): Field type, see `core.FIELD_TYPES`.
+            name (str, optional): Defaults to None. Field english name.
+            label (str, optional): Defaults to None. Field chinese name.
+        """
+
+        assert type_ in core.FIELD_TYPES,\
+            'Field type must in {}'.format(core.FIELD_TYPES)
+        assert '.' in sign, 'Sign must contains a `.` character to specific module.'
+
+        module, sign = sign.split('.')
+        label = label or sign
+        name = name or sign
+
+        self.call(
+            "c_field", "python_create",
+            module=module,
+            field_str=label,
+            en_name=name,
+            sign=sign,
+            type=type_,
+            field_name=sign,
+        )
+
+    def delete_field(self, field_id):
+        """Delte field in the module.
+
+        Args:
+            id_ (str): Field id.
+        """
+        self.call(
+            'c_field', 'del_one_with_id',
+            id=field_id
+        )
 
     def modules(self):
         """All modules in this database.
