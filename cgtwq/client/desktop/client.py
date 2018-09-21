@@ -3,7 +3,6 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-import json
 import logging
 import os
 import socket
@@ -11,30 +10,38 @@ from functools import partial
 from subprocess import Popen
 
 from six import text_type
-from websocket import create_connection
 
 from wlf.decorators import deprecated
 
 from . import core
-from .exceptions import IDError
-from .model import PluginData
-from .selection import Selection
+from ...core import CONFIG, CachedFunctionMixin
+from ...selection import Selection
+from .plugin import DesktopClientPlugin
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DesktopClient(core.CachedFunctionMixin):
+class DesktopClient(CachedFunctionMixin):
     """Communicate with a CGTeamWork offical GUI clients.  """
 
     def __init__(self, socket_url=None):
         super(DesktopClient, self).__init__()
-        self.socket_url = socket_url or core.CONFIG['DESKTOP_CLIENT_SOCKET_URL']
+        self.socket_url = socket_url or CONFIG['DESKTOP_CLIENT_SOCKET_URL']
+
+        # Attachment.
+        self.plugin = DesktopClientPlugin(self)
+
+        # Shorthand method.
+        self.call_main_widget = partial(
+            self.call, "main_widget",
+            module="main_widget",
+            database="main_widget")
 
     def connect(self):
         """Update module config from desktop client.  """
 
-        core.CONFIG['SERVER_IP'] = self.server_ip()
-        core.CONFIG['DEFAULT_TOKEN'] = self.token()
+        CONFIG['SERVER_IP'] = self.server_ip()
+        CONFIG['DEFAULT_TOKEN'] = self.token()
 
     @staticmethod
     def executable():
@@ -76,9 +83,8 @@ class DesktopClient(core.CachedFunctionMixin):
         try:
             self.token(-1)
             return True
-        except (socket.error, socket.timeout) as ex:
-            _handle_error_10042(ex)
-
+        except (socket.error, socket.timeout):
+            pass
         return False
 
     def is_logged_in(self):
@@ -91,8 +97,8 @@ class DesktopClient(core.CachedFunctionMixin):
         try:
             if self.token(-1):
                 return True
-        except (socket.error, socket.timeout) as ex:
-            _handle_error_10042(ex)
+        except (socket.error, socket.timeout):
+            pass
         return False
 
     def _refresh(self, database, module, is_selected_only):
@@ -148,31 +154,16 @@ class DesktopClient(core.CachedFunctionMixin):
     def _server_ip(self):
         """Server ip current using by client.  """
 
-        return _get_typed_data(self.call_main_widget("get_server_ip"), text_type)
+        return _get_typed_data(
+            self.call_main_widget("get_server_ip"),
+            text_type)
 
     def server_http(self):
         """Server http current using by client.  """
 
-        return _get_typed_data(self.call_main_widget("get_server_http"), text_type)
-
-    def get_plugin_data(self, uuid=''):
-        """Get plugin data for uuid.
-
-        Args:
-            uuid (text_type): Plugin uuid.
-        """
-
-        data = self.call_main_widget("get_plugin_data", plugin_uuid=uuid)
-        if not data:
-            msg = 'No matched plugin'
-            if uuid:
-                msg += ': {}'.format(uuid)
-            msg += '.'
-            raise IDError(msg)
-        assert isinstance(data, dict), type(data)
-        for i in PluginData._fields:
-            data.setdefault(i, None)
-        return PluginData(**data)
+        return _get_typed_data(
+            self.call_main_widget("get_server_http"),
+            text_type)
 
     def selection(self):
         """Get current selection from client.
@@ -184,91 +175,37 @@ class DesktopClient(core.CachedFunctionMixin):
         plugin_data = self.get_plugin_data()
         return Selection.from_data(**plugin_data._asdict())
 
-    current_select = deprecated(
-        selection, reason='Use `Desktop.selection` instead.')
-
-    def send_plugin_result(self, uuid, result=False):
-        """
-        Tell client plugin execution result.
-        if result is `False`, following operation will been abort.
-
-        Args:
-            uuid (text_type): Plugin uuid.
-            result (bool, optional): Defaults to False. Plugin execution result.
-        """
-
-        self.call_main_widget("exec_plugin_result",
-                              uuid=uuid,
-                              result=result,
-                              type='send')
-
-    def call_main_widget(self, *args, **kwargs):
-        """Send data to main widget.
-
-        Args:
-            **data (dict): Data to send.
-
-        Returns:
-            dict or text_type: Recived data.
-        """
-
-        method = partial(
-            self.call, "main_widget",
-            module="main_widget",
-            database="main_widget")
-
-        return method(*args, **kwargs)
-
     def call(self, controller, method, **kwargs):
         """Call method on the cgteawork client.
 
         Args:
-            controller: Client defined controller name.
-            method (str, text_type): Client defined method name
+            controller (str): Client defined controller name.
+            method (str): Client defined method name
                 on the controller.
             **kwargs: Client defined method keyword arguments.
 
         Returns:
-            dict or text_type: Recived data.
+            dict or str: Recived data.
         """
 
-        _kwargs = {
-            'type': 'get'
-        }
-        _kwargs.update(kwargs)
-        _kwargs['sign'] = controller
-        _kwargs['method'] = method
+        return core.call(self.socket_url, controller, method, **kwargs)
 
-        payload = json.dumps(_kwargs, indent=4, sort_keys=True)
-        conn = create_connection(
-            self.socket_url, core.CONFIG['CLIENT_TIMEOUT'])
+    # Deprecated methods.
 
-        try:
-            conn.send(payload)
-            LOGGER.debug('SEND: %s', payload)
-            recv = conn.recv()
-            LOGGER.debug('RECV: %s', recv)
-            ret = json.loads(recv)
-            ret = ret['data']
-            try:
-                ret = json.loads(ret)
-            except (TypeError, ValueError):
-                pass
-            return ret
-        finally:
-            conn.close()
+    current_select = deprecated(
+        selection, reason='Use `Desktop.selection` instead.')
+
+    get_plugin_data = deprecated(
+        lambda self, uuid='': self.plugin.data(uuid),
+        reason='Use `DesktopClient.plugin.data` instead.')
+
+    send_plugin_result = deprecated(
+        (lambda self, uuid, result=False:
+         self.plugin.send_result(uuid=uuid, result=result)),
+        reason='Use `DesktopClient.plugin.send_result` instead.'
+    )
 
 
 def _get_typed_data(data, type_):
     assert isinstance(data, type_), type(data)
     return type_(data)
-
-
-def _handle_error_10042(exception):
-    if (isinstance(exception, OSError)
-            and exception.errno == 10042):
-        print("""
-This is a bug of websocket-client 0.47.0 with python 3.6.4,
-see: https://github.com/websocket-client/websocket-client/issues/404
-""")
-        raise exception
