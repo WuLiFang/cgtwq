@@ -187,7 +187,7 @@ class PluginMetaArguments(object):
     # pylint:disable=protected-access
 
     def __init__(self, plugin, field):
-        assert isinstance(plugin, PluginMeta), type(PluginMeta)
+        assert isinstance(plugin, PluginMeta), type(plugin)
         self.plugin = plugin
         self.field = field
         self.server_field = _get_server_field(PluginInfo, field)
