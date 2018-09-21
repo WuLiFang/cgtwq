@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import json
 import logging
+from collections import OrderedDict
 
 import requests
 
@@ -12,6 +13,12 @@ from .. import core, exceptions
 
 LOGGER = logging.getLogger(__file__)
 SESSION = requests.Session()
+
+
+def _json_default(self, obj):
+    if isinstance(obj, OrderedDict):
+        return dict(obj)
+    return json.JSONEncoder.default(self, obj)
 
 
 def _raise_error(result):
@@ -70,7 +77,7 @@ def post(pathname, data, token, ip=None, **kwargs):
     cookies = {'token': token}
     LOGGER.debug('POST: %s: %s', pathname, data)
     if data is not None:
-        data = {'data': json.dumps(data)}
+        data = {'data': json.JSONEncoder(default=_json_default).encode(data)}
     resp = SESSION.post('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
                         data=data,
                         cookies=cookies,

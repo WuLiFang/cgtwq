@@ -4,6 +4,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import datetime
+import json
 import logging
 from collections import namedtuple
 
@@ -144,6 +145,13 @@ def _format_yn_str(text):
         raise ValueError(text)
 
 
+def _try_parse_json(text):
+    try:
+        return json.loads(text)
+    except (TypeError, ValueError):
+        return text
+
+
 StatusInfo = namedtuple('StatusInfo', ('status', 'color'))
 
 
@@ -175,3 +183,29 @@ PluginData = namedtuple(
      'argv',
      'retake_pipeline_id_list')
 )
+
+
+class PluginInfo(namedtuple('PluginInfo', ('id', 'name', 'type', 'arguments'))):
+    """Plug-in information.   """
+
+    fields = ('#id', 'name', 'type', 'argv')
+
+    def __new__(cls, *args, **kwargs):
+        raw = super(PluginInfo, cls).__new__(cls, *args, **kwargs)
+
+        arguments = _try_parse_json(raw.arguments) or {}
+        assert isinstance(arguments, dict), type(arguments)
+
+        for k, v in arguments.items():
+            v = _try_parse_json(v)
+            assert isinstance(v, dict), type(v)
+
+            arguments[k] = PluginArgumentInfo(
+                value=_try_parse_json(v['value']),
+                description=v['description']
+            )
+
+        return raw._replace(arguments=arguments)
+
+
+PluginArgumentInfo = namedtuple('PulginData', ('value', 'description',))

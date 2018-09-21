@@ -14,6 +14,7 @@ from .exceptions import (AccountError, AccountNotFoundError,
 from .filter import Field, Filter, FilterList
 from .message import Message
 from .module import Module
+from .plugin_meta import PluginMeta
 from .public_module import ACCOUNT, PROJECT
 from .resultset import ResultSet
 from .selection import Entry, Selection

@@ -12,6 +12,7 @@ import six
 from . import core
 from ...exceptions import IDError
 from ...model import PluginData
+from ...plugin_meta import PluginMeta
 
 
 def _is_plugin_uuid(text):
@@ -83,3 +84,21 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
                                 uuid=uuid,
                                 result=result,
                                 type='send')
+
+    def metadata(self, uuid=None):
+        """Access plugin metadata.
+
+        Args:
+            uuid (str, optional): Defaults to None. Plugin uuid.
+
+        Raises:
+            IDError: When no plug-in uuid found for current python process.
+
+        Returns:
+            PluginMeta: Plug-in metadata.
+        """
+
+        uuid = uuid or self.uuid()
+        if not uuid:
+            raise IDError('Not started from CGTeamWork, uuid required.')
+        return PluginMeta(uuid)

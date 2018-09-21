@@ -13,6 +13,7 @@ CONFIG = {
     'DESKTOP_CLIENT_SOCKET_URL': 'ws://127.0.0.1:64999',
     'DESKTOP_CLIENT_HTTP_URL': 'ws://127.0.0.1:64998',  # NOT USED
     'CLIENT_TIMEOUT': 1,
+    'MIN_FETCH_INTERVAL': 1,
 }
 FIELD_TYPES = ("int", "decimal", "lineedit", "textedit", "checkbox", "list")
 
