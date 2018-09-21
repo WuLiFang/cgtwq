@@ -150,8 +150,6 @@ def test_history(select):
     select.flow.close('leader_status')
     select.flow.retake('leader_status')
     select.history.undo(select.history.get()[-1])
-    assert select['leader_status'][0] == 'Wait'
-    select.flow.close('leader_status')
     assert select['leader_status'][0] == 'Close'
 
 

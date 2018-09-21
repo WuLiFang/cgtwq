@@ -18,6 +18,9 @@ class SelectionHistory(SelectionAttachment):
 
     def get(self, filters=None):
         """Get selection related history.
+            Sorted by time, older first.
+
+        Args:
             filters (Filter or FilterList, optional): Defaults to None.
                 Addtional history filters.
 
@@ -25,8 +28,9 @@ class SelectionHistory(SelectionAttachment):
             tuple[HistoryInfo]: History records.
         """
 
-        return self.select.module.get_history(
-            self._combine_filters(filters))
+        return sorted(
+            self.select.module.get_history(self._combine_filters(filters)),
+            key=lambda i: i.time)
 
     def count(self, filters=None):
         """Count selection related history records.

@@ -3,6 +3,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import datetime
 import logging
 from collections import namedtuple
 
@@ -56,6 +57,8 @@ class HistoryInfo(
         raw = super(HistoryInfo, cls).__new__(cls, *args, **kwargs)
         data = raw._asdict()
         data['text'] = Message.load(raw.text)
+        data['time'] = datetime.datetime.strptime(
+            raw.time, '%Y-%m-%d %H:%M:%S')
         return super(HistoryInfo, cls).__new__(cls, **data)
 
 
