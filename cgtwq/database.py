@@ -5,6 +5,8 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
+from wlf.decorators import deprecated
+
 from . import core, server
 from .filter import Field, FilterList
 from .model import FieldInfo, FileBoxCategoryInfo, ModuleInfo, PipelineInfo
@@ -20,6 +22,8 @@ class Database(core.ControllerGetterMixin):
 
     def __init__(self, name):
         self.name = name
+        self.metadata = DatabaseMeta(database=self, is_user=False)
+        self.userdata = DatabaseMeta(database=self, is_user=True)
 
     def __getitem__(self, name):
         return self.module(name)
@@ -98,36 +102,6 @@ class Database(core.ControllerGetterMixin):
         """
 
         return self.call("c_software", "get_software_path", name=name)
-
-    def set_data(self, key, value, is_user=True):
-        """Set addtional data in this database.
-
-        Args:
-            key (text_type): Data key.
-            value (text_type): Data value
-            is_user (bool, optional): Defaults to True.
-                If `is_user` is True, this data will be user specific.
-        """
-
-        self.call("c_api_data",
-                  'set_user' if is_user else 'set_common',
-                  key=key, value=value)
-
-    def get_data(self, key, is_user=True):
-        """Get addional data set in this database.
-
-        Args:
-            key (text_type): Data key.
-            is_user (bool, optional): Defaults to True.
-                If `is_user` is True, this data will be user specific.
-
-        Returns:
-            text_type: Data value.
-        """
-
-        return self.call("c_api_data",
-                         'get_user' if is_user else 'get_common',
-                         key=key)
 
     def get_fields(self, filters=None):
         """Get fields in the database.
@@ -220,3 +194,62 @@ class Database(core.ControllerGetterMixin):
         ret = self.module(info.name, module_type=info.type)
         ret.label = info.label
         return ret
+
+    # Deprecated methods.
+
+    def _set_data(self, key, value, is_user=True):
+        """Set addtional data in this database.
+
+        Args:
+            key (text_type): Data key.
+            value (text_type): Data value
+            is_user (bool, optional): Defaults to True.
+                If `is_user` is True, this data will be user specific.
+        """
+
+        accessor = self.userdata if is_user else self.metadata
+        accessor[key] = value
+
+    set_data = deprecated(
+        _set_data,
+        reason='Use `Database.metadata` or `Database.userdata` instead.')
+
+    def _get_data(self, key, is_user=True):
+        """Get addional data set in this database.
+
+        Args:
+            key (text_type): Data key.
+            is_user (bool, optional): Defaults to True.
+                If `is_user` is True, this data will be user specific.
+
+        Returns:
+            text_type: Data value.
+        """
+
+        accessor = self.userdata if is_user else self.metadata
+        return accessor[key]
+
+    get_data = deprecated(
+        _get_data,
+        reason='Use `Database.metadata` or `Database.userdata` instead.')
+
+
+class DatabaseMeta(object):
+    """Database metadate accessor.  """
+    # pylint: disable=too-few-public-methods
+
+    def __init__(self, database, is_user):
+        self.database = database
+        self.is_user = is_user
+
+    def __getitem__(self, key):
+        return self.database.call(
+            "c_api_data",
+            'get_user' if self.is_user else 'get_common',
+            key=key)
+
+    def __setitem__(self, key, value):
+        self.database.call(
+            "c_api_data",
+            'set_user' if self.is_user else 'set_common',
+            key=key, value=value)

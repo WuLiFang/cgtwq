@@ -9,9 +9,10 @@ import string
 import uuid
 from unittest import TestCase, main
 
-import cgtwq
 import pytest
 import six
+
+import cgtwq
 from cgtwq import Filter, model
 from util import skip_if_not_logged_in
 
