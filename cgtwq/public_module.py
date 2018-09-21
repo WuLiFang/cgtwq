@@ -3,8 +3,10 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from wlf.decorators import deprecated
+
 from .database import Database
-from .filter import Filter
+from .filter import Field, Filter
 from .module import Module
 
 
@@ -18,13 +20,21 @@ class PublicModule(Module):
         self.default_field_namespace = name
         super(PublicModule, self).__init__(name, self.database, module_type)
 
-    def all(self):
-        """All active entries.
+    def select_all(self):
+        """Select all entries.
 
         Returns:
             Selection
         """
 
+        return self.filter(Field(self.name_field).has('%'))
+
+    def select_activated(self):
+        """Select all active entries.
+
+        Returns:
+            Selection
+        """
         return self.filter(self.active_filter)
 
     def names(self):
@@ -35,6 +45,11 @@ class PublicModule(Module):
         """
 
         return self.all()[self.name_field]
+
+    # Deprecated methods
+    all = deprecated(
+        select_activated,
+        reason='Use `PublicModule.select_activated` insted.')
 
 
 PROJECT = PublicModule('project', Filter('status', 'Active'), 'full_name')
