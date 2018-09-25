@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import json
 
-from six import text_type
+import six
 
 from wlf.decorators import deprecated
 
@@ -29,7 +29,7 @@ class Selection(tuple):
         # pylint: disable=unused-argument
         if not id_list:
             raise ValueError('Empty selection.')
-        assert all(isinstance(i, text_type) for i in id_list), id_list
+        assert all(isinstance(i, six.text_type) for i in id_list), id_list
         return super(Selection, cls).__new__(cls, id_list)
 
     def __init__(self, module, *id_list):
@@ -58,7 +58,7 @@ class Selection(tuple):
         return self.get_fields(name).column(name)
 
     def __setitem__(self, name, value):
-        assert isinstance(name, (text_type, str))
+        assert isinstance(name, (six.text_type, str))
         self.set_fields(**{name: value})
 
     @property
@@ -78,17 +78,17 @@ class Selection(tuple):
         kwargs.setdefault('id_array', self)
         return self.module.call(*args, **kwargs)
 
-    def filter(self, filters):
+    def filter(self, *filters):
         """Filter selection again.
 
         Args:
-            filters (Filter,FilterList): Addtional filters.
+            *filters (Filter,FilterList): Addtional filters.
 
         Returns:
             Selction: Filtered selection.
         """
 
-        return self.module.filter((Field('id') | self) & filters)
+        return self.module.filter(Field('id').in_(self), *filters)
 
     def get_fields(self, *fields):
         """Get field information for the selection.
@@ -128,8 +128,8 @@ class Selection(tuple):
         """Set image for the field.
 
         Args:
-            field (text_type): Defaults to 'image', Server defined field name,
-            path (text_type): File path.
+            field (six.text_type): Defaults to 'image', Server defined field name,
+            path (six.text_type): File path.
 
         Returns:
             ImageInfo: Uploaded image.
@@ -145,7 +145,7 @@ class Selection(tuple):
         """Get imageinfo used on the field.
 
         Args:
-            field (text_type): Defaults to 'image', Server defined field name,
+            field (six.text_type): Defaults to 'image', Server defined field name,
 
         Returns:
             set[ImageInfo]: Image information.
@@ -169,7 +169,7 @@ class Selection(tuple):
         """Get signed folder path.
 
         Args:
-            sign_list (text_type): Sign name defined in CGTeemWork:
+            sign_list (six.text_type): Sign name defined in CGTeemWork:
                 `项目设置` -> `目录文件` -> `标识`
 
         Returns:

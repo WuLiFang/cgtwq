@@ -7,6 +7,7 @@ import logging
 
 import six
 from six import text_type
+from six.moves import reduce
 
 from .core import ControllerGetterMixin
 from .filter import Filter, FilterList
@@ -77,16 +78,17 @@ class Module(ControllerGetterMixin):
 
         return Selection(self, *id_list)
 
-    def filter(self, filters):
+    def filter(self, *filters):
         """Create selection with filter on this module.
 
         Args:
-            filters (FilterList, Filter): Filters for server.
+            *filters (FilterList, Filter): Filters for server.
 
         Returns:
             Selection: Created selection.
         """
 
+        filters = reduce(lambda a, b: a & b, filters)
         _filters = self.format_filters(filters)
         resp = self.call('c_orm', 'get_with_filter',
                          sign_array=(self.field('id'),),

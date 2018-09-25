@@ -16,9 +16,9 @@ import cgtwq
 cgtwq.DesktopClient().connect()
 module = cgtwq.Database('proj_xiaoying').module('shot', module_type='task')
 select = module.filter(
-    cgtwq.Field('shot.shot') == 'sc001')
-    & cgtwq.Field('shot.eps_name') == 'ep01')
-    & cgtwq.Field('task_name') == 'Layout'))
+    cgtwq.Field('shot.shot') == 'sc001'),
+    cgtwq.Field('shot.eps_name') == 'ep01'),
+    cgtwq.Field('task_name') == 'Layout'),)
 print(select['submit_file_path'])
 ```
 
