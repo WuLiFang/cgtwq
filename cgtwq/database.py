@@ -5,6 +5,8 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
+from six.moves import reduce
+
 from wlf.decorators import deprecated
 
 from . import core, server
@@ -175,6 +177,24 @@ class Database(core.ControllerGetterMixin):
             id=field_id
         )
 
+    def filter(self, *filters):
+        """Filter modules in this database.
+
+        Args:
+            *filters (FilterList, Filter): Filters for server.
+
+        Returns:
+            tuple[Module]: Modules
+        """
+        filters = reduce(lambda a, b: a & b, filters)
+
+        resp = self.call(
+            'c_module', 'get_with_filter',
+            filter_array=FilterList(filters),
+            field_array=ModuleInfo.fields
+        )
+        return tuple(self._get_module(ModuleInfo(*i)) for i in resp)
+
     def modules(self):
         """All modules in this database.
 
@@ -182,12 +202,7 @@ class Database(core.ControllerGetterMixin):
             tuple[Module]: Modules
         """
 
-        resp = self.call(
-            'c_module', 'get_with_filter',
-            filter_array=FilterList(Field('module').has('%')),
-            field_array=ModuleInfo.fields
-        )
-        return tuple(self._get_module(ModuleInfo(*i)) for i in resp)
+        return self.filter(Field('module').has('%'))
 
     def _get_module(self, info):
         assert isinstance(info, ModuleInfo)
