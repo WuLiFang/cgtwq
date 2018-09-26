@@ -9,10 +9,10 @@ from six.moves import reduce
 
 from wlf.decorators import deprecated
 
-from . import core, server
-from .filter import Field, FilterList
-from .model import FieldInfo, FileBoxMeta, ModuleInfo, PipelineInfo
-from .module import Module
+from .. import core, server
+from ..filter import Field, FilterList
+from ..model import FieldInfo, FileBoxMeta, ModuleInfo, PipelineInfo
+from ..module import Module
 
 LOGGER = logging.getLogger(__name__)
 
