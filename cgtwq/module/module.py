@@ -9,10 +9,13 @@ import six
 from six import text_type
 from six.moves import reduce
 
+from wlf.decorators import deprecated
+
 from ..core import ControllerGetterMixin
 from ..filter import Field, Filter, FilterList
 from ..model import FieldInfo, FlowInfo, HistoryInfo
 from ..selection import Selection
+from .field import ModuleField
 
 LOGGER = logging.getLogger(__name__)
 
@@ -38,6 +41,9 @@ class Module(ControllerGetterMixin):
         self.module_type = module_type
         self.label = None
         self._token = None
+
+        # Attachment.
+        self.field = ModuleField(self)
 
     def __getitem__(self, name):
         if isinstance(name, (Filter, FilterList)):
@@ -148,22 +154,6 @@ class Module(ControllerGetterMixin):
                          sign_filter_array=_filters)
         return int(resp)
 
-    def format_field(self, name):
-        """Formatted field name for this module.
-
-        Args:
-            name (text_type): Short field name.
-
-        Returns:
-            text_type: Full field name, for server.
-        """
-
-        assert isinstance(name, (str, text_type))
-        if ('.' in name
-                or '#' in name):
-            return name
-        return '{}.{}'.format(self.default_field_namespace, name)
-
     def format_filters(self, filters):
         """Format field name in filters.
 
@@ -240,17 +230,31 @@ class Module(ControllerGetterMixin):
         resp = self.call('c_flow', 'get_data')
         return tuple(FlowInfo(*i) for i in resp)
 
-    def fields(self):
+    # Deprecated methods.
+
+    def _fields(self):
         """Get fields in this module.  """
 
-        resp = self.call(
-            'c_field', 'get_join_module_data',
-            field_array=FieldInfo.fields,
-            order_field_array=["module", "sort_id"],
-        )
-        return tuple(FieldInfo(*i) for i in resp)
+        return self.field.meta()
 
-    def create_field(self, sign, type_, name=None, label=None):
+    fields = deprecated(_fields, reason='Use `Module.field.meta` insted.')
+
+    def _format_field(self, name):
+        """Formatted field name for this module.
+
+        Args:
+            name (text_type): Short field name.
+
+        Returns:
+            text_type: Full field name, for server.
+        """
+
+        return self.field.format(name)
+
+    format_field = deprecated(
+        _format_field, reason='Use `Module.field.format` insted.')
+
+    def _create_field(self, sign, type_, name=None, label=None):
         """Create new field in the module.
 
         Args:
@@ -259,23 +263,19 @@ class Module(ControllerGetterMixin):
             name (str, optional): Defaults to None. Field english name.
             label (str, optional): Defaults to None. Field chinese name.
         """
+        return self.field.create(sign, type_, name, label)
 
-        if '.' not in sign:
-            module = self.name if self.module_type != 'task' else 'task'
-            sign = '{}.{}'.format(module, sign)
-        self.database.create_field(
-            sign=sign, type_=type_, name=name, label=label)
+    create_field = deprecated(
+        _create_field, reason='Use `Module.field.create` insted.')
 
-    def delete_field(self, id_):
+    def _delete_field(self, id_):
         """Delte field in the module.
 
         Args:
             id_ (str): Field id.
         """
 
-        # Old api using: 'c_field', 'del_one_with_id',
-        self.call(
-            "v_main_window",
-            "del_field_with_id",
-            field_id=id_,
-        )
+        self.field.delete(id_)
+
+    delete_field = deprecated(
+        _delete_field, reason='Use `Module.field.delete` insted.')
