@@ -30,6 +30,6 @@ class ResultSet(list):
             tuple: Column data.
         """
 
-        field = self.module.field(field)
+        field = self.module.format_field(field)
         index = self.roles.index(field)
         return tuple(sorted(set(i[index] for i in self)))

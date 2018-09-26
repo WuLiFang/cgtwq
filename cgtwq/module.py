@@ -91,7 +91,7 @@ class Module(ControllerGetterMixin):
         filters = reduce(lambda a, b: a & b, filters)
         _filters = self.format_filters(filters)
         resp = self.call('c_orm', 'get_with_filter',
-                         sign_array=(self.field('id'),),
+                         sign_array=(self.format_field('id'),),
                          sign_filter_array=_filters)
         if resp:
             id_list = [i[0] for i in resp]
@@ -113,7 +113,7 @@ class Module(ControllerGetterMixin):
 
         filters = reduce(lambda a, b: a & b, filters)
         filters = self.format_filters(filters or Field('#id').has('%'))
-        key = self.field(kwargs.pop('key', filters[0][0]))
+        key = self.format_field(kwargs.pop('key', filters[0][0]))
 
         resp = self.call(
             'c_orm', 'get_distinct_with_filter',
@@ -132,8 +132,8 @@ class Module(ControllerGetterMixin):
         """
 
         self.call('c_orm', 'create',
-                  sign_data_array=(self.field('id'),),
-                  sign_filter_array={self.field(k): v for k, v in data.items()})
+                  sign_data_array=(self.format_field('id'),),
+                  sign_filter_array={self.format_field(k): v for k, v in data.items()})
 
     def count(self, *filters):
         """Count matched entity in database.
@@ -148,7 +148,7 @@ class Module(ControllerGetterMixin):
                          sign_filter_array=_filters)
         return int(resp)
 
-    def field(self, name):
+    def format_field(self, name):
         """Formatted field name for this module.
 
         Args:
@@ -178,7 +178,7 @@ class Module(ControllerGetterMixin):
         ret = FilterList(filters)
         for i in ret:
             if isinstance(i, Filter):
-                i[0] = self.field(i[0])
+                i[0] = self.format_field(i[0])
         return ret
 
     def pipelines(self):

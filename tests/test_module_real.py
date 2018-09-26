@@ -44,7 +44,7 @@ def test_module_field(module):
         ''.join([random.choice(string.letters) for i in range(20)]))
     module.create_field(sign=field_sign, type_='int')
     field = next(i for i in module.fields()
-                 if i.sign == module.field(field_sign))
+                 if i.sign == module.format_field(field_sign))
     module.delete_field(field.id)
 
 

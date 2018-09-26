@@ -127,7 +127,7 @@ class Selection(tuple):
             ResultSet: Optimized tuple object contains fields data.
         """
 
-        server_fields = [self.module.field(i) for i in fields]
+        server_fields = [self.module.format_field(i) for i in fields]
         resp = self.call("c_orm", "get_in_id",
                          sign_array=server_fields,
                          order_sign_array=server_fields)
@@ -141,7 +141,7 @@ class Selection(tuple):
         """
 
         data = {
-            self.module.field(k): v for k, v in data.items()
+            self.module.format_field(k): v for k, v in data.items()
         }
         self.call("c_orm", "set_in_id",
                   sign_data_array=data)
@@ -183,7 +183,7 @@ class Selection(tuple):
             bool
         """
 
-        field = self.module.field(field)
+        field = self.module.format_field(field)
         resp = self.call(
             'c_work_flow', 'is_status_field_has_permission',
             field_sign=field,

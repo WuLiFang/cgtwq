@@ -27,7 +27,7 @@ class SelectionFlow(SelectionAttachment):
         message.images += images
         try:
             self.call('c_work_flow', 'python_update_flow',
-                      field_sign=select.module.field(field),
+                      field_sign=select.module.format_field(field),
                       status=status,
                       text=message.dumps(),
                       task_id=select[0])
@@ -116,7 +116,7 @@ class SelectionFlow(SelectionAttachment):
     def has_field_permission(self, field):
         """Return if current user has permission to edit the field.  """
 
-        field = self.select.module.field(field)
+        field = self.select.module.format_field(field)
         resp = self.call(
             'c_work_flow', 'is_status_field_has_permission',
             field_sign=field,
