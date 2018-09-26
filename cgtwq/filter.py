@@ -3,6 +3,7 @@
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
+
 from six import text_type
 
 
@@ -19,6 +20,24 @@ class Filter(list):
 
     def __or__(self, other):
         return FilterList(self) | FilterList(other)
+
+    @classmethod
+    def from_list(cls, obj):
+        """Create filter instance from a list.
+
+        Args:
+            obj (list): A list match [key, operater, value].
+
+        Raises:
+            ValueError: can not convert `obj` to filter.
+
+        Returns:
+            Filter
+        """
+
+        if not len(obj) == 3:
+            raise ValueError('Can not convert to filter.', obj)
+        return cls(obj[0], obj[2], obj[1])
 
 
 class FilterList(list):
@@ -41,6 +60,19 @@ class FilterList(list):
 
     def __or__(self, other):
         return self._combine(other, 'or')
+
+    @classmethod
+    def from_arbitrary_args(cls, *filters):
+        """Create filterlist from arbitrary arguments.
+
+        Returns:
+            FilterList
+        """
+
+        ret = [i if isinstance(i, (Filter, FilterList)) else Filter.from_list(i)
+               for i in filters]
+        ret = reduce(lambda a, b: a & b, ret)
+        return cls(ret)
 
 
 class Field(text_type):
