@@ -9,10 +9,10 @@ import six
 from six import text_type
 from six.moves import reduce
 
-from .core import ControllerGetterMixin
-from .filter import Field, Filter, FilterList
-from .model import FieldInfo, FlowInfo, HistoryInfo
-from .selection import Selection
+from ..core import ControllerGetterMixin
+from ..filter import Field, Filter, FilterList
+from ..model import FieldInfo, FlowInfo, HistoryInfo
+from ..selection import Selection
 
 LOGGER = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class Module(ControllerGetterMixin):
 
         if name:
             self.name = name
-        from .database import Database
+        from ..database import Database
         assert isinstance(database, Database)
         self.database = database
         self.module_type = module_type
