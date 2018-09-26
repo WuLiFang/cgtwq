@@ -9,12 +9,6 @@ import logging
 from collections import namedtuple
 
 
-class FileBoxCategoryInfo(namedtuple('FileBoxInfo', ('id', 'pipeline_id', 'title'))):
-    """Filebox catagory information.  """
-
-    fields = ('#id', '#pipeline_id', 'title')
-
-
 class PipelineInfo(namedtuple('PipelineInfo',
                               ('id', 'name', 'module',
                                'module_type', "description"))):
@@ -63,6 +57,12 @@ class HistoryInfo(
         return super(HistoryInfo, cls).__new__(cls, **data)
 
 
+class FileBoxMeta(namedtuple('FileBoxInfo', ('id', 'pipeline_id', 'title'))):
+    """Filebox metadata.  """
+
+    fields = ('#id', '#pipeline_id', 'title')
+
+
 class FileBoxInfo(namedtuple(
         'FileBoxInfo',
         ('id', 'path', 'classify',
@@ -73,9 +73,7 @@ class FileBoxInfo(namedtuple(
          'is_in_history_add_datetime', 'is_cover_disable',
          'is_msg_to_first_qc'))):
     """Filebox information.   """
-    def __new__(cls, *args, **kwargs):
-        kwargs['id'] = kwargs.pop('#id')
-        return super(FileBoxInfo, cls).__new__(cls, *args, **kwargs)
+
     fileds = ('#id', 'path', 'classify',
               'title', 'sign', 'color', 'rule',
               'rule_view', 'show_type', 'server', 'drag_in',
@@ -83,6 +81,10 @@ class FileBoxInfo(namedtuple(
               'is_move_same_to_history', 'is_in_history_add_version',
               'is_in_history_add_datetime', 'is_cover_disable',
               'is_msg_to_first_qc')
+
+    def __new__(cls, *args, **kwargs):
+        kwargs['id'] = kwargs.pop('#id')
+        return super(FileBoxInfo, cls).__new__(cls, *args, **kwargs)
 
 
 class ImageInfo(namedtuple('ImageInfo', ('max', 'min', 'path'))):
@@ -209,3 +211,8 @@ class PluginInfo(namedtuple('PluginInfo', ('id', 'name', 'type', 'arguments'))):
 
 
 PluginArgumentInfo = namedtuple('PulginData', ('value', 'description',))
+
+# Deprecated name.
+# TODO: Remove at next major version.
+
+FileboxCategoryInfo = FileBoxMeta

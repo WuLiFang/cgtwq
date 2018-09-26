@@ -11,7 +11,7 @@ from wlf.decorators import deprecated
 
 from . import core, server
 from .filter import Field, FilterList
-from .model import FieldInfo, FileBoxCategoryInfo, ModuleInfo, PipelineInfo
+from .model import FieldInfo, FileBoxMeta, ModuleInfo, PipelineInfo
 from .module import Module
 
 LOGGER = logging.getLogger(__name__)
@@ -66,17 +66,17 @@ class Database(core.ControllerGetterMixin):
         if id_:
             ret = [self.call("c_file", "get_one_with_id",
                              id=id_,
-                             field_array=FileBoxCategoryInfo.fields)]
+                             field_array=FileBoxMeta.fields)]
         elif filters:
             ret = self.call("c_file", "get_with_filter",
                             filter_array=FilterList(filters),
-                            field_array=FileBoxCategoryInfo.fields)
+                            field_array=FileBoxMeta.fields)
         else:
             raise ValueError(
                 'Need at least one of (id_, filters) to get filebox.')
 
         assert all(isinstance(i, list) for i in ret), ret
-        return tuple(FileBoxCategoryInfo(*i) for i in ret)
+        return tuple(FileBoxMeta(*i) for i in ret)
 
     def get_pipelines(self, filters=None):
         """Get piplines from database.
