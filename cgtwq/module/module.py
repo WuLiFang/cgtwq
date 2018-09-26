@@ -16,6 +16,7 @@ from ..filter import Field, Filter, FilterList
 from ..model import FieldInfo, FlowInfo, HistoryInfo
 from ..selection import Selection
 from .field import ModuleField
+from .history import ModuleHistory
 
 LOGGER = logging.getLogger(__name__)
 
@@ -44,6 +45,7 @@ class Module(ControllerGetterMixin):
 
         # Attachment.
         self.field = ModuleField(self)
+        self.history = ModuleHistory(self)
 
     def __getitem__(self, name):
         if isinstance(name, (Filter, FilterList)):
@@ -180,50 +182,6 @@ class Module(ControllerGetterMixin):
 
         return self.database.get_pipelines(Filter('module', self.name))
 
-    def get_history(self, filters):
-        """Get history record from the module.
-            filters (Filter or FilterList): History filters.
-
-        Returns:
-            tuple[HistoryInfo]: History records.
-        """
-
-        return self._get_model(
-            "c_history", "get_with_filter",
-            HistoryInfo, filters
-        )
-
-    def count_history(self, filters):
-        """Count history records in the module.
-
-        Args:
-            filters (Filter or FilterList):
-                History filters.
-
-        Returns:
-            int: Records count.
-        """
-
-        resp = self.call(
-            "c_history", "count_with_filter",
-            filter_array=FilterList(filters))
-        return int(resp)
-
-    def undo_history(self, history):
-        """Undo a history.
-
-        Args:
-            history (HistoryInfo): History information.
-        """
-        assert isinstance(history, HistoryInfo), type(history)
-
-        self.call(
-            'v_history', "undo_data",
-            id=history.id,
-            task_id=history.task_id,
-            show_field_sign_arr=[],
-        )
-
     def flow(self):
         """Workflow of the module.  """
 
@@ -279,3 +237,44 @@ class Module(ControllerGetterMixin):
 
     delete_field = deprecated(
         _delete_field, reason='Use `Module.field.delete` insted.')
+
+    def _get_history(self, filters):
+        """Get history record from the module.
+            filters (Filter or FilterList): History filters.
+
+        Returns:
+            tuple[HistoryInfo]: History records.
+        """
+
+        return self.history.filter(filters)
+
+    get_history = deprecated(
+        _get_history, reason='Use `Module.history.filter` insted.')
+
+    def _count_history(self, filters):
+        """Count history records in the module.
+
+        Args:
+            filters (Filter or FilterList):
+                History filters.
+
+        Returns:
+            int: Records count.
+        """
+
+        return self.history.count(filters)
+
+    count_history = deprecated(
+        _count_history, reason='Use `Module.history.count` insted.')
+
+    def _undo_history(self, history):
+        """Undo a history.
+
+        Args:
+            history (HistoryInfo): History information.
+        """
+
+        self.history.undo(history)
+
+    undo_history = deprecated(
+        _undo_history, reason='Use `Module.history.undo` insted.')
