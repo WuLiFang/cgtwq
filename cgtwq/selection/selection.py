@@ -10,19 +10,19 @@ import six
 from wlf.decorators import deprecated
 
 from ..filter import Field
-from ..model import ImageInfo
 from ..resultset import ResultSet
-from ..server.web import upload_image
 from .base import _OS
 from .filebox import SelectionFilebox
 from .flow import SelectionFlow
 from .history import SelectionHistory
+from .image import SelectionImage
 from .link import SelectionLink
 from .notify import SelectionNotify
 
 
 class Selection(tuple):
     """Selection with all feature.  """
+    # pylint: disable=too-many-instance-attributes
     _token = None
 
     def __new__(cls, module, *id_list):
@@ -51,6 +51,7 @@ class Selection(tuple):
         self.link = SelectionLink(self)
         self.notify = SelectionNotify(self)
         self.flow = SelectionFlow(self)
+        self.image = SelectionImage(self)
 
     def __getitem__(self, name):
         if isinstance(name, int):
@@ -150,47 +151,6 @@ class Selection(tuple):
 
         self.call("c_orm", "del_in_id")
 
-    def set_image(self, path, field='image'):
-        """Set image for the field.
-
-        Args:
-            field (six.text_type): Defaults to 'image', Server defined field name,
-            path (six.text_type): File path.
-
-        Returns:
-            ImageInfo: Uploaded image.
-        """
-        image = upload_image(path, self.module.database.name, self.token)
-
-        # Server need strange data format for image field in cgteamwork5.2
-        self.set_fields(
-            **{field: dict(path=path, max=[image.max], min=[image.min])})
-        return image
-
-    def get_image(self, field='image'):
-        """Get imageinfo used on the field.
-
-        Args:
-            field (six.text_type): Defaults to 'image', Server defined field name,
-
-        Returns:
-            set[ImageInfo]: Image information.
-        """
-
-        select = self
-        ret = set()
-        for i in select[field]:
-            try:
-                data = json.loads(i)
-                assert isinstance(data, dict)
-                info = ImageInfo(max=data['max'][0],
-                                 min=data['min'][0],
-                                 path=data.get('path'))
-                ret.add(info)
-            except (TypeError, KeyError):
-                continue
-        return tuple(sorted(ret))
-
     def get_folder(self, *sign_list):
         """Get signed folder path.
 
@@ -212,20 +172,6 @@ class Selection(tuple):
             os=_OS)
         assert isinstance(resp, dict), type(resp)
         return resp
-
-    def _submit(self, pathnames=(), filenames=(), note=""):
-        """Submit file to task, then change status to `Check`.
-
-        Args:
-            pathnames (tuple, optional): Defaults to (). Server pathnames.
-            filenames (tuple, optional): Defaults to (). Local filenames.
-            note (str, optional): Defaults to "". Submit note.
-        """
-
-        # TODO: Remove at next major version.
-        self.flow.submit(pathnames + filenames, message=note)
-
-    submit = deprecated(_submit, 'Use `Selection.flow.submit` insted.')
 
     def has_permission_on_status(self, field):
         """Return if user has permission to edit field.
@@ -289,3 +235,47 @@ class Selection(tuple):
         ).module(
             kwargs['module'], module_type=kwargs['module_type']
         ).select(*kwargs['id_list'])
+
+    # Deprecated methods.
+    # TODO: Remove at next major version.
+
+    def _submit(self, pathnames=(), filenames=(), note=""):
+        """Submit file to task, then change status to `Check`.
+
+        Args:
+            pathnames (tuple, optional): Defaults to (). Server pathnames.
+            filenames (tuple, optional): Defaults to (). Local filenames.
+            note (str, optional): Defaults to "". Submit note.
+        """
+
+        self.flow.submit(pathnames + filenames, message=note)
+
+    submit = deprecated(_submit, 'Use `Selection.flow.submit` insted.')
+
+    def _set_image(self, path, field='image'):
+        """Set image for the field.
+
+        Args:
+            field (six.text_type): Defaults to 'image', Server defined field name,
+            path (six.text_type): File path.
+
+        Returns:
+            ImageInfo: Uploaded image.
+        """
+        return self.image.set(path, field)
+
+    set_image = deprecated(_set_image, 'Use `Selection.image.set` insted.')
+
+    def _get_image(self, field='image'):
+        """Get imageinfo used on the field.
+
+        Args:
+            field (six.text_type): Defaults to 'image', Server defined field name,
+
+        Returns:
+            set[ImageInfo]: Image information.
+        """
+
+        return self.image.get(field)
+
+    get_image = deprecated(_get_image, 'Use `Selection.image.get` insted.')
