@@ -52,3 +52,12 @@ def test_module_field(module):
 def test_module_count(module):
     result = module.count(cgtwq.Field('shot.shot').has('_sc001'))
     assert isinstance(result, int)
+
+
+@util.skip_if_not_logged_in
+def test_module_distinct(module):
+    result = module.distinct(cgtwq.Field('shot.shot').has('_sc001'))
+    assert isinstance(result, tuple)
+    result = module.distinct(cgtwq.Field(
+        'shot.shot').has('_sc001'), key='shot.eps_name')
+    assert isinstance(result, tuple)

@@ -102,6 +102,20 @@ class Selection(tuple):
 
         return self.module.count(Field('id').in_(self), *filters)
 
+    def distinct(self, *filters, **kwargs):
+        """Get distinct value in the selection.
+
+        Args:
+            *filters (FilterList, Filter): Filters for server.
+            **kwargs:
+                key: Distinct key, defaults to field of first filter.
+
+        Returns:
+            tuple
+        """
+
+        return self.module.distinct(Field('id').in_(self), *filters, **kwargs)
+
     def get_fields(self, *fields):
         """Get field information for the selection.
 

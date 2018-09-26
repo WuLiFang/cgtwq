@@ -10,7 +10,7 @@ from six import text_type
 from six.moves import reduce
 
 from .core import ControllerGetterMixin
-from .filter import Filter, FilterList
+from .filter import Field, Filter, FilterList
 from .model import FieldInfo, FlowInfo, HistoryInfo
 from .selection import Selection
 
@@ -98,6 +98,31 @@ class Module(ControllerGetterMixin):
         else:
             id_list = []
         return Selection(self, *id_list)
+
+    def distinct(self, *filters, **kwargs):
+        """Get distinct value in the module.
+
+        Args:
+            *filters (FilterList, Filter): Filters for server.
+            **kwargs:
+                key: Distinct key, defaults to field of first filter.
+
+        Returns:
+            tuple
+        """
+
+        filters = reduce(lambda a, b: a & b, filters)
+        filters = self.format_filters(filters or Field('#id').has('%'))
+        key = self.field(kwargs.pop('key', filters[0][0]))
+
+        resp = self.call(
+            'c_orm', 'get_distinct_with_filter',
+            distinct_sign=key,
+            sign_filter_array=filters,
+            order_sign_array=[key],
+        )
+        assert all(len(i) == 1 for i in resp), 'Unknown response'
+        return tuple(i[0] for i in resp)
 
     def create(self, **data):
         """Create entry from data.

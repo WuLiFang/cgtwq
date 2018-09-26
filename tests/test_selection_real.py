@@ -175,5 +175,11 @@ def test_selection_count(select):
     assert isinstance(result, int)
 
 
+@skip_if_not_logged_in
+def test_selection_distinct(select):
+    result = select.distinct(cgtwq.Field('shot.shot').has('_sc001'))
+    assert isinstance(result, tuple)
+
+
 if __name__ == '__main__':
     main()
