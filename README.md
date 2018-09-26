@@ -28,6 +28,7 @@ select = module.filter(
     cgtwq.Field('shot.eps_name') == 'ep01'),
     cgtwq.Field('task_name') == 'Layout'),)
 print(select['submit_file_path']) # 返回: tuple
+print(select.get_fields('#id', 'submit_file_path')) # 返回: ResultSet[str, str], 值的顺序和输入值相同, 可使用 ResultSet.column('#id') 得到指定列的 tuple
 ```
 
 对应官方 cgtw2 库:
@@ -39,7 +40,7 @@ import cgtw2
 t_tw = cgtw2.tw("192.168.199.88","xiaoying","cgteamwork")
 
 t_id_list = t_tw.task.get_id('proj_xiaoying','shot',[["shot.shot","=","sc001"],'and',['shot.eps_name','=','ep01'],'and',['task.task_name','=','Layout']])
-print t_tw.task.get('proj_xiaoying', "shot",t_id_list, ['task.submit_file_path']) # 返回: list
+print t_tw.task.get('proj_xiaoying', "shot",t_id_list, ['task.submit_file_path']) # 返回: list[dict(keys: 'id', 'task.submit_file_path')]
 ```
 
 ## 提交任务
