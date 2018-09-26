@@ -99,6 +99,17 @@ class Module(ControllerGetterMixin):
             id_list = []
         return Selection(self, *id_list)
 
+    def create(self, **data):
+        """Create entry from data.
+
+        Args:
+            **data[str, Any]: Data to create a entry.
+        """
+
+        self.call('c_orm', 'create',
+                  sign_data_array=(self.field('id'),),
+                  sign_filter_array={self.field(k): v for k, v in data.items()})
+
     def count(self, *filters):
         """Count matched entity in database.
 
