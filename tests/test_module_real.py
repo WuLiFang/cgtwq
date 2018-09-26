@@ -46,3 +46,9 @@ def test_module_field(module):
     field = next(i for i in module.fields()
                  if i.sign == module.field(field_sign))
     module.delete_field(field.id)
+
+
+@util.skip_if_not_logged_in
+def test_module_count(module):
+    result = module.count(cgtwq.Field('shot.shot').has('_sc001'))
+    assert isinstance(result, int)

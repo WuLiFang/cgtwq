@@ -90,6 +90,18 @@ class Selection(tuple):
 
         return self.module.filter(Field('id').in_(self), *filters)
 
+    def count(self, *filters):
+        """Count matched entity in the selection.
+
+        Args:
+            *filters (Filter,FilterList): Filters.
+
+        Returns:
+            int: Count value.
+        """
+
+        return self.module.count(Field('id').in_(self), *filters)
+
     def get_fields(self, *fields):
         """Get field information for the selection.
 

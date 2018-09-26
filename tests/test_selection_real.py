@@ -169,5 +169,11 @@ def test_note(select):
     assert list(set(notes).difference(select.notify.get()))[0] is note
 
 
+@skip_if_not_logged_in
+def test_selection_count(select):
+    result = select.count(cgtwq.Field('shot.shot').has('_sc001'))
+    assert isinstance(result, int)
+
+
 if __name__ == '__main__':
     main()

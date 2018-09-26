@@ -99,6 +99,19 @@ class Module(ControllerGetterMixin):
             id_list = []
         return Selection(self, *id_list)
 
+    def count(self, *filters):
+        """Count matched entity in database.
+
+        Returns:
+            int: Count value.
+        """
+
+        filters = reduce(lambda a, b: a & b, filters)
+        _filters = self.format_filters(filters)
+        resp = self.call('c_orm', 'get_count_with_filter',
+                         sign_filter_array=_filters)
+        return int(resp)
+
     def field(self, name):
         """Formatted field name for this module.
 
