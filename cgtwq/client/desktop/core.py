@@ -8,6 +8,7 @@ import json
 import logging
 import socket
 
+import six
 from websocket import create_connection
 
 from ...core import CONFIG
@@ -46,9 +47,9 @@ def call(socket_url, controller, method, **kwargs):
 
     try:
         conn.send(json.dumps(payload))
-        LOGGER.debug('SEND: %s', payload)
+        LOGGER.debug('SEND: %s', six.text_type(payload))
         recv = json.loads(conn.recv())
-        LOGGER.debug('RECV: %s', recv)
+        LOGGER.debug('RECV: %s', six.text_type(recv))
         ret = recv['data']
         try:
             ret = json.loads(ret)
