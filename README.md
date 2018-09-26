@@ -27,7 +27,7 @@ select = module.filter(
     cgtwq.Field('shot.shot') == 'sc001'),
     cgtwq.Field('shot.eps_name') == 'ep01'),
     cgtwq.Field('task_name') == 'Layout'),)
-print(select['submit_file_path'])
+print(select['submit_file_path']) # 返回: tuple
 ```
 
 对应官方 cgtw2 库:
@@ -39,7 +39,7 @@ import cgtw2
 t_tw = cgtw2.tw("192.168.199.88","xiaoying","cgteamwork")
 
 t_id_list = t_tw.task.get_id('proj_xiaoying','shot',[["shot.shot","=","sc001"],'and',['shot.eps_name','=','ep01'],'and',['task.task_name','=','Layout']])
-print t_tw.task.get('proj_xiaoying', "shot",t_id_list, ['task.submit_file_path'])
+print t_tw.task.get('proj_xiaoying', "shot",t_id_list, ['task.submit_file_path']) # 返回: list
 ```
 
 ## 提交任务
@@ -82,7 +82,7 @@ import cgtwq
 
 client = cgtwq.DesktopClient()
 select = client.selection()
-print(select)
+print(select) # cgtwq.Selection 对象
 ```
 
 对应官方 cgtw2 库:
@@ -93,7 +93,7 @@ sys.path.append(r"c:/cgteamwork/bin/base")
 import cgtw2
 t_tw = cgtw2.tw()
 
-print t_tw.client.get_id()
+print t_tw.client.get_id() # 返回: list
 ```
 
 ## 存储数据
@@ -141,7 +141,7 @@ cgtwq.DesktopClient().connect()
 cgtwq.core.CONFIG.update(
     SERVER_IP='192.168.199.88')
 
-account = cgtwq.login('xiaoying','cgteamwork')
+account = cgtwq.login('xiaoying','cgteamwork') # type: namedtuple
 account.token
 account.account
 account.account_id
