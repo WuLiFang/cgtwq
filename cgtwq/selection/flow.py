@@ -12,7 +12,7 @@ from wlf.codectools import get_encoded as e
 
 from .. import account, exceptions
 from ..message import Message
-from .base import SelectionAttachment
+from .core import SelectionAttachment
 
 
 class SelectionFlow(SelectionAttachment):

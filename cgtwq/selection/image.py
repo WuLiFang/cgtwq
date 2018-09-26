@@ -7,7 +7,7 @@ import json
 
 from ..model import ImageInfo
 from ..server.web import upload_image
-from .base import SelectionAttachment
+from .core import SelectionAttachment
 
 
 class SelectionImage(SelectionAttachment):

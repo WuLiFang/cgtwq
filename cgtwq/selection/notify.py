@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function,
 from ..account import get_account_id
 from ..message import Message
 from ..model import NoteInfo
-from .base import SelectionAttachment
+from .core import SelectionAttachment
 
 
 class SelectionNotify(SelectionAttachment):

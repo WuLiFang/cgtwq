@@ -11,7 +11,7 @@ from wlf.decorators import deprecated
 
 from ..filter import Field
 from ..resultset import ResultSet
-from .base import _OS
+from .core import _OS
 from .filebox import SelectionFilebox
 from .flow import SelectionFlow
 from .history import SelectionHistory

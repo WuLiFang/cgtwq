@@ -3,7 +3,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from .base import SelectionAttachment
+from .core import SelectionAttachment
 
 
 class SelectionLink(SelectionAttachment):

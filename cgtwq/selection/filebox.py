@@ -4,7 +4,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 from ..model import FileBoxInfo
-from .base import _OS, SelectionAttachment
+from .core import _OS, SelectionAttachment
 
 
 class SelectionFilebox(SelectionAttachment):

@@ -109,7 +109,7 @@ class SelectionTestCase(TestCase):
             db='dummy_db', id_array=('1', '2'),
             module='shot',
             module_type='task',
-            os=cgtwq.selection.base._OS,  # pylint: disable=protected-access
+            os=cgtwq.selection.core._OS,  # pylint: disable=protected-access
             sign_array=('test',),
             task_id_array=('1', '2'),
             token=select.token)
@@ -140,7 +140,7 @@ class SelectionTestCase(TestCase):
             id_array=('1', '2'),
             module='shot',
             module_type='task',
-            os=cgtwq.selection.base._OS,
+            os=cgtwq.selection.core._OS,
             sign='test_fb',
             task_id='1',
             token=select.token)
