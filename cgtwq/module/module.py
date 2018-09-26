@@ -6,14 +6,13 @@ from __future__ import (absolute_import, division, print_function,
 import logging
 
 import six
-from six import text_type
 from six.moves import reduce
 
 from wlf.decorators import deprecated
 
 from ..core import ControllerGetterMixin
 from ..filter import Field, Filter, FilterList
-from ..model import FieldInfo, FlowInfo, HistoryInfo
+from ..model import FlowInfo
 from ..selection import Selection
 from .field import ModuleField
 from .history import ModuleHistory
