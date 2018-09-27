@@ -21,7 +21,7 @@ class DatabaseTestCase(TestCase):
         database = cgtwq.Database('dummy_db')
         self.assertEqual(database.name, 'dummy_db')
         result = database['shot']
-        self.assertIsInstance(result, cgtwq.database.Module)
+        self.assertIsInstance(result, cgtwq.Module)
         self.assertEqual(result.name, 'shot')
 
 
@@ -66,8 +66,8 @@ class ModuleTestCase(TestCase):
                                   token=select.token)
         self.assertIsInstance(select, cgtwq.Selection)
 
-    @patch('cgtwq.database.Module.filter')
-    @patch('cgtwq.database.Module.select')
+    @patch('cgtwq.Module.filter')
+    @patch('cgtwq.Module.select')
     def test_getitem(self, select, filter_):
         assert isinstance(select, MagicMock)
         assert isinstance(filter_, MagicMock)

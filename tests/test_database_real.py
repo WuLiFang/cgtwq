@@ -31,7 +31,7 @@ class DataBaseTestCase(TestCase):
 
     def test_get_pipeline(self):
         result = self.database.get_pipelines(cgtwq.Filter('entity_name', '合成'))
-        self.assertIsInstance(result[0], cgtwq.database.PipelineInfo)
+        self.assertIsInstance(result[0], cgtwq.model.PipelineInfo)
 
     def test_data(self):
         dummy_data = six.text_type(uuid.uuid4())
@@ -56,7 +56,7 @@ class ModuleTestCase(TestCase):
         result = self.module.pipelines()
         assert result
         for i in result:
-            self.assertIsInstance(i, cgtwq.database.PipelineInfo)
+            self.assertIsInstance(i, cgtwq.model.PipelineInfo)
 
     def test_get_history(self):
 
