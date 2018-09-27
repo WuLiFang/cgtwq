@@ -6,6 +6,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from unittest import TestCase, main
 
+import cgtwq
 from cgtwq.filter import Field, Filter, FilterList
 
 
@@ -53,6 +54,18 @@ class FieldTestCase(TestCase):
     def test_lt(self):
         result = Field('value') < 3
         self.assertEqual(result, ['value', '<', 3])
+
+
+def test_in_namespace():
+    obj1 = cgtwq.Filter('key', 'value')
+    obj2 = obj1.in_namespace('namespace')
+    assert obj1[0] == 'key'
+    assert obj2[0] == 'namespace.key'
+
+    obj3 = cgtwq.FilterList(obj1)
+    obj4 = obj3.in_namespace('namespace2')
+    assert obj3[0][0] == 'key'
+    assert obj4[0][0] == 'namespace2.key'
 
 
 if __name__ == '__main__':

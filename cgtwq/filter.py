@@ -4,6 +4,8 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from collections import Iterable
+
 from six import text_type
 
 
@@ -20,6 +22,21 @@ class Filter(list):
 
     def __or__(self, other):
         return FilterList(self) | FilterList(other)
+
+    def in_namespace(self, namespace):
+        """Get a new `Filter` instance in the namespace.
+
+        Args:
+            namespace (str): Default namespace for keys.
+
+        Returns:
+            Filter
+        """
+
+        key, operator, value = self
+        if not ('.' in key or '#' in key):
+            key = '{}.{}'.format(namespace, key)
+        return self.from_list([key, operator, value])
 
     @classmethod
     def from_list(cls, obj):
@@ -44,9 +61,12 @@ class FilterList(list):
     """CGteamwork style filter list.  """
 
     def __init__(self, list_):
-        assert isinstance(list_, (Filter, FilterList)), type(list_)
         if isinstance(list_, Filter):
             list_ = [list_]
+        elif isinstance(list_, Iterable):
+            list_ = list(list_)
+            assert all(isinstance(i, Filter) for i in list_), \
+                'Some item in the list is not a filter'
         super(FilterList, self).__init__(list_)
 
     def _combine(self, other, operator):
@@ -60,6 +80,18 @@ class FilterList(list):
 
     def __or__(self, other):
         return self._combine(other, 'or')
+
+    def in_namespace(self, namespace):
+        """Create new `FilterList` instance in the namespace.
+
+        Args:
+            namespace (str): Default namespace for keys.
+
+        Returns:
+            FitlerList
+        """
+
+        return FilterList(i.in_namespace(namespace) for i in self)
 
     @classmethod
     def from_arbitrary_args(cls, *filters):
