@@ -64,8 +64,8 @@ class FilterList(list):
             list_ = [list_]
         elif isinstance(list_, Iterable):
             list_ = list(list_)
-            assert all(isinstance(i, (Filter, str, six.text_type)) for i in list_), \
-                'Some item in the list is not a filter'
+            if not all(isinstance(i, (Filter, str, six.text_type)) for i in list_):
+                raise ValueError('Malformed list', list_)
         super(FilterList, self).__init__(list_)
 
     def _combine(self, other, operator):
@@ -104,7 +104,8 @@ class FilterList(list):
 
         ret = [i if isinstance(i, (Filter, FilterList)) else Filter.from_list(i)
                for i in filters]
-        ret = reduce(lambda a, b: a & b, ret)
+        if ret:
+            ret = reduce(lambda a, b: a & b, ret)
         return cls(ret)
 
 

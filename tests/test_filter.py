@@ -90,6 +90,9 @@ def test_from_arbitrary_args():
     assert isinstance(result, FilterList), type(result)
     assert result == [['key1', '=', 'value1'], 'and', ['key2', '=', 'value2']]
 
+    result = cgtwq.FilterList.from_arbitrary_args()
+    assert result == []
+
 
 if __name__ == '__main__':
     main()
