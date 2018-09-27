@@ -5,6 +5,10 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
+import six
+
+from .filter import Field
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -18,7 +22,7 @@ class ResultSet(list):
                    for i in data), data
         super(ResultSet, self).__init__(data)
         self.module = module
-        self.roles = roles
+        self.roles = [six.text_type(i) for i in roles]
 
     def column(self, field):
         """Get a column from field name.
@@ -30,6 +34,6 @@ class ResultSet(list):
             tuple: Column data.
         """
 
-        field = self.module.format_field(field)
-        index = self.roles.index(field)
+        field = Field(field).in_namespace(self.module.default_field_namespace)
+        index = self.roles.index(six.text_type(field))
         return tuple(sorted(set(i[index] for i in self)))
