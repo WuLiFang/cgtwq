@@ -18,7 +18,7 @@ from ...plugin_meta import PluginMeta
 def _is_plugin_uuid(text):
     text = six.text_type(text)
     try:
-        return text == six.text_type(UUID(text))
+        return text.lower() == six.text_type(UUID(text))
     except (TypeError, ValueError):
         return False
 
