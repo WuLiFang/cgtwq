@@ -14,6 +14,7 @@ from ..module import Module
 from .field import DatabaseField
 from .filebox import DatabaseFilebox
 from .pipeline import DatabasePipeline
+from .software import DatabaseSoftware
 
 LOGGER = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class Database(core.ControllerGetterMixin):
         self.filebox = DatabaseFilebox(self)
         self.field = DatabaseField(self)
         self.pipeline = DatabasePipeline(self)
+        self.software = DatabaseSoftware(self)
 
     def __getitem__(self, name):
         return self.module(name)
@@ -55,18 +57,6 @@ class Database(core.ControllerGetterMixin):
 
         kwargs.setdefault('token', self.token)
         return server.call(*args, db=self.name, **kwargs)
-
-    def get_software(self, name):
-        """Get software path for this database.
-
-        Args:
-            name (text_type): Software name.
-
-        Returns:
-            path: Path set in `系统设置` -> `软件设置`.
-        """
-
-        return self.call("c_software", "get_software_path", name=name)
 
     def filter(self, *filters):
         """Filter modules in this database.
@@ -248,6 +238,23 @@ class Database(core.ControllerGetterMixin):
     modules = deprecated(
         _modules,
         reason='Use `Database.filter` with empty args instead.`'
+    )
+
+    def _get_software(self, name):
+        """Get software path for this database.
+
+        Args:
+            name (text_type): Software name.
+
+        Returns:
+            path: Path set in `系统设置` -> `软件设置`.
+        """
+
+        return self.software.get_path(name)
+
+    get_software = deprecated(
+        _get_software,
+        reason='Use `Database.software.get_path` instead.'
     )
 
 
