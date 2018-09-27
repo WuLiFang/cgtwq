@@ -11,6 +11,7 @@ from .. import core, server
 from ..filter import Field, FilterList
 from ..model import FieldInfo, ModuleInfo, PipelineInfo
 from ..module import Module
+from .field import DatabaseField
 from .filebox import DatabaseFilebox
 
 LOGGER = logging.getLogger(__name__)
@@ -28,6 +29,7 @@ class Database(core.ControllerGetterMixin):
 
         # Attachment
         self.filebox = DatabaseFilebox(self)
+        self.field = DatabaseField(self)
 
     def __getitem__(self, name):
         return self.module(name)
@@ -80,78 +82,6 @@ class Database(core.ControllerGetterMixin):
         """
 
         return self.call("c_software", "get_software_path", name=name)
-
-    def get_fields(self, filters=None):
-        """Get fields in the database.
-            filters (Filter or FilterList, optional): Defaults to None. Filter.
-
-        Returns:
-            tuple[FieldInfo]: Field informations.
-        """
-
-        filters = filters or Field('sign').has('%')
-        filters = FilterList(filters)
-        resp = self.call(
-            'c_field', 'get_with_filter',
-            field_array=FieldInfo.fields,
-            filter_array=filters
-        )
-        return tuple(FieldInfo(*i) for i in resp)
-
-    def get_field(self, filters):
-        """Get one field in the database.
-            filters (Filter or FilterList): Filter.
-
-        Returns:
-            FieldInfo: Field information.
-        """
-
-        filters = FilterList(filters)
-        resp = self.call(
-            'c_field', 'get_one_with_filter',
-            field_array=FieldInfo.fields,
-            filter_array=filters
-        )
-        return FieldInfo(*resp)
-
-    def create_field(self, sign, type_, name=None, label=None):
-        """Create new field in the module.
-
-        Args:
-            sign (str): Field sign
-            type_ (str): Field type, see `core.FIELD_TYPES`.
-            name (str, optional): Defaults to None. Field english name.
-            label (str, optional): Defaults to None. Field chinese name.
-        """
-
-        assert type_ in core.FIELD_TYPES,\
-            'Field type must in {}'.format(core.FIELD_TYPES)
-        assert '.' in sign, 'Sign must contains a `.` character to specific module.'
-
-        module, sign = sign.split('.')
-        label = label or sign
-        name = name or sign
-
-        self.call(
-            "c_field", "python_create",
-            module=module,
-            field_str=label,
-            en_name=name,
-            sign=sign,
-            type=type_,
-            field_name=sign,
-        )
-
-    def delete_field(self, field_id):
-        """Delte field in the module.
-
-        Args:
-            id_ (str): Field id.
-        """
-        self.call(
-            'c_field', 'del_one_with_id',
-            id=field_id
-        )
 
     def filter(self, *filters):
         """Filter modules in this database.
@@ -241,7 +171,8 @@ class Database(core.ControllerGetterMixin):
         if id_:
             ret = [self.filebox.get(id_)]
         elif filters:
-            ret = self.filebox.filter(filters)
+            filters = FilterList(filters)
+            ret = self.filebox.filter(*filters)
         else:
             raise ValueError(
                 'Need at least one of (id_, filters) to get filebox.')
@@ -251,6 +182,65 @@ class Database(core.ControllerGetterMixin):
     get_fileboxes = deprecated(
         _get_fileboxes,
         reason='Use `Database.filebox.filter` or `Database.filebox.get` instead.')
+
+    def _get_fields(self, filters=None):
+        """Get fields in the database.
+            filters (Filter or FilterList, optional): Defaults to None. Filter.
+
+        Returns:
+            tuple[FieldInfo]: Field informations.
+        """
+
+        filters = filters or []
+        filters = FilterList(filters)
+        return self.field.filter(*filters)
+
+    get_fields = deprecated(
+        _get_fields,
+        reason='Use `Database.field.filter` instead.')
+
+    def _get_field(self, filters):
+        """Get one field in the database.
+            filters (Filter or FilterList): Filter.
+
+        Returns:
+            FieldInfo: Field information.
+        """
+
+        filters = FilterList(filters)
+        return self.field.filter_one(*filters)
+
+    get_field = deprecated(
+        _get_field,
+        reason='Use `Database.field.filter_one` instead.')
+
+    def _create_field(self, sign, type_, name=None, label=None):
+        """Create new field in the module.
+
+        Args:
+            sign (str): Field sign
+            type_ (str): Field type, see `core.FIELD_TYPES`.
+            name (str, optional): Defaults to None. Field english name.
+            label (str, optional): Defaults to None. Field chinese name.
+        """
+
+        self.field.create(sign, type_, name, label)
+
+    create_field = deprecated(
+        _create_field,
+        reason='Use `Database.field.create` instead.')
+
+    def _delete_field(self, field_id):
+        """Delte field in the module.
+
+        Args:
+            id_ (str): Field id.
+        """
+        self.field.delete(field_id)
+
+    delete_field = deprecated(
+        _delete_field,
+        reason='Use `Database.field.delete` instead.')
 
 
 class DatabaseMeta(object):
