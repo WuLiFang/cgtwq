@@ -183,26 +183,6 @@ class Selection(tuple):
         assert isinstance(resp, dict), type(resp)
         return resp
 
-    def has_permission_on_status(self, field):
-        """Return if user has permission to edit field.
-
-        Args:
-            field (str): Field name.
-
-        Returns:
-            bool
-        """
-
-        field = Field(field).in_namespace(
-            self.module.default_field_namespace)
-
-        resp = self.call(
-            'c_work_flow', 'is_status_field_has_permission',
-            field_sign=field,
-            task_id_array=self
-        )
-        return resp
-
     def to_entry(self):
         """Convert selection to one entry.
 
@@ -291,3 +271,19 @@ class Selection(tuple):
         return self.image.get(field)
 
     get_image = deprecated(_get_image, 'Use `Selection.image.get` insted.')
+
+    def _has_permission_on_status(self, field):
+        """Return if user has permission to edit field.
+
+        Args:
+            field (str): Field name.
+
+        Returns:
+            bool
+        """
+
+        return self.flow.has_field_permission(field)
+
+    has_permission_on_status = deprecated(
+        _has_permission_on_status,
+        reason='Use `Selection.flow.has_field_permission` Instead')
