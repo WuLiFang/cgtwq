@@ -57,15 +57,20 @@ class FieldTestCase(TestCase):
 
 
 def test_in_namespace():
-    obj1 = cgtwq.Filter('key', 'value')
-    obj2 = obj1.in_namespace('namespace')
-    assert obj1[0] == 'key'
-    assert obj2[0] == 'namespace.key'
+    obj1 = cgtwq.Field('key1')
+    obj2 = obj1.in_namespace('namespace1')
+    assert obj1 == 'key1'
+    assert obj2 == 'namespace1.key1'
 
-    obj3 = cgtwq.FilterList(obj1)
+    obj3 = cgtwq.Filter('key2', 'value2')
     obj4 = obj3.in_namespace('namespace2')
-    assert obj3[0][0] == 'key'
-    assert obj4[0][0] == 'namespace2.key'
+    assert obj3[0] == 'key2'
+    assert obj4[0] == 'namespace2.key2'
+
+    obj5 = cgtwq.FilterList(obj3)
+    obj6 = obj5.in_namespace('namespace3')
+    assert obj5[0][0] == 'key2'
+    assert obj6[0][0] == 'namespace3.key2'
 
 
 def test_from_arbitrary_args():

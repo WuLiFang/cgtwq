@@ -34,9 +34,8 @@ class Filter(list):
         """
 
         key, operator, value = self
-        if not ('.' in key or '#' in key):
-            key = '{}.{}'.format(namespace, key)
-        return self.from_list([key, operator, value])
+        return self.from_list(
+            [Field(key).in_namespace(namespace), operator, value])
 
     @classmethod
     def from_list(cls, obj):
@@ -138,3 +137,18 @@ class Field(six.text_type):
     def contains(self, value):
         """Represents value in data item list.  """
         return Filter(self, value, 'concat')
+
+    def in_namespace(self, namespace):
+        """Get a new `Field` instance in the namespace.
+
+        Args:
+            namespace (str): Default namespace for keys.
+
+        Returns:
+            Field
+        """
+
+        key = self
+        if not ('.' in key or '#' in key):
+            key = '{}.{}'.format(namespace, key)
+        return Field(key)
