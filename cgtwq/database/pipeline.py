@@ -20,7 +20,7 @@ class DatabasePipeline(core.DatabaseAttachment, ControllerGetterMixin):
             *filters (FilterList, Filter): Filters for server.
 
         Returns:
-            tuple[FileBoxMeta]: namedtuple for ('id', 'pipeline_id', 'title')
+            tuple[PipelineInfo]
         """
 
         filters = (FilterList.from_arbitrary_args(*filters)
