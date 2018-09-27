@@ -51,9 +51,20 @@ class Entry(Selection):
         except IndexError:
             raise ValueError('No image in this field.', field)
 
-    def get_related(self, *pipeline_id_list):
+    def related(self, *filters):
+        """Select related entries.
+
+        Args:
+            *filters: Pipeline filters.
+
+        Returns:
+            Selection
+        """
+
+        pipelines = self.module.database.pipeline.filter(*filters)
         resp = self.call('c_note', 'get_task_id_array',
-                         pipeline_id_array=pipeline_id_list)
+                         task_id=self[0],
+                         pipeline_id_array=[i.id for i in pipelines])
         return self.module.select(*resp)
 
     def label(self):
