@@ -77,7 +77,9 @@ class Database(core.ControllerGetterMixin):
         Returns:
             tuple[Module]: Modules
         """
-        filters = FilterList.from_arbitrary_args(*filters)
+
+        filters = (FilterList.from_arbitrary_args(*filters)
+                   or FilterList(Field('module').has('%')))
 
         resp = self.call(
             'c_module', 'get_with_filter',
@@ -85,15 +87,6 @@ class Database(core.ControllerGetterMixin):
             field_array=ModuleInfo.fields
         )
         return tuple(self._get_module(ModuleInfo(*i)) for i in resp)
-
-    def modules(self):
-        """All modules in this database.
-
-        Returns:
-            tuple[Module]: Modules
-        """
-
-        return self.filter(Field('module').has('%'))
 
     def _get_module(self, info):
         assert isinstance(info, ModuleInfo)
@@ -242,6 +235,20 @@ class Database(core.ControllerGetterMixin):
     get_pipelines = deprecated(
         _get_pipelines,
         reason='Use `Database.pipeline.filter` instead.')
+
+    def _modules(self):
+        """All modules in this database.
+
+        Returns:
+            tuple[Module]: Modules
+        """
+
+        return self.filter()
+
+    modules = deprecated(
+        _modules,
+        reason='Use `Database.filter` with empty args instead.`'
+    )
 
 
 class DatabaseMeta(object):
