@@ -3,8 +3,6 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from six.moves import reduce
-
 from ..core import ControllerGetterMixin
 from ..filter import FilterList
 from ..model import HistoryInfo
@@ -22,7 +20,7 @@ class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
             tuple[HistoryInfo]: History records.
         """
 
-        filters = reduce(lambda a, b: a & b, filters)
+        filters = FilterList.from_arbitrary_args(*filters)
         return self._get_model(
             "c_history", "get_with_filter",
             HistoryInfo, filters
@@ -39,7 +37,7 @@ class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
             int: Records count.
         """
 
-        filters = reduce(lambda a, b: a & b, filters)
+        filters = FilterList.from_arbitrary_args(*filters)
         resp = self.call(
             "c_history", "count_with_filter",
             filter_array=FilterList(filters))

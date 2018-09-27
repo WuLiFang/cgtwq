@@ -3,28 +3,14 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+from wlf.decorators import deprecated
+
 from ..model import FieldInfo
 from .core import ModuleAttachment
 
 
 class ModuleField(ModuleAttachment):
     """Field feature for module.  """
-
-    def format(self, name):
-        """Formatted field name for this module.
-
-        Args:
-            name (text_type): Short field name.
-
-        Returns:
-            text_type: Full field name, for server.
-        """
-
-        module = self.module
-        if ('.' in name
-                or '#' in name):
-            return name
-        return '{}.{}'.format(module.default_field_namespace, name)
 
     def meta(self):
         """Get fields metadata in this module.
@@ -70,3 +56,24 @@ class ModuleField(ModuleAttachment):
             "del_field_with_id",
             field_id=id_,
         )
+
+    # Deprecated methods.
+    # TODO: remove at next major version.
+
+    def _format(self, name):
+        """Formatted field name for this module.
+
+        Args:
+            name (text_type): Short field name.
+
+        Returns:
+            text_type: Full field name, for server.
+        """
+
+        module = self.module
+        if ('.' in name
+                or '#' in name):
+            return name
+        return '{}.{}'.format(module.default_field_namespace, name)
+
+    format = deprecated(_format, 'Use `Field.in_namespace` instead.')

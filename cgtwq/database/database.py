@@ -5,8 +5,6 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
-from six.moves import reduce
-
 from wlf.decorators import deprecated
 
 from .. import core, server
@@ -186,11 +184,11 @@ class Database(core.ControllerGetterMixin):
         Returns:
             tuple[Module]: Modules
         """
-        filters = reduce(lambda a, b: a & b, filters)
+        filters = FilterList.from_arbitrary_args(*filters)
 
         resp = self.call(
             'c_module', 'get_with_filter',
-            filter_array=FilterList(filters),
+            filter_array=filters,
             field_array=ModuleInfo.fields
         )
         return tuple(self._get_module(ModuleInfo(*i)) for i in resp)

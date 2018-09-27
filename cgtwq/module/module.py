@@ -6,7 +6,6 @@ from __future__ import (absolute_import, division, print_function,
 import logging
 
 import six
-from six.moves import reduce
 
 from wlf.decorators import deprecated
 
@@ -85,21 +84,24 @@ class Module(ControllerGetterMixin):
 
         return Selection(self, *id_list)
 
-    def filter(self, *filters):
+    def filter(self, *filters, **kwargs):
         """Create selection with filter on this module.
 
         Args:
             *filters (FilterList, Filter): Filters for server.
-
+            **kwargs:
+                namespace (str): Default namespace for key.
         Returns:
             Selection: Created selection.
         """
 
-        filters = reduce(lambda a, b: a & b, filters)
-        _filters = self.format_filters(filters)
+        namespace = kwargs.pop('namespace', self.default_field_namespace)
+        filters = FilterList.from_arbitrary_args(
+            *filters).in_namespace(namespace)
+
         resp = self.call('c_orm', 'get_with_filter',
                          sign_array=(self.format_field('id'),),
-                         sign_filter_array=_filters)
+                         sign_filter_array=filters)
         if resp:
             id_list = [i[0] for i in resp]
         else:
@@ -113,14 +115,16 @@ class Module(ControllerGetterMixin):
             *filters (FilterList, Filter): Filters for server.
             **kwargs:
                 key: Distinct key, defaults to field of first filter.
+                namespace (str): Default namespace for key.
 
         Returns:
             tuple
         """
 
-        filters = reduce(lambda a, b: a & b, filters)
-        filters = self.format_filters(filters or Field('#id').has('%'))
-        key = self.format_field(kwargs.pop('key', filters[0][0]))
+        namespace = kwargs.pop('namespace', self.default_field_namespace)
+        filters = FilterList.from_arbitrary_args(
+            *filters).in_namespace(namespace)
+        key = Field(kwargs.pop('key', filters[0][0])).in_namespace(namespace)
 
         resp = self.call(
             'c_orm', 'get_distinct_with_filter',
@@ -142,35 +146,25 @@ class Module(ControllerGetterMixin):
                   sign_data_array=(self.format_field('id'),),
                   sign_filter_array={self.format_field(k): v for k, v in data.items()})
 
-    def count(self, *filters):
+    def count(self, *filters, **kwargs):
         """Count matched entity in database.
+
+        Args:
+            *filters (FilterList, Filter): Filters for server.
+            **kwargs:
+                namespace (str): Default namespace for key.
 
         Returns:
             int: Count value.
         """
 
-        filters = reduce(lambda a, b: a & b, filters)
-        _filters = self.format_filters(filters)
+        namespace = kwargs.pop('namespace', self.default_field_namespace)
+        filters = FilterList.from_arbitrary_args(
+            *filters).in_namespace(namespace)
+
         resp = self.call('c_orm', 'get_count_with_filter',
-                         sign_filter_array=_filters)
+                         sign_filter_array=filters)
         return int(resp)
-
-    def format_filters(self, filters):
-        """Format field name in filters.
-
-        Args:
-            filters (FilterList, Filter): Format target.
-
-        Returns:
-            FilterList: Formatted filters.
-        """
-
-        assert isinstance(filters, (Filter, FilterList)), type(filters)
-        ret = FilterList(filters)
-        for i in ret:
-            if isinstance(i, Filter):
-                i[0] = self.format_field(i[0])
-        return ret
 
     def pipelines(self):
         """All pipeline in this module.
@@ -277,3 +271,23 @@ class Module(ControllerGetterMixin):
 
     undo_history = deprecated(
         _undo_history, reason='Use `Module.history.undo` insted.')
+
+    def _format_filters(self, filters):
+        """Format field name in filters.
+
+        Args:
+            filters (FilterList, Filter): Format target.
+
+        Returns:
+            FilterList: Formatted filters.
+        """
+
+        assert isinstance(filters, (Filter, FilterList)), type(filters)
+        ret = FilterList(filters)
+        for i in ret:
+            if isinstance(i, Filter):
+                i[0] = self.format_field(i[0])
+        return ret
+
+    format_filters = deprecated(
+        _format_filters, reason='Use `FilterList.in_namespace` insted.')
