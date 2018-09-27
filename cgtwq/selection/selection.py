@@ -193,7 +193,9 @@ class Selection(tuple):
             bool
         """
 
-        field = self.module.format_field(field)
+        field = Field(field).in_namespace(
+            self.module.default_field_namespace)
+
         resp = self.call(
             'c_work_flow', 'is_status_field_has_permission',
             field_sign=field,

@@ -11,6 +11,7 @@ import six
 from wlf.codectools import get_encoded as e
 
 from .. import account, exceptions
+from ..filter import Field
 from ..message import Message
 from .core import SelectionAttachment
 
@@ -25,9 +26,12 @@ class SelectionFlow(SelectionAttachment):
         select = self.select
         message = Message.load(message)
         message.images += images
+        field = Field(field).in_namespace(
+            self.select.module.default_field_namespace)
+
         try:
             self.call('c_work_flow', 'python_update_flow',
-                      field_sign=select.module.format_field(field),
+                      field_sign=field,
                       status=status,
                       text=message.dumps(),
                       task_id=select[0])
@@ -116,7 +120,8 @@ class SelectionFlow(SelectionAttachment):
     def has_field_permission(self, field):
         """Return if current user has permission to edit the field.  """
 
-        field = self.select.module.format_field(field)
+        field = Field(field).in_namespace(
+            self.select.module.default_field_namespace)
         resp = self.call(
             'c_work_flow', 'is_status_field_has_permission',
             field_sign=field,
