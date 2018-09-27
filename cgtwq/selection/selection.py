@@ -117,32 +117,42 @@ class Selection(tuple):
 
         return self.module.distinct(Field('id').in_(self), *filters, **kwargs)
 
-    def get_fields(self, *fields):
+    def get_fields(self, *fields, **kwargs):
         """Get field information for the selection.
 
         Args:
             *fields: Server defined field sign.
-
+            **kwargs:
+                namespace (str): Default namespace for key.
         Returns:
             ResultSet: Optimized tuple object contains fields data.
         """
 
-        server_fields = [self.module.format_field(i) for i in fields]
+        namespace = kwargs.pop(
+            'namespace', self.module.default_field_namespace)
+
+        server_fields = [Field(i).in_namespace(namespace) for i in fields]
         resp = self.call("c_orm", "get_in_id",
                          sign_array=server_fields,
                          order_sign_array=server_fields)
         return ResultSet(server_fields, resp, self.module)
 
-    def set_fields(self, **data):
+    def set_fields(self, kwargs=None, **data):
         """Set field data for the selection.
 
         Args:
+            kwargs (dict):
+                namespace (str): Default namespace for key.
             **data: Field name as key, Value as value.
         """
 
+        kwargs = kwargs or dict()
+        namespace = kwargs.pop(
+            'namespace', self.module.default_field_namespace)
+
         data = {
-            self.module.format_field(k): v for k, v in data.items()
-        }
+            Field(k).in_namespace(namespace): v
+            for k, v in data.items()}
         self.call("c_orm", "set_in_id",
                   sign_data_array=data)
 
