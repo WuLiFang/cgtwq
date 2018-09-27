@@ -123,7 +123,7 @@ class Selection(tuple):
         Args:
             *fields: Server defined field sign.
             **kwargs:
-                namespace (str): Default namespace for key.
+                namespace (str, optional): Default namespace for key.
         Returns:
             ResultSet: Optimized tuple object contains fields data.
         """
@@ -142,7 +142,7 @@ class Selection(tuple):
 
         Args:
             kwargs (dict):
-                namespace (str): Default namespace for key.
+                namespace (str, optional): Default namespace for key.
             **data: Field name as key, Value as value.
         """
 
