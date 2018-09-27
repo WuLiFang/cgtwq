@@ -9,8 +9,9 @@ from wlf.decorators import deprecated
 
 from .. import core, server
 from ..filter import Field, FilterList
-from ..model import FieldInfo, FileBoxMeta, ModuleInfo, PipelineInfo
+from ..model import FieldInfo, ModuleInfo, PipelineInfo
 from ..module import Module
+from .filebox import DatabaseFilebox
 
 LOGGER = logging.getLogger(__name__)
 
@@ -24,6 +25,9 @@ class Database(core.ControllerGetterMixin):
         self.name = name
         self.metadata = DatabaseMeta(database=self, is_user=False)
         self.userdata = DatabaseMeta(database=self, is_user=True)
+
+        # Attachment
+        self.filebox = DatabaseFilebox(self)
 
     def __getitem__(self, name):
         return self.module(name)
@@ -47,34 +51,6 @@ class Database(core.ControllerGetterMixin):
 
         kwargs.setdefault('token', self.token)
         return server.call(*args, db=self.name, **kwargs)
-
-    def get_fileboxes(self, filters=None, id_=None):
-        """Get fileboxes in this database.
-            filters (FilterList, optional): Defaults to None. Filters to get filebox.
-            id_ (text_type, optional): Defaults to None. Filebox id.
-
-        Raises:
-            ValueError: Not enough arguments.
-            ValueError: No matched filebox.
-
-        Returns:
-            tuple[FileBoxCategoryInfo]: namedtuple for ('id', 'pipeline_id', 'title')
-        """
-
-        if id_:
-            ret = [self.call("c_file", "get_one_with_id",
-                             id=id_,
-                             field_array=FileBoxMeta.fields)]
-        elif filters:
-            ret = self.call("c_file", "get_with_filter",
-                            filter_array=FilterList(filters),
-                            field_array=FileBoxMeta.fields)
-        else:
-            raise ValueError(
-                'Need at least one of (id_, filters) to get filebox.')
-
-        assert all(isinstance(i, list) for i in ret), ret
-        return tuple(FileBoxMeta(*i) for i in ret)
 
     def get_pipelines(self, *filters):
         """Get piplines from database.
@@ -211,6 +187,7 @@ class Database(core.ControllerGetterMixin):
         return ret
 
     # Deprecated methods.
+    # TODO: Remove at next major version.
 
     def _set_data(self, key, value, is_user=True):
         """Set addtional data in this database.
@@ -247,6 +224,33 @@ class Database(core.ControllerGetterMixin):
     get_data = deprecated(
         _get_data,
         reason='Use `Database.metadata` or `Database.userdata` instead.')
+
+    def _get_fileboxes(self, filters=None, id_=None):
+        """Get fileboxes in this database.
+            filters (FilterList, optional): Defaults to None. Filters to get filebox.
+            id_ (text_type, optional): Defaults to None. Filebox id.
+
+        Raises:
+            ValueError: Not enough arguments.
+            ValueError: No matched filebox.
+
+        Returns:
+            tuple[FileBoxCategoryInfo]: namedtuple for ('id', 'pipeline_id', 'title')
+        """
+
+        if id_:
+            ret = [self.filebox.get(id_)]
+        elif filters:
+            ret = self.filebox.filter(filters)
+        else:
+            raise ValueError(
+                'Need at least one of (id_, filters) to get filebox.')
+
+        return ret
+
+    get_fileboxes = deprecated(
+        _get_fileboxes,
+        reason='Use `Database.filebox.filter` or `Database.filebox.get` instead.')
 
 
 class DatabaseMeta(object):

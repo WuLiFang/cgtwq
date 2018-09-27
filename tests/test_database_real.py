@@ -128,5 +128,13 @@ def test_database_fields(database):
     database.delete_field(field.id)
 
 
+@skip_if_not_logged_in
+def test_database_filebox(database):
+    result = database.filebox.filter()
+    assert all(isinstance(i, cgtwq.model.FileBoxMeta) for i in result)
+    result = database.filebox.filter(cgtwq.Field('title') == '检查MOV')
+    result = database.filebox.get('271')
+
+
 if __name__ == '__main__':
     main()
