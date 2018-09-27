@@ -13,6 +13,7 @@ from ..model import ModuleInfo
 from ..module import Module
 from .field import DatabaseField
 from .filebox import DatabaseFilebox
+from .meta import DatabaseMeta
 from .pipeline import DatabasePipeline
 from .software import DatabaseSoftware
 
@@ -256,24 +257,3 @@ class Database(core.ControllerGetterMixin):
         _get_software,
         reason='Use `Database.software.get_path` instead.'
     )
-
-
-class DatabaseMeta(object):
-    """Database metadate accessor.  """
-    # pylint: disable=too-few-public-methods
-
-    def __init__(self, database, is_user):
-        self.database = database
-        self.is_user = is_user
-
-    def __getitem__(self, key):
-        return self.database.call(
-            "c_api_data",
-            'get_user' if self.is_user else 'get_common',
-            key=key)
-
-    def __setitem__(self, key, value):
-        self.database.call(
-            "c_api_data",
-            'set_user' if self.is_user else 'set_common',
-            key=key, value=value)
