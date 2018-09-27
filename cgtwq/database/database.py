@@ -9,10 +9,11 @@ from wlf.decorators import deprecated
 
 from .. import core, server
 from ..filter import Field, FilterList
-from ..model import FieldInfo, ModuleInfo, PipelineInfo
+from ..model import ModuleInfo
 from ..module import Module
 from .field import DatabaseField
 from .filebox import DatabaseFilebox
+from .pipeline import DatabasePipeline
 
 LOGGER = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class Database(core.ControllerGetterMixin):
         # Attachment
         self.filebox = DatabaseFilebox(self)
         self.field = DatabaseField(self)
+        self.pipeline = DatabasePipeline(self)
 
     def __getitem__(self, name):
         return self.module(name)
@@ -53,23 +55,6 @@ class Database(core.ControllerGetterMixin):
 
         kwargs.setdefault('token', self.token)
         return server.call(*args, db=self.name, **kwargs)
-
-    def get_pipelines(self, *filters):
-        """Get piplines from database.
-
-        Args:
-            *filters (FilterList): Filter to get pipeline.
-
-        Returns:
-            tuple[PipelineInfo]: namedtuple for ('id', 'name', 'module')
-        """
-
-        filters = (FilterList.from_arbitrary_args(*filters)
-                   or FilterList(Field('entity_name').has('%')))
-
-        return self._filter_model(
-            "c_pipeline", "get_with_filter",
-            PipelineInfo, filters)
 
     def get_software(self, name):
         """Get software path for this database.
@@ -241,6 +226,22 @@ class Database(core.ControllerGetterMixin):
     delete_field = deprecated(
         _delete_field,
         reason='Use `Database.field.delete` instead.')
+
+    def _get_pipelines(self, *filters):
+        """Get piplines from database.
+
+        Args:
+            *filters (FilterList): Filter to get pipeline.
+
+        Returns:
+            tuple[PipelineInfo]: namedtuple for ('id', 'name', 'module')
+        """
+
+        return self.pipeline.filter(*filters)
+
+    get_pipelines = deprecated(
+        _get_pipelines,
+        reason='Use `Database.pipeline.filter` instead.')
 
 
 class DatabaseMeta(object):
