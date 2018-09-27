@@ -28,7 +28,7 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
 
     @staticmethod
     def uuid():
-        """UUID for current plugin.
+        """UUID for current plugin process.
 
         Returns:
             str: UUID,
@@ -46,7 +46,7 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
         """Get plugin data for uuid.
 
         Args:
-            uuid (str, optional): Defaults to None, Plugin uuid.
+            uuid (str, optional): Defaults to None, Plugin process uuid.
 
         Returns:
             PluginData: Plugin data.
@@ -75,7 +75,7 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
 
         Args:
             result (bool): Plugin execution result.
-            uuid (str, optional): Defaults to None, Plugin uuid.
+            uuid (str, optional): Defaults to None, Plugin process uuid.
         """
 
         uuid = uuid or self.uuid()
@@ -98,7 +98,7 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
             PluginMeta: Plug-in metadata.
         """
 
-        uuid = uuid or self.uuid()
-        if not uuid:
+        if not (uuid or self.uuid()):
             raise IDError('Not started from CGTeamWork, uuid required.')
+        uuid = uuid or self.data().plugin_id
         return PluginMeta(uuid)
