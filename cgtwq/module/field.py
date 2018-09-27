@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from wlf.decorators import deprecated
 
-from ..model import FieldInfo
+from ..model import FieldMeta
 from .core import ModuleAttachment
 
 
@@ -16,15 +16,15 @@ class ModuleField(ModuleAttachment):
         """Get fields metadata in this module.
 
         Returns:
-            tuple(FieldInfo)
+            tuple(FieldMeta)
         """
 
         resp = self.call(
             'c_field', 'get_join_module_data',
-            field_array=FieldInfo.fields,
+            field_array=FieldMeta.fields,
             order_field_array=["module", "sort_id"],
         )
-        return tuple(FieldInfo(*i) for i in resp)
+        return tuple(FieldMeta(*i) for i in resp)
 
     def create(self, sign, type_, name=None, label=None):
         """Create new field in the module.

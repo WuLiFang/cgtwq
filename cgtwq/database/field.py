@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function,
 from . import core
 from ..core import FIELD_TYPES, ControllerGetterMixin
 from ..filter import Field, FilterList
-from ..model import FieldInfo
+from ..model import FieldMeta
 
 
 class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
@@ -19,13 +19,13 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             *filters (FilterList, Filter): Filters for server.
 
         Returns:
-            tuple[FieldInfo]: Field informations.
+            tuple[FieldMeta]: Field informations.
         """
 
         filters = (FilterList.from_arbitrary_args(*filters)
                    or FilterList(Field('sign').has('%')))
         return self._filter_model(
-            'c_field', 'get_with_filter', FieldInfo,
+            'c_field', 'get_with_filter', FieldMeta,
             filters=filters)
 
     def filter_one(self, *filters):
@@ -33,16 +33,16 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             filters (Filter or FilterList): Filter.
 
         Returns:
-            FieldInfo: Field information.
+            FieldMeta: Field information.
         """
 
         filters = FilterList.from_arbitrary_args(*filters)
         resp = self.call(
             'c_field', 'get_one_with_filter',
-            field_array=FieldInfo.fields,
+            field_array=FieldMeta.fields,
             filter_array=filters
         )
-        return FieldInfo(*resp)
+        return FieldMeta(*resp)
 
     def create(self, sign, type_, name=None, label=None):
         """Create new field in the module.

@@ -113,9 +113,9 @@ def test_database_modules(database):
 def test_database_fields(database):
     # Get
     result = database.get_fields()
-    assert all(isinstance(i, cgtwq.model.FieldInfo) for i in result)
+    assert all(isinstance(i, cgtwq.model.FieldMeta) for i in result)
     result = database.get_field(cgtwq.Field('sign') == 'shot.shot')
-    assert isinstance(result, cgtwq.model.FieldInfo)
+    assert isinstance(result, cgtwq.model.FieldMeta)
 
     # Create
     field_sign = 'task.python_test_{}'.format(

@@ -158,7 +158,7 @@ class Database(core.ControllerGetterMixin):
             filters (Filter or FilterList, optional): Defaults to None. Filter.
 
         Returns:
-            tuple[FieldInfo]: Field informations.
+            tuple[FieldMeta]: Field informations.
         """
 
         filters = filters or []
@@ -174,7 +174,7 @@ class Database(core.ControllerGetterMixin):
             filters (Filter or FilterList): Filter.
 
         Returns:
-            FieldInfo: Field information.
+            FieldMeta: Field information.
         """
 
         filters = FilterList(filters)

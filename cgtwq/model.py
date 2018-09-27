@@ -107,9 +107,9 @@ class ImageInfo(namedtuple('ImageInfo', ('max', 'min', 'path'))):
 LOGGER = logging.getLogger(__name__)
 
 
-class FieldInfo(
+class FieldMeta(
         namedtuple(
-            'FieldInfo',
+            'FieldMeta',
             ('id', 'module', 'sign',
              'type', 'label', 'is_sys',
              'see_permission', 'edit_permission',
@@ -125,10 +125,10 @@ class FieldInfo(
               'sort_id')
 
     def __new__(cls, *args, **kwargs):
-        raw = super(FieldInfo, cls).__new__(cls, *args, **kwargs)
+        raw = super(FieldMeta, cls).__new__(cls, *args, **kwargs)
         new_kwargs = raw._asdict()
         _format_yn_str_in_dict(new_kwargs)
-        return super(FieldInfo, cls).__new__(cls, **new_kwargs)
+        return super(FieldMeta, cls).__new__(cls, **new_kwargs)
 
 
 def _format_yn_str_in_dict(dict_):
@@ -216,3 +216,4 @@ PluginArgumentInfo = namedtuple('PulginData', ('value', 'description',))
 # TODO: Remove at next major version.
 
 FileboxCategoryInfo = FileBoxMeta
+FieldInfo = FieldMeta
