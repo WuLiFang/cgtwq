@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from six import text_type
 
+from ..model import ImageInfo
 from .selection import Selection
 
 
@@ -33,24 +34,6 @@ class Entry(Selection):
         assert isinstance(ret, list), ret
         return tuple(ret)
 
-    def get_image(self, field='image'):
-        """Get imageinfo used on the field.
-
-        Args:
-            field (text_type): Defaults to 'image', Server defined field name,
-
-        Raises:
-            ValueError: when no image in the field.
-
-        Returns:
-            ImageInfo: Image information.
-        """
-
-        try:
-            return self._to_selection().get_image(field)[0]
-        except IndexError:
-            raise ValueError('No image in this field.', field)
-
     def related(self, *filters):
         """Select related entries.
 
@@ -67,9 +50,25 @@ class Entry(Selection):
                          pipeline_id_array=[i.id for i in pipelines])
         return self.module.select(*resp)
 
-    def label(self):
-        resp = self.call('c_module', 'get_message_field_data')
-        return resp
+    # Deprecated methods.
+    # TODO: Remove at next major version.
 
-    def _to_selection(self):
-        return Selection(self.module, *self)
+    def _get_image(self, field='image'):
+        """Get imageinfo used on the field.
+
+        Args:
+            field (text_type): Defaults to 'image', Server defined field name,
+
+        Raises:
+            ValueError: when no image in the field.
+
+        Returns:
+            ImageInfo: Image information.
+        """
+
+        try:
+            ret = super(Entry, self).get_image(field)[0]
+            assert isinstance(ret, ImageInfo), type(ret)
+            return ret
+        except IndexError:
+            raise ValueError('No image in this field.', field)
