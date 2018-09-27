@@ -9,13 +9,15 @@ from uuid import UUID
 
 import six
 
+from wlf.decorators import deprecated
+
 from . import core
 from ...exceptions import IDError
 from ...model import PluginData
 from ...plugin_meta import PluginMeta
 
 
-def _is_plugin_uuid(text):
+def _is_uuid(text):
     text = six.text_type(text)
     try:
         return text.lower() == six.text_type(UUID(text))
@@ -27,40 +29,41 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
     """Desktop client plugin operations."""
 
     @staticmethod
-    def uuid():
-        """UUID for current plugin process.
+    def process_id():
+        """Current plugin process id.
 
         Returns:
-            str: UUID,
+            str: Process id,
                 will be empty string when
                 python has not been started
                 from desktop client.
+                Empty string indicate
+                last launched plugin processs.
         """
 
-        ret = '' if len(sys.argv) < 2 else sys.argv[-1]
-        if not _is_plugin_uuid(ret):
-            ret = ''
-        return ret
+        if sys.argv and _is_uuid(sys.argv[-1]):
+            return sys.argv[-1]
+        return ''
 
-    def data(self, uuid=None):
-        """Get plugin data for uuid.
+    def data(self, process_id=None):
+        """Get plugin data with process_id.
 
         Args:
-            uuid (str, optional): Defaults to None, Plugin process uuid.
+            process_id (str, optional): Defaults to None, Plugin process uuid.
 
         Returns:
             PluginData: Plugin data.
         """
 
-        uuid = uuid or self.uuid()
+        process_id = process_id or self.process_id()
         client = self.client
         data = client.call_main_widget(
             "get_plugin_data",
-            plugin_uuid=uuid)
+            plugin_uuid=process_id)
         if not data:
-            msg = 'No matched plugin'
-            if uuid:
-                msg += ': {}'.format(uuid)
+            msg = 'No matched plugin process'
+            if process_id:
+                msg += ': {}'.format(process_id)
             msg += '.'
             raise IDError(msg)
         assert isinstance(data, dict), type(data)
@@ -68,37 +71,39 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
             data.setdefault(i, None)
         return PluginData(**data)
 
-    def send_result(self, result, uuid=None):
+    def send_result(self, result, process_id=None):
         """
         Tell client plugin execution result.
         if result is `False`, following operation will been abort.
 
         Args:
             result (bool): Plugin execution result.
-            uuid (str, optional): Defaults to None, Plugin process uuid.
+            process_id (str, optional): Defaults to None, Plugin process uuid.
         """
 
-        uuid = uuid or self.uuid()
+        process_id = process_id or self.process_id()
         client = self.client
         client.call_main_widget("exec_plugin_result",
-                                uuid=uuid,
+                                uuid=process_id,
                                 result=result,
                                 type='send')
 
-    def metadata(self, uuid=None):
-        """Access plugin metadata.
-
-        Args:
-            uuid (str, optional): Defaults to None. Plugin uuid.
+    def metadata(self):
+        """Get plugin metadata for current plugin process.
 
         Raises:
-            IDError: When no plug-in uuid found for current python process.
+            IDError: No plug-in uuid found for current python process.
 
         Returns:
             PluginMeta: Plug-in metadata.
         """
 
-        if not (uuid or self.uuid()):
-            raise IDError('Not started from CGTeamWork, uuid required.')
-        uuid = uuid or self.data().plugin_id
-        return PluginMeta(uuid)
+        if not self.uuid():
+            raise IDError('No plug-in uuid found for current python process.')
+
+        return PluginMeta(self.data().plugin_id)
+
+    # Deprecated methods.
+    # TODO: Remove at next major version.
+
+    uuid = deprecated(process_id, reason='Renamed to `process_id`')
