@@ -18,6 +18,7 @@ from .history import SelectionHistory
 from .image import SelectionImage
 from .link import SelectionLink
 from .notify import SelectionNotify
+from .pipeline import SelectionPipeline
 
 
 class Selection(tuple):
@@ -52,6 +53,7 @@ class Selection(tuple):
         self.notify = SelectionNotify(self)
         self.flow = SelectionFlow(self)
         self.image = SelectionImage(self)
+        self.pipeline = SelectionPipeline(self)
 
     def __getitem__(self, name):
         if isinstance(name, int):

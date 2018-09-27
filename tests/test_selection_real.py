@@ -181,5 +181,15 @@ def test_selection_distinct(select):
     assert isinstance(result, tuple)
 
 
+@skip_if_not_logged_in
+def test_selection_pipeline(select):
+    result = select.pipeline.all()
+    assert result
+    assert all(isinstance(i, cgtwq.model.PipelineInfo) for i in result)
+
+    result = select.to_entries()[0].pipeline.one()
+    assert isinstance(result, cgtwq.model.PipelineInfo)
+
+
 if __name__ == '__main__':
     main()
