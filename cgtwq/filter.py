@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from collections import Iterable
 
-from six import text_type
+import six
 
 
 class Filter(list):
@@ -65,7 +65,7 @@ class FilterList(list):
             list_ = [list_]
         elif isinstance(list_, Iterable):
             list_ = list(list_)
-            assert all(isinstance(i, Filter) for i in list_), \
+            assert all(isinstance(i, (Filter, str, six.text_type)) for i in list_), \
                 'Some item in the list is not a filter'
         super(FilterList, self).__init__(list_)
 
@@ -107,7 +107,7 @@ class FilterList(list):
         return cls(ret)
 
 
-class Field(text_type):
+class Field(six.text_type):
     """Data base field name for filter.  """
 
     def __or__(self, value):
@@ -127,7 +127,7 @@ class Field(text_type):
 
     def in_(self, value):
         """Represents matched data in value list.  """
-        if isinstance(value, (str, text_type)):
+        if isinstance(value, (str, six.text_type)):
             value = [value]
         return Filter(self, value, 'in')
 

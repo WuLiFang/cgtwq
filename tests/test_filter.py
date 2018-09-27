@@ -68,5 +68,18 @@ def test_in_namespace():
     assert obj4[0][0] == 'namespace2.key'
 
 
+def test_from_arbitrary_args():
+    result = cgtwq.FilterList.from_arbitrary_args(
+        cgtwq.Field('key1') == 'value1')
+    assert isinstance(result, FilterList), type(result)
+    assert result == [['key1', '=', 'value1']]
+
+    result = cgtwq.FilterList.from_arbitrary_args(
+        cgtwq.Field('key1') == 'value1',
+        cgtwq.Field('key2') == 'value2')
+    assert isinstance(result, FilterList), type(result)
+    assert result == [['key1', '=', 'value1'], 'and', ['key2', '=', 'value2']]
+
+
 if __name__ == '__main__':
     main()
