@@ -90,7 +90,9 @@ class FilterList(list):
             FitlerList
         """
 
-        return FilterList(i.in_namespace(namespace) for i in self)
+        return FilterList(i.in_namespace(namespace)
+                          if isinstance(i, Filter) else i
+                          for i in self)
 
     @classmethod
     def from_arbitrary_args(cls, *filters):

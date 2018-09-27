@@ -72,6 +72,11 @@ def test_in_namespace():
     assert obj5[0][0] == 'key2'
     assert obj6[0][0] == 'namespace3.key2'
 
+    obj7 = cgtwq.FilterList.from_arbitrary_args(obj3, obj4)
+    obj8 = obj7.in_namespace('namespace4')
+    assert obj7[0][0] == 'key2'
+    assert obj8[0][0] == 'namespace4.key2'
+
 
 def test_from_arbitrary_args():
     result = cgtwq.FilterList.from_arbitrary_args(
