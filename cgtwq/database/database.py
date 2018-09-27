@@ -76,18 +76,20 @@ class Database(core.ControllerGetterMixin):
         assert all(isinstance(i, list) for i in ret), ret
         return tuple(FileBoxMeta(*i) for i in ret)
 
-    def get_pipelines(self, filters=None):
+    def get_pipelines(self, *filters):
         """Get piplines from database.
 
         Args:
-            filters (FilterList): Filter to get pipeline.
+            *filters (FilterList): Filter to get pipeline.
 
         Returns:
             tuple[PipelineInfo]: namedtuple for ('id', 'name', 'module')
         """
 
-        filters = filters or Field('entity_name').has('%')
-        return self._get_model(
+        filters = (FilterList.from_arbitrary_args(*filters)
+                   or FilterList(Field('entity_name').has('%')))
+
+        return self._filter_model(
             "c_pipeline", "get_with_filter",
             PipelineInfo, filters)
 

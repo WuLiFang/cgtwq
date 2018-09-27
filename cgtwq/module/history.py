@@ -21,7 +21,7 @@ class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
         """
 
         filters = FilterList.from_arbitrary_args(*filters)
-        return self._get_model(
+        return self._filter_model(
             "c_history", "get_with_filter",
             HistoryInfo, filters
         )

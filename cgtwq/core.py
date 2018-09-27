@@ -5,6 +5,8 @@ from __future__ import (absolute_import, division, print_function,
 
 import time
 
+from wlf.decorators import deprecated
+
 from .filter import FilterList
 
 CONFIG = {
@@ -22,7 +24,7 @@ class ControllerGetterMixin(object):
     """Mixin for controller getter.  """
     # pylint: disable=too-few-public-methods
 
-    def _get_model(self, controller, method, model, filters):
+    def _filter_model(self, controller, method, model, filters):
         """Get infomation from controller with data model.
 
         Args:
@@ -36,12 +38,18 @@ class ControllerGetterMixin(object):
             tuple[model]: Result
         """
 
+        assert isinstance(filters, FilterList), type(filters)
         fields = getattr(model, 'fields', model._fields)
         resp = self.call(
             controller, method,
             field_array=fields,
-            filter_array=FilterList(filters))
+            filter_array=filters)
         return tuple(model(*i) for i in resp)
+
+    # Deprecated methods.
+    # TODO: Rename at next major version.
+
+    _get_model = deprecated(_filter_model, 'Renamed to _filter_model')
 
 
 class CachedFunctionMixin(object):
