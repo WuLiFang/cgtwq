@@ -90,7 +90,7 @@ class Module(ControllerGetterMixin):
         Args:
             *filters (FilterList, Filter): Filters for server.
             **kwargs:
-                namespace (str): Default namespace for key.
+                namespace (str, optional): Default field namespace.
         Returns:
             Selection: Created selection.
         """
@@ -100,7 +100,7 @@ class Module(ControllerGetterMixin):
             *filters).in_namespace(namespace)
 
         resp = self.call('c_orm', 'get_with_filter',
-                         sign_array=(self.format_field('id'),),
+                         sign_array=(Field('id').in_namespace(namespace),),
                          sign_filter_array=filters)
         if resp:
             id_list = [i[0] for i in resp]
@@ -115,7 +115,7 @@ class Module(ControllerGetterMixin):
             *filters (FilterList, Filter): Filters for server.
             **kwargs:
                 key: Distinct key, defaults to field of first filter.
-                namespace (str): Default namespace for key.
+                namespace (str, optional): Default field namespace.
 
         Returns:
             tuple
@@ -135,16 +135,23 @@ class Module(ControllerGetterMixin):
         assert all(len(i) == 1 for i in resp), 'Unknown response'
         return tuple(i[0] for i in resp)
 
-    def create(self, **data):
+    def create(self, kwargs=None, **data):
         """Create entry from data.
 
         Args:
+            kwargs (dict):
+                namespace (str, optional): Default field namespace.
             **data[str, Any]: Data to create a entry.
         """
 
+        kwargs = kwargs or dict()
+        namespace = kwargs.pop('namespace', self.default_field_namespace)
+
+        data = {
+            Field(k).in_namespace(namespace): v
+            for k, v in data.items()}
         self.call('c_orm', 'create',
-                  sign_data_array=(self.format_field('id'),),
-                  sign_filter_array={self.format_field(k): v for k, v in data.items()})
+                  sign_data_array=data)
 
     def count(self, *filters, **kwargs):
         """Count matched entity in database.
@@ -152,7 +159,7 @@ class Module(ControllerGetterMixin):
         Args:
             *filters (FilterList, Filter): Filters for server.
             **kwargs:
-                namespace (str): Default namespace for key.
+                namespace (str, optional): Default field namespace.
 
         Returns:
             int: Count value.
