@@ -15,10 +15,22 @@ class DatabaseSoftware(core.DatabaseAttachment, ControllerGetterMixin):
         """Get software path for the database.
 
         Args:
-            name (text_type): Software name.
+            name (str): Software name.
 
         Returns:
-            path: Path set in `系统设置` -> `软件设置`.
+            str
         """
 
         return self.call("c_software", "get_software_path", name=name)
+
+    def get_path_from_type(self, type_):
+        """Get software path for the database.
+
+        Args:
+            type (str): Software type.
+
+        Returns:
+            str
+        """
+
+        return self.call("c_software", "get_software_with_type", type=type_)

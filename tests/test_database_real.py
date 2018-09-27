@@ -135,5 +135,14 @@ def test_database_filebox(database):
     result = database.filebox.get('271')
 
 
+@skip_if_not_logged_in
+def test_databse_software(database):
+    assert isinstance(database, cgtwq.Database)
+    result = database.software.get_path('maya')
+    assert isinstance(result, six.text_type)
+    result = database.software.get_path_from_type('maya')
+    assert isinstance(result, six.text_type)
+
+
 if __name__ == '__main__':
     main()

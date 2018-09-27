@@ -22,6 +22,7 @@ LOGGER = logging.getLogger(__name__)
 
 class Database(core.ControllerGetterMixin):
     """Database on server.    """
+    # pylint: disable=too-many-instance-attributes
 
     _token = None
 
