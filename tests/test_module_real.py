@@ -41,7 +41,7 @@ def test_module_pipeline(module):
 @util.skip_if_not_logged_in
 def test_module_field(module):
     field_sign = 'python_test_{}'.format(
-        ''.join([random.choice(string.letters) for i in range(20)]))
+        ''.join([random.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(20)]))
     module.create_field(sign=field_sign, type_='int')
     field = next(i for i in module.fields()
                  if i.sign == module.format_field(field_sign))

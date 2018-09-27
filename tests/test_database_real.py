@@ -5,7 +5,6 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import random
-import string
 import uuid
 from unittest import TestCase, main
 
@@ -120,7 +119,7 @@ def test_database_fields(database):
 
     # Create
     field_sign = 'task.python_test_{}'.format(
-        ''.join([random.choice(string.letters) for _ in range(20)]))
+        ''.join([random.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(20)]))
     database.create_field(sign=field_sign, type_='int')
 
     # Delete

@@ -1,5 +1,7 @@
 CGTeamWork Python 客户端
 
+支持 python2.7, python3.6
+
 # 用法
 
 安装

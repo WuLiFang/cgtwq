@@ -4,9 +4,13 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from collections import Iterable
-
 import six
+from six.moves import reduce
+
+if six.PY3:
+    from collections.abc import Iterable  # pylint: disable=no-name-in-module,import-error
+else:
+    from collections import Iterable  # pylint: disable=no-name-in-module
 
 
 class Filter(list):
