@@ -5,14 +5,17 @@ name = "pypi"
 
 [dev-packages]
 pytest = "*"
-pylint = "~=1.9.3"
+pylint = "*"
 "autopep8" = "*"
 rope = "*"
 mock = "*"
-pyside = "*"
+"pyside2" = "*"
 
 [packages]
 requests = "*"
 websocket-client = "*"
 "Qt.py" = "~=1.1"
 wlf = {file = "https://github.com/WuLiFang/wlf/archive/0.5.0.tar.gz"}
+
+[requires]
+python_version = "3.7"
