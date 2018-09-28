@@ -1,6 +1,6 @@
 CGTeamWork Python 客户端
 
-支持 python2.7, python3.6
+支持 py2.7, py3.6, py3.7
 
 # 用法
 
