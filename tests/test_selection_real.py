@@ -198,6 +198,7 @@ def test_selection_folder(select):
 
     result = select.folder.from_sign('comp_image')
     assert isinstance(result, dict), type(result)
+    assert set(result.keys()) == set(select)
 
 
 if __name__ == '__main__':
