@@ -116,6 +116,9 @@ class FilterList(list):
 class Field(six.text_type):
     """Data base field name for filter.  """
 
+    def __hash__(self):
+        return six.text_type(self).__hash__()
+
     def __or__(self, value):
         return self.in_(value)
 

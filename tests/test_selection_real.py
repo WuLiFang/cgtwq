@@ -191,5 +191,14 @@ def test_selection_pipeline(select):
     assert isinstance(result, cgtwq.model.PipelineInfo)
 
 
+@skip_if_not_logged_in
+def test_selection_folder(select):
+    result = select.folder.all()
+    assert isinstance(result, list)
+
+    result = select.folder.from_sign('comp_image')
+    assert isinstance(result, dict), type(result)
+
+
 if __name__ == '__main__':
     main()

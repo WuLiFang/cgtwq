@@ -12,6 +12,7 @@ from ..resultset import ResultSet
 from .core import _OS
 from .filebox import SelectionFilebox
 from .flow import SelectionFlow
+from .folder import SelectionFolder
 from .history import SelectionHistory
 from .image import SelectionImage
 from .link import SelectionLink
@@ -52,6 +53,7 @@ class Selection(tuple):
         self.flow = SelectionFlow(self)
         self.image = SelectionImage(self)
         self.pipeline = SelectionPipeline(self)
+        self.folder = SelectionFolder(self)
 
     def __getitem__(self, name):
         if isinstance(name, int):
@@ -77,6 +79,7 @@ class Selection(tuple):
 
         kwargs.setdefault('token', self.token)
         kwargs.setdefault('id_array', self)
+        kwargs.setdefault('task_id_array', self)
         return self.module.call(*args, **kwargs)
 
     def filter(self, *filters):
