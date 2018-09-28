@@ -146,7 +146,7 @@ t_tw.task.update_flow('proj_big',"shot", t_id_list[0], 'task.leader_status', 'ot
 client = cgtwq.DesktopClient()
 select = client.selection()
 # select 为 cgtwq.Selection 对象
-# cgtwq.Selection 是 list 的子类
+# cgtwq.Selection 是 tuple 的子类
 # 可以直接在上面进行操作
 ```
 
