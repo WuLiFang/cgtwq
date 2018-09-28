@@ -2,7 +2,6 @@ language: python
 python:
   - "2.7"
   - "3.6"
-  - "3.7"
 install:
   - easy_install .
   - pip install coverage pytest
@@ -21,4 +20,4 @@ after_script:
   - ./cc-test-reporter format-coverage --output "coverage/codeclimate.$TRAVIS_JOB_NUMBER.json"
   - coscmd upload -r coverage /build-$TRAVIS_BUILD_NUMBER
   - coscmd download -r /build-$TRAVIS_BUILD_NUMBER coverage
-  - ./cc-test-reporter sum-coverage --output - --parts 3 coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+  - ./cc-test-reporter sum-coverage --output - --parts 2 coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
