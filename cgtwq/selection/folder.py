@@ -10,6 +10,11 @@ class SelectionFolder(SelectionAttachment):
     """Folder feature for selection.  """
 
     def from_sign(self, *sign_list):
+        """Get folder path from sign.
+
+        Returns:
+            dict[str, list]: Entry id as key, path list as value.
+        """
 
         select = self.select
 
