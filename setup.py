@@ -14,13 +14,12 @@ setup(
     author=__about__['__author__'],
     packages=find_packages(),
     install_requires=[
-        'requests~=2.18',
+        'requests~=2.19',
         'websocket-client~=0.47',
         'wlf~=0.5',
         'Qt.py~=1.1'
     ],
     dependency_links=[
-        ('https://github.com/WuLiFang/wlf/archive/0.5.0.tar.gz'
-         '#egg=wlf-0.5.0'),
+        'git+https://github.com/WuLiFang/wlf@0.5.0#egg=wlf-0.5.0',
     ],
 )
