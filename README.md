@@ -7,7 +7,7 @@ CGTeamWork Python 客户端
 安装
 
 ```shell
-pip install --process-dependency-links https://github.com/WuLiFang/cgtwq/archive/3.0.0-alpha.0.zip#egg=cgtwq
+pip install --process-dependency-links https://github.com/WuLiFang/cgtwq/archive/3.0.0-alpha.6.zip#egg=cgtwq
 ```
 
 ## 初始设置
