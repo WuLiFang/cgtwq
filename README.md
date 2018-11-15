@@ -29,8 +29,9 @@ import cgtwq
 
 token = cgtwq.login('username','password').token
 
-# 设置服务器IP, 默认为 192.168.55.11
-cgtwq.core.CONFIG.update(SERVER_IP='192.168.199.88')
+# 设置服务器URL, 默认为 http://192.168.55.11
+# 或者设置环境变量: `CGTEAMWORK_URL`
+cgtwq.core.CONFIG.update(URL='http://192.168.199.88')
 
 # 模块级登录标识设置
 cgtwq.core.CONFIG.update(DEFAULT_TOKEN=token)

@@ -5,17 +5,19 @@ from __future__ import (absolute_import, division, print_function,
 
 import time
 
+from environs import Env
+
 from wlf.decorators import deprecated
 
 from .filter import FilterList
 
+ENV = Env()
 CONFIG = {
-    'SERVER_IP': '192.168.55.11',
-    'DEFAULT_TOKEN': None,
-    'DESKTOP_CLIENT_SOCKET_URL': 'ws://127.0.0.1:64999',
-    'DESKTOP_CLIENT_HTTP_URL': 'ws://127.0.0.1:64998',  # NOT USED
-    'CLIENT_TIMEOUT': 1,
-    'MIN_FETCH_INTERVAL': 1,
+    'URL': ENV('CGTEAMWORK_URL', 'http://192.168.55.11'),
+    'DEFAULT_TOKEN': ENV('CGTEAMWORK_DEFAULT_TOKEN', None),
+    'DESKTOP_WEBSOCKET_URL':  ENV('CGTEAMWORK_DESKTOP_WEBSOCKET_URL', 'ws://127.0.0.1:64999'),
+    'CONNECTION_TIMEOUT': ENV.int('CGTEAMWORK_CONNECTION_TIMEOUT', 1),
+    'MIN_FETCH_INTERVAL': ENV.int('CGTEAMWORK_MIN_FETCH_INTERVAL', 1),
 }
 FIELD_TYPES = ("int", "decimal", "lineedit", "textedit", "checkbox", "list")
 

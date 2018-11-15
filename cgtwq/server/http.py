@@ -38,14 +38,17 @@ def _raise_error(result):
     raise ValueError(data)
 
 
-def call(controller, method, token, ip=None, **data):
+def _cgteamwork_url(pathname):
+    return '{}/{}'.format(core.CONFIG['URL'], pathname.lstrip('\\/'))
+
+
+def call(controller, method, token, **data):
     """Call method on server controller.
 
     Args:
         controller (str): Controller name.
         method (str): Method name.
         token (str): User token.
-        ip (str, optional): Defaults to None. Server IP.
 
     Returns:
         Method result.
@@ -54,15 +57,16 @@ def call(controller, method, token, ip=None, **data):
     data['controller'] = controller
     data['method'] = method
 
-    return post('api.php', data, token, ip)
+    return post('api.php', data, token)
 
 
-def post(pathname, data, token, ip=None, **kwargs):
+def post(pathname, data, token, **kwargs):
     """`POST` data to CGTeamWork server.
-        pathname (str unicode): Pathname for http host.
-        ip (str unicode, optional): Defaults to None. If `ip` is None,
-            will use ip from setting or setting.
+
+    Args:
+        pathname (str): Pathname for http host.
         data: Data to post.
+        token (str): User token.
         **kwargs: kwargs for `requests.post`
 
     Returns:
@@ -73,15 +77,14 @@ def post(pathname, data, token, ip=None, **kwargs):
     assert 'cookies' not in kwargs
     assert 'data' not in kwargs
 
-    ip = ip or core.CONFIG['SERVER_IP']
-    cookies = {'token': token}
     LOGGER.debug('POST: %s: %s', pathname, data)
     if data is not None:
         data = {'data': json.JSONEncoder(default=_json_default).encode(data)}
-    resp = SESSION.post('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
-                        data=data,
-                        cookies=cookies,
-                        **kwargs)
+    resp = SESSION.post(
+        _cgteamwork_url(pathname),
+        data=data,
+        cookies={'token': token},
+        **kwargs)
     LOGGER.debug('RECV: %s', resp.text.strip())
     json_ = resp.json()
     _raise_error(json_)
@@ -90,12 +93,12 @@ def post(pathname, data, token, ip=None, **kwargs):
     return json_.get('data', json_)
 
 
-def get(pathname, token, ip=None, **kwargs):
+def get(pathname, token, **kwargs):
     """`GET` request to CGTeamWork server.
+
+    Args:
         token (str unicode, optional): Defaults to None. If `token` is None,
             will use token from setting.
-        ip (str unicode, optional): Defaults to None. If `ip` is None,
-            will use ip from setting.
         **kwargs: kwargs for `requests.get`
 
     Returns:
@@ -104,13 +107,12 @@ def get(pathname, token, ip=None, **kwargs):
     # pylint: disable=invalid-name
 
     assert 'cookies' not in kwargs
-    ip = ip or core.CONFIG['SERVER_IP']
-    cookies = {'token': token}
 
     LOGGER.debug('GET: kwargs: %s', kwargs)
-    resp = SESSION.get('http://{}/{}'.format(ip, pathname.lstrip('\\/')),
-                       cookies=cookies,
-                       **kwargs)
+    resp = SESSION.get(
+        _cgteamwork_url(pathname),
+        cookies={'token': token},
+        **kwargs)
     LOGGER.debug('GET: %s', resp.text.strip())
     json_ = resp.json()
     _raise_error(json_)

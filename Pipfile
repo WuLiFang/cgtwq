@@ -16,6 +16,7 @@ requests = "*"
 websocket-client = "*"
 "Qt.py" = "~=1.1"
 wlf = {editable = true, ref = "0.5.0", git = "https://github.com/WuLiFang/wlf"}
+environs = "*"
 
 [requires]
 python_version = "3.7"

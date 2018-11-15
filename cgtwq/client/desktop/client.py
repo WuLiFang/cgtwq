@@ -26,7 +26,7 @@ class DesktopClient(CachedFunctionMixin):
 
     def __init__(self, socket_url=None):
         super(DesktopClient, self).__init__()
-        self.socket_url = socket_url or CONFIG['DESKTOP_CLIENT_SOCKET_URL']
+        self.socket_url = socket_url or CONFIG['DESKTOP_WEBSOCKET_URL']
 
         # Attachment.
         self.plugin = DesktopClientPlugin(self)
@@ -40,7 +40,7 @@ class DesktopClient(CachedFunctionMixin):
     def connect(self):
         """Update module config from desktop client.  """
 
-        CONFIG['SERVER_IP'] = self.server_ip()
+        CONFIG['URL'] = 'http://{}'.format(self.server_ip())
         CONFIG['DEFAULT_TOKEN'] = self.token()
 
     @staticmethod
@@ -201,7 +201,7 @@ class DesktopClient(CachedFunctionMixin):
 
     send_plugin_result = deprecated(
         (lambda self, uuid, result=False:
-         self.plugin.send_result(uuid=uuid, result=result)),
+         self.plugin.send_result(process_id=uuid, result=result)),
         reason='Use `DesktopClient.plugin.send_result` instead.'
     )
 

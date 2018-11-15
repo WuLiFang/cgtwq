@@ -43,7 +43,7 @@ def call(socket_url, controller, method, **kwargs):
     payload = dict(sign=controller, method=method, **kwargs)
     payload.setdefault('type', 'get')
 
-    conn = create_connection(socket_url, CONFIG['CLIENT_TIMEOUT'])
+    conn = create_connection(socket_url, CONFIG['CONNECTION_TIMEOUT'])
 
     try:
         conn.send(json.dumps(payload))
