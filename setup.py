@@ -18,7 +18,7 @@ setup(
         'websocket-client~=0.47',
         'wlf~=0.5',
         'Qt.py~=1.1',
-        'envrions~=4.0.0',
+        'environs~=4.0.0',
     ],
     dependency_links=[
         'git+https://github.com/WuLiFang/wlf@0.5.0#egg=wlf-0.5.0',
