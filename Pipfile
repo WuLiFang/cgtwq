@@ -1,5 +1,5 @@
 [[source]]
-url = "https://mirrors.aliyun.com/pypi/simple"
+url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
@@ -9,13 +9,11 @@ pylint = "*"
 "autopep8" = "*"
 rope = "*"
 mock = "*"
-"pyside2" = "*"
 
 [packages]
 requests = "*"
 websocket-client = "*"
-"Qt.py" = "~=1.1"
-wlf = {editable = true, ref = "0.5.0", git = "https://github.com/WuLiFang/wlf"}
+wlf = {ref = "0.5.3", git = "https://github.com/WuLiFang/wlf.git"}
 environs = "*"
 
 [requires]
