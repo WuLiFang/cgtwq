@@ -21,14 +21,14 @@ class Entry(Selection):
             return super(Entry, self).__getitem__(name)
         return self.get_fields(name)[0]
 
-    def get_fields(self, *fields):
+    def get_fields(self, *fields, **kwargs):
         """Get multiple fields.
 
         Returns:
             tuple: Result fields with exactly same order with `fields`.
         """
 
-        ret = super(Entry, self).get_fields(*fields)
+        ret = super(Entry, self).get_fields(*fields, **kwargs)
         assert len(ret) == 1, ret
         ret = ret[0]
         assert isinstance(ret, list), ret
