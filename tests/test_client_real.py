@@ -27,8 +27,12 @@ class DesktopClientTestCase(TestCase):
 
 @skip_if_not_logged_in
 def test_current_select():
-    select = cgtwq.DesktopClient().current_select()
-    assert isinstance(select, cgtwq.Selection)
+    try:
+        select = cgtwq.DesktopClient().current_select()
+        assert isinstance(select, cgtwq.Selection)
+    except ValueError as ex:
+        if ex.args != ('Empty selection.',):
+            raise
 
 
 if __name__ == '__main__':

@@ -15,6 +15,7 @@ from wlf.decorators import deprecated
 
 from . import core
 from ...core import CONFIG, CachedFunctionMixin
+from ...exceptions import IDError
 from ...selection import Selection
 from .plugin import DesktopClientPlugin
 
@@ -172,7 +173,10 @@ class DesktopClient(CachedFunctionMixin):
             Selection: Current selection.
         """
 
-        plugin_data = self.get_plugin_data()
+        try:
+            plugin_data = self.get_plugin_data()
+        except IDError:
+            raise ValueError('Empty selection.')
         return Selection.from_data(**plugin_data._asdict())
 
     def call(self, controller, method, **kwargs):
