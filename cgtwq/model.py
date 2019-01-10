@@ -20,7 +20,7 @@ class NoteInfo(namedtuple('NoteInfo',
                           ('id', 'task_id', 'account_id',
                            'message', 'time', 'account_name',
                            'module'))):
-    """Note informatiom.  """
+    """Note information.  """
 
     fields = ('#id', '#task_id', '#from_account_id',
               'text', 'time', 'create_by',
@@ -74,7 +74,7 @@ class FileBoxInfo(namedtuple(
          'is_msg_to_first_qc'))):
     """Filebox information.   """
 
-    fileds = ('#id', 'path', 'classify',
+    fields = ('#id', 'path', 'classify',
               'title', 'sign', 'color', 'rule',
               'rule_view', 'show_type', 'server', 'drag_in',
               'is_submit', 'is_move_old_to_history',
@@ -88,7 +88,7 @@ class FileBoxInfo(namedtuple(
 
 
 class ImageInfo(namedtuple('ImageInfo', ('max', 'min', 'path'))):
-    """Image infromation.  """
+    """Image information.  """
 
     def __new__(cls, max, min, path=None):
         # pylint: disable=redefined-builtin
@@ -173,7 +173,7 @@ FlowInfo = namedtuple('FlowInfo',
                       ('flow_id', 'pipeline_id'))
 
 PluginData = namedtuple(
-    'PulginData',
+    'PluginData',
     ('plugin_id',
      'filebox_id',
      'database',
@@ -210,7 +210,7 @@ class PluginInfo(namedtuple('PluginInfo', ('id', 'name', 'type', 'arguments'))):
         return raw._replace(arguments=arguments)
 
 
-PluginArgumentInfo = namedtuple('PulginData', ('value', 'description',))
+PluginArgumentInfo = namedtuple('PluginData', ('value', 'description',))
 
 # Deprecated name.
 # TODO: Remove at next major version.

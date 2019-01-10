@@ -5,7 +5,6 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import random
-import string
 
 import pytest
 
@@ -21,7 +20,7 @@ def _module():
 
 
 @util.skip_if_not_logged_in
-def test_module_fileds(module):
+def test_module_fields(module):
     result = module.fields()
     print(result)
 

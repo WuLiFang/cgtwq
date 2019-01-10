@@ -90,7 +90,7 @@ class Database(core.ControllerGetterMixin):
     # TODO: Remove at next major version.
 
     def _set_data(self, key, value, is_user=True):
-        """Set addtional data in this database.
+        """Set additional data in this database.
 
         Args:
             key (text_type): Data key.
@@ -107,7 +107,7 @@ class Database(core.ControllerGetterMixin):
         reason='Use `Database.metadata` or `Database.userdata` instead.')
 
     def _get_data(self, key, is_user=True):
-        """Get addional data set in this database.
+        """Get additional data set in this database.
 
         Args:
             key (text_type): Data key.
@@ -158,7 +158,7 @@ class Database(core.ControllerGetterMixin):
             filters (Filter or FilterList, optional): Defaults to None. Filter.
 
         Returns:
-            tuple[FieldMeta]: Field informations.
+            tuple[FieldMeta]: Field information.
         """
 
         filters = filters or []
@@ -201,7 +201,7 @@ class Database(core.ControllerGetterMixin):
         reason='Use `Database.field.create` instead.')
 
     def _delete_field(self, field_id):
-        """Delte field in the module.
+        """Delete field in the module.
 
         Args:
             id_ (str): Field id.

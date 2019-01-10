@@ -22,7 +22,7 @@ class SelectionHistory(SelectionAttachment):
 
         Args:
             filters (Filter or FilterList, optional): Defaults to None.
-                Addtional history filters.
+                Additional history filters.
 
         Returns:
             tuple[HistoryInfo]: History records.
@@ -37,7 +37,7 @@ class SelectionHistory(SelectionAttachment):
 
         Args:
             filters (Filter or FilterList):
-                Addtional history filters.
+                Additional history filters.
 
         Returns:
             int: Records count.

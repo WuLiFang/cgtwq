@@ -23,7 +23,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class DesktopClient(CachedFunctionMixin):
-    """Communicate with a CGTeamWork offical GUI clients.  """
+    """Communicate with a CGTeamWork official GUI clients.  """
 
     def __init__(self, socket_url=None):
         super(DesktopClient, self).__init__()
@@ -46,7 +46,7 @@ class DesktopClient(CachedFunctionMixin):
 
     @staticmethod
     def executable():
-        """Get a cgteawmwork client executable.
+        """Get a cgteamwork client executable.
 
         Returns:
             text_type: Executable path.
@@ -78,7 +78,7 @@ class DesktopClient(CachedFunctionMixin):
         """Check if client is running.
 
         Returns:
-            bool: Ture if client is running.
+            bool: True if client is running.
         """
 
         try:
@@ -180,7 +180,7 @@ class DesktopClient(CachedFunctionMixin):
         return Selection.from_data(**plugin_data._asdict())
 
     def call(self, controller, method, **kwargs):
-        """Call method on the cgteawork client.
+        """Call method on the cgteamwork client.
 
         Args:
             controller (str): Client defined controller name.
@@ -189,7 +189,7 @@ class DesktopClient(CachedFunctionMixin):
             **kwargs: Client defined method keyword arguments.
 
         Returns:
-            dict or str: Recived data.
+            dict or str: Received data.
         """
 
         return core.call(self.socket_url, controller, method, **kwargs)

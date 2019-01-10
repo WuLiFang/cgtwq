@@ -227,7 +227,7 @@ class Module(ControllerGetterMixin):
         _create_field, reason='Use `Module.field.create` insted.')
 
     def _delete_field(self, id_):
-        """Delte field in the module.
+        """Delete field in the module.
 
         Args:
             id_ (str): Field id.

@@ -38,7 +38,7 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
                 python has not been started
                 from desktop client.
                 Empty string indicate
-                last launched plugin processs.
+                last launched plugin process.
         """
 
         if sys.argv and _is_uuid(sys.argv[-1]):

@@ -1,0 +1,19 @@
+{
+    "version": "0.1",
+    "language": "en",
+    "words": [
+        "asdict",
+        "cgteamwork",
+        "cgtw",
+        "cgtwq",
+        "codectools",
+        "errno",
+        "functools",
+        "Popen",
+        "pylint",
+        "pytest",
+        "strptime",
+        "uitools"
+    ],
+    "flagWords": []
+}

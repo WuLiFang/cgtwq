@@ -86,10 +86,10 @@ class Selection(tuple):
         """Filter selection again.
 
         Args:
-            *filters (Filter,FilterList): Addtional filters.
+            *filters (Filter,FilterList): Additional filters.
 
         Returns:
-            Selction: Filtered selection.
+            Selection: Filtered selection.
         """
 
         return self.module.filter(Field('id').in_(self), *filters)
@@ -218,7 +218,7 @@ class Selection(tuple):
 
         Arguments:
             **kwargs:
-                database(str): Databse name.
+                database(str): Database name.
                 module(str): Module name.
                 module_type(str): Module type.
                 id_list(list): Id list.

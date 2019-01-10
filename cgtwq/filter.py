@@ -14,7 +14,7 @@ else:
 
 
 class Filter(list):
-    """CGteamwork style filter.  """
+    """CGTeamWork style filter.  """
 
     def __init__(self, key, value, operator=None):
         if operator is None:
@@ -61,7 +61,7 @@ class Filter(list):
 
 
 class FilterList(list):
-    """CGteamwork style filter list.  """
+    """CGTeamWork style filter list.  """
 
     def __init__(self, list_):
         if isinstance(list_, Filter):
@@ -91,7 +91,7 @@ class FilterList(list):
             namespace (str): Default namespace for keys.
 
         Returns:
-            FitlerList
+            FilterList
         """
 
         return FilterList(i.in_namespace(namespace)

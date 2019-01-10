@@ -19,7 +19,7 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             *filters (FilterList, Filter): Filters for server.
 
         Returns:
-            tuple[FieldMeta]: Field informations.
+            tuple[FieldMeta]: Field information.
         """
 
         filters = (FilterList.from_arbitrary_args(*filters)
@@ -73,7 +73,7 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
         )
 
     def delete(self, id_):
-        """Delte field in the module.
+        """Delete field in the module.
 
         Args:
             id_ (str): Field id.

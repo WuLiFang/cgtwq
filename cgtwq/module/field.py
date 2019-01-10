@@ -44,7 +44,7 @@ class ModuleField(ModuleAttachment):
             sign=sign, type_=type_, name=name, label=label)
 
     def delete(self, id_):
-        """Delte field in the module.
+        """Delete field in the module.
 
         Args:
             id_ (str): Field id.
