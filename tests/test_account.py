@@ -17,8 +17,8 @@ import util
 @pytest.mark.skipif(not (os.getenv('CGTWQ_TEST_ACCOUNT') and os.getenv('CGTWQ_TEST_PASSWORD')),
                     reason='Need a test account')
 def test_login():
-    result = cgtwq.account.login(os.getenv('CGTWQ_TEST_ACCOUNT'),
-                                 os.getenv('CGTWQ_TEST_PASSWORD'))
+    cgtwq.account.login(os.getenv('CGTWQ_TEST_ACCOUNT'),
+                        os.getenv('CGTWQ_TEST_PASSWORD'))
 
 
 @util.skip_if_not_logged_in

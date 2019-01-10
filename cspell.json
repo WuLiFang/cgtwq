@@ -9,9 +9,11 @@
         "codectools",
         "errno",
         "functools",
+        "getenv",
         "Popen",
         "pylint",
         "pytest",
+        "skipif",
         "strptime",
         "uitools"
     ],
