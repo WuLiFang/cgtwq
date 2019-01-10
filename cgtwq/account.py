@@ -67,6 +67,12 @@ def login(account, password):
             pass
         raise
     assert isinstance(resp, dict), type(resp)
+    # Correct server-side typo.
+    resp['password_complexity'] = (
+        # spell-checker: disable
+        resp.pop('password_comlexity', None)
+        # spell-checker: enable
+    )
     _ = [resp.setdefault(i, None) for i in AccountInfo._fields]
     return AccountInfo(**resp)
 

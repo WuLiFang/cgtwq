@@ -167,7 +167,7 @@ AccountInfo = namedtuple('AccountInfo',
                          ('account', 'account_id', 'image',
                           'update_time', 'file_key', 'token',
                           'client_type', 'remote_ip', 'name',
-                          'password_comlexity'))
+                          'password_complexity'))
 
 FlowInfo = namedtuple('FlowInfo',
                       ('flow_id', 'pipeline_id'))
