@@ -13,7 +13,7 @@ from util import skip_if_not_logged_in
 class DesktopClientTestCase(TestCase):
     def test_plugin_data(self):
         try:
-            result = cgtwq.DesktopClient().get_plugin_data()
+            result = cgtwq.DesktopClient().plugin.data()
             self.assertIsInstance(result, cgtwq.model.PluginData)
         except cgtwq.IDError:
             pass

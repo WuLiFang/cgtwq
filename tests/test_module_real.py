@@ -20,7 +20,7 @@ def _module():
 
 @util.skip_if_not_logged_in
 def test_module_fields(module):
-    result = module.fields()
+    result = module.field.meta()
     print(result)
 
 

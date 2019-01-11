@@ -24,24 +24,25 @@ class DataBaseTestCase(TestCase):
 
     def test_get_filebox(self):
         # filters.
-        self.database.get_fileboxes(filters=cgtwq.Filter('title', '检查MOV'))
+        self.database.filebox.filter(cgtwq.Filter('title', '检查MOV'))
         # id
-        self.database.get_fileboxes(id_='271')
+        self.database.filebox.from_id('271')
 
     def test_get_pipeline(self):
-        result = self.database.get_pipelines(cgtwq.Filter('entity_name', '合成'))
+        result = self.database.pipeline.filter(
+            cgtwq.Filter('entity_name', '合成'))
         self.assertIsInstance(result[0], cgtwq.model.PipelineInfo)
 
     def test_data(self):
         dummy_data = six.text_type(uuid.uuid4())
         key = '_test_temp'
-        self.database.set_data(key, dummy_data)
-        result = self.database.get_data(key)
+        self.database.userdata[key] = dummy_data
+        result = self.database.userdata[key]
         self.assertEqual(result, dummy_data)
-        result = self.database.get_data(key, False)
+        result = self.database.metadata[key]
         self.assertNotEqual(result, dummy_data)
-        self.database.set_data(key, dummy_data, False)
-        result = self.database.get_data(key, False)
+        self.database.metadata[key] = dummy_data
+        result = self.database.metadata[key]
         self.assertEqual(result, dummy_data)
 
 
@@ -104,7 +105,7 @@ def test_get_software(database):
 
 @skip_if_not_logged_in
 def test_database_modules(database):
-    result = database.modules()
+    result = database.filter()
     assert all(isinstance(i, cgtwq.Module) for i in result)
 
 
