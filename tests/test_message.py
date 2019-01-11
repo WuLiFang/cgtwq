@@ -36,7 +36,6 @@ def test_message_load():
 
 @util.skip_if_not_logged_in
 def test_message_upload():
-    cgtwq.update_setting()
     item = Message('test1测试')
     filename = util.path('resource', 'gray.png')
     item.images.append(filename)

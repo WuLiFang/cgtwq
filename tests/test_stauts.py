@@ -9,6 +9,5 @@ import util
 
 
 @util.skip_if_not_logged_in
-def test_get_all():
-    cgtwq.update_setting()
-    print(cgtwq.get_all_status())
+def test_get_status():
+    print(cgtwq.server.meta.get_status())

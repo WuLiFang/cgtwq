@@ -11,7 +11,6 @@ import util
 
 @util.skip_if_not_logged_in
 def test_upload_image():
-    cgtwq.update_setting()
     filename = util.path('resource', 'gray.png')
     result = cgtwq.server.web.upload_image(filename,
                                            'proj_big', cgtwq.core.CONFIG['DEFAULT_TOKEN'])

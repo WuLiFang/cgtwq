@@ -19,7 +19,7 @@ from util import skip_if_not_logged_in
 @skip_if_not_logged_in
 class DataBaseTestCase(TestCase):
     def setUp(self):
-        cgtwq.update_setting()
+        cgtwq.DesktopClient().connect()
         self.database = cgtwq.Database('proj_big')
 
     def test_get_filebox(self):
@@ -48,7 +48,7 @@ class DataBaseTestCase(TestCase):
 @skip_if_not_logged_in
 class ModuleTestCase(TestCase):
     def setUp(self):
-        cgtwq.update_setting()
+        cgtwq.DesktopClient().connect()
         self.module = cgtwq.Database('proj_big').module('shot')
 
     def test_pipeline(self):
@@ -59,20 +59,20 @@ class ModuleTestCase(TestCase):
 
     def test_get_history(self):
 
-        result = self.module.get_history(Filter('status', 'Approve'))
+        result = self.module.history.filter(Filter('status', 'Approve'))
         for i in result:
             assert isinstance(i, model.HistoryInfo)
 
     def test_count_history(self):
 
-        result = self.module.count_history(Filter('status', 'Approve'))
+        result = self.module.history.count(Filter('status', 'Approve'))
         self.assertIsInstance(result, int)
 
 
 @skip_if_not_logged_in
 class ProjectTestCase(TestCase):
     def test_names(self):
-        cgtwq.update_setting()
+        cgtwq.DesktopClient().connect()
         result = cgtwq.PROJECT.names()
         self.assertIsInstance(result, tuple)
         for i in result:
@@ -82,7 +82,7 @@ class ProjectTestCase(TestCase):
 @skip_if_not_logged_in
 class AccountTestCase(TestCase):
     def test_names(self):
-        cgtwq.update_setting()
+        cgtwq.DesktopClient().connect()
         result = cgtwq.ACCOUNT.names()
         self.assertIsInstance(result, tuple)
         for i in result:
@@ -92,7 +92,6 @@ class AccountTestCase(TestCase):
 @pytest.fixture(name='database')
 @skip_if_not_logged_in
 def _database():
-    cgtwq.update_setting()
     return cgtwq.Database('proj_mt')
 
 
@@ -112,19 +111,21 @@ def test_database_modules(database):
 @skip_if_not_logged_in
 def test_database_fields(database):
     # Get
-    result = database.get_fields()
+    assert isinstance(database, cgtwq.Database)
+    result = database.field.filter()
     assert all(isinstance(i, cgtwq.model.FieldMeta) for i in result)
-    result = database.get_field(cgtwq.Field('sign') == 'shot.shot')
+    result = database.field.filter_one(cgtwq.Field('sign') == 'shot.shot')
     assert isinstance(result, cgtwq.model.FieldMeta)
 
     # Create
     field_sign = 'task.python_test_{}'.format(
         ''.join([random.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(20)]))
-    database.create_field(sign=field_sign, type_='int')
+    database.field.create(sign=field_sign, type_='int')
 
     # Delete
-    field = database.get_field(cgtwq.Field('sign') == field_sign)
-    database.delete_field(field.id)
+    field = database.field.filter_one(cgtwq.Field('sign') == field_sign)
+    assert field.sign == field_sign
+    database.field.delete(field.id)
 
 
 @skip_if_not_logged_in
@@ -132,7 +133,7 @@ def test_database_filebox(database):
     result = database.filebox.filter()
     assert all(isinstance(i, cgtwq.model.FileBoxMeta) for i in result)
     result = database.filebox.filter(cgtwq.Field('title') == '检查MOV')
-    result = database.filebox.get('271')
+    result = database.filebox.from_id('271')
 
 
 @skip_if_not_logged_in

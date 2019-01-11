@@ -15,7 +15,6 @@ import util
 @pytest.fixture(name='module')
 @util.skip_if_not_logged_in
 def _module():
-    cgtwq.update_setting()
     return cgtwq.Database('proj_mt').module('shot')
 
 
@@ -40,11 +39,16 @@ def test_module_pipeline(module):
 @util.skip_if_not_logged_in
 def test_module_field(module):
     field_sign = 'python_test_{}'.format(
-        ''.join([random.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') for i in range(20)]))
-    module.create_field(sign=field_sign, type_='int')
-    field = next(i for i in module.fields()
-                 if i.sign == module.format_field(field_sign))
-    module.delete_field(field.id)
+        ''.join([random.choice('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+                 for i in range(20)]))
+    module.field.create(sign=field_sign, type_='int')
+    field = (module
+             .database
+             .field
+             .filter_one(cgtwq.Field('sign') == (cgtwq.Field(field_sign)
+                                                 .in_namespace(module.default_field_namespace))))
+    assert 'python_test_' in field.sign
+    module.field.delete(field.id)
 
 
 @util.skip_if_not_logged_in

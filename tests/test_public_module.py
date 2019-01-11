@@ -23,7 +23,7 @@ def test_select_activated():
     cgtwq.ACCOUNT.select_activated()
     cgtwq.PROJECT.select_activated()
 
-    # Backport
+    # TODO: Backport, remove this as next major version.
     cgtwq.ACCOUNT.all()
 
 

@@ -29,7 +29,7 @@ class SelectionHistory(SelectionAttachment):
         """
 
         return sorted(
-            self.select.module.get_history(self._combine_filters(filters)),
+            self.select.module.history.filter(self._combine_filters(filters)),
             key=lambda i: i.time)
 
     def count(self, filters=None):
@@ -43,7 +43,7 @@ class SelectionHistory(SelectionAttachment):
             int: Records count.
         """
 
-        return self.select.module.count_history(
+        return self.select.module.history.count(
             self._combine_filters(filters))
 
     def undo(self, history):
@@ -53,4 +53,4 @@ class SelectionHistory(SelectionAttachment):
             history (HistoryInfo): History information.
         """
 
-        return self.select.module.undo_history(history)
+        return self.select.module.history.undo(history)

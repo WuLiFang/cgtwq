@@ -44,7 +44,7 @@ class PublicModule(Module):
             tuple[str]
         """
 
-        return self.all()[self.name_field]
+        return self.select_activated()[self.name_field]
 
     # Deprecated methods
     all = deprecated(

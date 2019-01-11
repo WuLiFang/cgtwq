@@ -24,7 +24,7 @@ model = cgtwq.model  # pylint: disable=invalid-name
 @skip_if_not_logged_in
 class SelectionTestCase(TestCase):
     def setUp(self):
-        cgtwq.update_setting()
+        cgtwq.DesktopClient().connect()
         module = database.Database('proj_big').module('shot')
         select = module.filter(cgtwq.Filter('flow_name', '合成') &
                                cgtwq.Filter('shot.shot',
@@ -46,12 +46,12 @@ class SelectionTestCase(TestCase):
 
     def test_get_filebox(self):
         select = self.select
-        result = select.filebox.get('submit')
+        result = select.filebox.from_sign('submit')
         self.assertIsInstance(result, model.FileBoxInfo)
 
         # Test wrong sign.
         self.assertRaises(ValueError,
-                          select.filebox.get,
+                          select.filebox.from_sign,
                           six.text_type(uuid.uuid4()))
 
     def test_get_fields(self):
@@ -60,7 +60,7 @@ class SelectionTestCase(TestCase):
             self.assertEqual(len(i), 2)
 
     def test_get_image(self):
-        result = self.select.get_image('image')
+        result = self.select.image.get('image')
         for i in result:
             self.assertIsInstance(i, model.ImageInfo)
 
@@ -68,11 +68,11 @@ class SelectionTestCase(TestCase):
         for i in self.select.to_entries():
             assert isinstance(i, cgtwq.Entry)
             try:
-                path = i.get_image().path
-                i.set_image(path)
+                path = i.image.get().path
+                i.image.set(path)
             except ValueError:
                 path = util.path('resource', 'gray.png')
-            i.set_image(path)
+            i.image.set(path)
 
     def test_get_notes(self):
         result = self.select.notify.get()
@@ -82,7 +82,7 @@ class SelectionTestCase(TestCase):
     def test_send_message(self):
         self.select.notify.send('test',
                                 'test <b>message</b>',
-                                cgtwq.util.current_account_id())
+                                cgtwq.account.get_account_id())
 
     def test_get_filebox_submit(self):
         select = self.select
@@ -91,14 +91,13 @@ class SelectionTestCase(TestCase):
 
     def test_has_permission_on_status(self):
         select = self.select
-        result = select.has_permission_on_status('artist')
+        result = select.flow.has_field_permission('artist')
         self.assertIsInstance(result, bool)
 
 
 @pytest.fixture(name='select')
 @skip_if_not_logged_in
 def _select():
-    cgtwq.update_setting()
     return cgtwq.Database('proj_mt').module('shot').select(
         'F950A26F-DD4E-E88B-88EE-9C09EF3F7695')
 
