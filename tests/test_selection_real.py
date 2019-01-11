@@ -25,10 +25,10 @@ model = cgtwq.model  # pylint: disable=invalid-name
 class SelectionTestCase(TestCase):
     def setUp(self):
         cgtwq.DesktopClient().connect()
-        module = database.Database('proj_big').module('shot')
+        module = database.Database('proj_sdktest').module('shot')
         select = module.filter(cgtwq.Filter('flow_name', '合成') &
                                cgtwq.Filter('shot.shot',
-                                            ['SNJYW_EP26_06_sc349', 'SNJYW_EP26_06_sc350']))
+                                            ['SDKTEST_EP01_01_sc001', 'SDKTEST_EP01_01_sc002']))
         assert isinstance(select, cgtwq.Selection)
         if not select:
             raise ValueError('No selection to test.')
@@ -68,9 +68,9 @@ class SelectionTestCase(TestCase):
         for i in self.select.to_entries():
             assert isinstance(i, cgtwq.Entry)
             try:
-                path = i.image.get().path
+                path = i.image.get_one().path
                 i.image.set(path)
-            except ValueError:
+            except IndexError:
                 path = util.path('resource', 'gray.png')
             i.image.set(path)
 
@@ -98,8 +98,8 @@ class SelectionTestCase(TestCase):
 @pytest.fixture(name='select')
 @skip_if_not_logged_in
 def _select():
-    return cgtwq.Database('proj_mt').module('shot').select(
-        'F950A26F-DD4E-E88B-88EE-9C09EF3F7695')
+    return cgtwq.Database('proj_sdktest').module('shot').select(
+        'D84AF30B-89FD-D06D-349A-F01F5D99744C')
 
 
 logging.basicConfig(level=10)

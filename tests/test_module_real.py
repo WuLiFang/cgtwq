@@ -15,7 +15,7 @@ import util
 @pytest.fixture(name='module')
 @util.skip_if_not_logged_in
 def _module():
-    return cgtwq.Database('proj_mt').module('shot')
+    return cgtwq.Database('proj_sdktest').module('shot')
 
 
 @util.skip_if_not_logged_in

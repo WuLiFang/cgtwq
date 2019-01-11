@@ -20,7 +20,7 @@ from util import skip_if_not_logged_in
 class DataBaseTestCase(TestCase):
     def setUp(self):
         cgtwq.DesktopClient().connect()
-        self.database = cgtwq.Database('proj_big')
+        self.database = cgtwq.Database('proj_sdktest')
 
     def test_get_filebox(self):
         # filters.
@@ -49,7 +49,7 @@ class DataBaseTestCase(TestCase):
 class ModuleTestCase(TestCase):
     def setUp(self):
         cgtwq.DesktopClient().connect()
-        self.module = cgtwq.Database('proj_big').module('shot')
+        self.module = cgtwq.Database('proj_sdktest').module('shot')
 
     def test_pipeline(self):
         result = self.module.pipelines()
@@ -92,13 +92,13 @@ class AccountTestCase(TestCase):
 @pytest.fixture(name='database')
 @skip_if_not_logged_in
 def _database():
-    return cgtwq.Database('proj_mt')
+    return cgtwq.Database('proj_sdktest')
 
 
 @skip_if_not_logged_in
 def test_get_software(database):
     assert isinstance(database, cgtwq.Database)
-    path = database.get_software('maya')
+    path = database.software.get_path('maya')
     assert isinstance(path, six.text_type)
 
 
@@ -137,7 +137,7 @@ def test_database_filebox(database):
 
 
 @skip_if_not_logged_in
-def test_databse_software(database):
+def test_database_software(database):
     assert isinstance(database, cgtwq.Database)
     result = database.software.get_path('maya')
     assert isinstance(result, six.text_type)

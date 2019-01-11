@@ -13,6 +13,6 @@ import util
 def test_upload_image():
     filename = util.path('resource', 'gray.png')
     result = cgtwq.server.web.upload_image(filename,
-                                           'proj_big', cgtwq.core.CONFIG['DEFAULT_TOKEN'])
+                                           'proj_sdktest', cgtwq.core.CONFIG['DEFAULT_TOKEN'])
     assert isinstance(result, cgtwq.model.ImageInfo)
     assert result.path == filename

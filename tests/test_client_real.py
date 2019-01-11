@@ -19,10 +19,10 @@ class DesktopClientTestCase(TestCase):
             pass
 
     def test_refresh(self):
-        cgtwq.DesktopClient().refresh('proj_big', 'shot')
+        cgtwq.DesktopClient().refresh('proj_sdktest', 'shot')
 
     def test_refresh_selected(self):
-        cgtwq.DesktopClient().refresh_selected('proj_big', 'shot')
+        cgtwq.DesktopClient().refresh_selected('proj_sdktest', 'shot')
 
 
 @skip_if_not_logged_in

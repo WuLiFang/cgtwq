@@ -5,6 +5,8 @@ from __future__ import (absolute_import, division, print_function,
 
 import json
 
+import six
+
 from ..model import ImageInfo
 from ..server.web import upload_image
 from .core import SelectionAttachment
@@ -43,7 +45,10 @@ class SelectionImage(SelectionAttachment):
 
         select = self.select
         ret = set()
-        for i in select[field]:
+        data = select[field]
+        if isinstance(data, six.text_type):
+            data = [data]
+        for i in data:
             try:
                 data = json.loads(i)
                 assert isinstance(data, dict)
@@ -53,4 +58,25 @@ class SelectionImage(SelectionAttachment):
                 ret.add(info)
             except (TypeError, KeyError):
                 continue
-        return tuple(sorted(ret))
+        ret = tuple(sorted(ret))
+        return ret
+
+    def get_one(self, field='image'):
+        """Get single imageinfo used on the field.
+
+        Args:
+            field (six.text_type): Defaults to 'image', Server defined field name,
+
+        Raises:
+            ValueError: No image data.
+            AssertError: Multiple image data.
+
+        Returns:
+            ImageInfo: Image information.
+        """
+        try:
+            images = self.get(field)
+            assert len(images) == 1, 'Multiple image on the selection.'
+            return images[0]  # type: ImageInfo
+        except IndexError:
+            raise ValueError('No image on this selection.')

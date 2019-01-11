@@ -14,11 +14,12 @@ import util
 @util.skip_if_not_logged_in
 def _entry():
     cgtwq.DesktopClient().connect()
-    return cgtwq.Database('proj_mt').module('shot').select(
-        'F950A26F-DD4E-E88B-88EE-9C09EF3F7695').to_entry()
+    return cgtwq.Database('proj_sdktest').module('shot').select(
+        'D84AF30B-89FD-D06D-349A-F01F5D99744C').to_entry()
 
 
 @util.skip_if_not_logged_in
 def test_entry_related(entry):
+    assert isinstance(entry, cgtwq.Entry)
     result = entry.related()
     assert isinstance(result, cgtwq.Selection)

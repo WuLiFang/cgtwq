@@ -42,3 +42,5 @@ class DatabaseFilebox(core.DatabaseAttachment, ControllerGetterMixin):
                          id=id_,
                          field_array=FileBoxMeta.fields)
         return FileBoxMeta(*resp)
+
+    from_id = get

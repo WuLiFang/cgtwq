@@ -37,7 +37,7 @@ cgtwq.core.CONFIG.update(URL='http://192.168.199.88')
 cgtwq.core.CONFIG.update(DEFAULT_TOKEN=token)
 
 # 对象级登录标识设置, 如果未设置则会自动向上一级读取
-database = cgtwq.Database('proj_big')
+database = cgtwq.Database('proj_sdktest')
 database.token = token
 module = database.module('shot')
 module.token = token
@@ -58,7 +58,7 @@ t_tw = cgtw2.tw("192.168.199.88","username","password")
 ## 处理字段数据
 
 ```python
-module = cgtwq.Database('proj_big').module('shot', module_type='task')
+module = cgtwq.Database('proj_sdktest').module('shot', module_type='task')
 select = module.filter(
     cgtwq.Field('shot.shot') == 'sc001'),
     cgtwq.Field('shot.eps_name') == 'ep01'),
@@ -85,23 +85,23 @@ select.set_fields(**{'shot.frame': '3333'})
 
 ```python
 t_id_list = t_tw.task.get_id(
-    'proj_big','shot',
+    'proj_sdktest','shot',
     [["shot.shot","=","sc001"],
     'and',['shot.eps_name','=','ep01'],
     'and',['task.task_name','=','Layout']])
 
 # 查询多列 返回: list[dict]
 # 字典的键为输入的字段加上'id'
-t_tw.task.get('proj_big', "shot",t_id_list, ['task.submit_file_path'])
+t_tw.task.get('proj_sdktest', "shot",t_id_list, ['task.submit_file_path'])
 
 # 设置多列
-t_tw.task.set('proj_big',"shot", t_id_list, {'shot.frame':'3333'})
+t_tw.task.set('proj_sdktest',"shot", t_id_list, {'shot.frame':'3333'})
 ```
 
 ## 管理任务状态
 
 ```python
-module = cgtwq.Database('proj_big').module('shot', module_type='task')
+module = cgtwq.Database('proj_sdktest').module('shot', module_type='task')
 select = module.filter(
     cgtwq.Field('shot.shot') == 'sc001'),
     cgtwq.Field('shot.eps_name') == 'ep01'),
@@ -123,21 +123,21 @@ select.flow.update('leader_status', 'other')
 
 ```python
 t_id_list = t_tw.task.get_id(
-    'proj_big','shot',
+    'proj_sdktest','shot',
     [["shot.shot","=","sc001"],
     'and',['shot.eps_name','=','ep01'],
     'and',['task.task_name','=','Layout']])
 
 # 提交
-t_tw.task.submit('proj_big',"shot", t_id_list[0], ['d:/1.jpg'])
+t_tw.task.submit('proj_sdktest',"shot", t_id_list[0], ['d:/1.jpg'])
 # 通过
-t_tw.task.update_flow('proj_big',"shot", t_id_list[0], 'task.leader_status', 'Approve')
+t_tw.task.update_flow('proj_sdktest',"shot", t_id_list[0], 'task.leader_status', 'Approve')
 # 返修
-t_tw.task.update_flow('proj_big',"shot", t_id_list[0], 'task.leader_status', 'Retake')
+t_tw.task.update_flow('proj_sdktest',"shot", t_id_list[0], 'task.leader_status', 'Retake')
 # 关闭
-t_tw.task.update_flow('proj_big',"shot", t_id_list[0], 'task.leader_status', 'Close')
+t_tw.task.update_flow('proj_sdktest',"shot", t_id_list[0], 'task.leader_status', 'Close')
 # 其他状态
-t_tw.task.update_flow('proj_big',"shot", t_id_list[0], 'task.leader_status', 'other')
+t_tw.task.update_flow('proj_sdktest',"shot", t_id_list[0], 'task.leader_status', 'other')
 # 以上函数都需要检查函数返回值为True, 不能用捕获异常的方式
 ```
 
@@ -164,7 +164,7 @@ id_list = t_tw.client.get_id()
 ## 存储数据
 
 ```python
-database = cgtwq.Database('proj_big')
+database = cgtwq.Database('proj_sdktest')
 # 用户信息
 database.userdata['test'] = 'data
 database.userdata['test']
@@ -177,11 +177,11 @@ database.metadata['test']
 
 ```python
 # 用户信息
-t_tw.api_data.set("proj_big", "test", "data")
-t_tw.api_data.get("proj_big", "test")
+t_tw.api_data.set("proj_sdktest", "test", "data")
+t_tw.api_data.get("proj_sdktest", "test")
 # 数据库信息
-t_tw.api_data.set("proj_big", "test", "data", False)
-t_tw.api_data.get("proj_big", "test", False)
+t_tw.api_data.set("proj_sdktest", "test", "data", False)
+t_tw.api_data.get("proj_sdktest", "test", False)
 ```
 
 ## 获取登录信息

@@ -180,7 +180,7 @@ class Module(ControllerGetterMixin):
             tuple[Pipeline]: namedtuple for ('id', 'name', 'module').
         """
 
-        return self.database.get_pipelines(Filter('module', self.name))
+        return self.database.pipeline.filter(Filter('module', self.name))
 
     def flow(self):
         """Workflow of the module.  """

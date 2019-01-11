@@ -13,6 +13,7 @@
         "Popen",
         "pylint",
         "pytest",
+        "sdktest",
         "skipif",
         "strptime",
         "uitools"
