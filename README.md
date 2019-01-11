@@ -1,13 +1,13 @@
-CGTeamWork Python 客户端
+# CGTeamWork Python 客户端
 
 支持 py2.7, py3.6, py3.7
 
-# 用法
+## 安装
 
-安装
+因为使用了 PEP508 URL 依赖, 需求 pip 版本高于 18.1
 
 ```shell
-pip install --process-dependency-links https://github.com/WuLiFang/cgtwq/archive/3.0.0-alpha.6.zip#egg=cgtwq
+pip install https://github.com/WuLiFang/cgtwq/archive/3.0.0-alpha.8.zip#egg=cgtwq
 ```
 
 ## 初始设置
