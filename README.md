@@ -166,10 +166,10 @@ id_list = t_tw.client.get_id()
 ```python
 database = cgtwq.Database('proj_sdktest')
 # 用户信息
-database.userdata['test'] = 'data
+database.userdata['test'] = 'data'
 database.userdata['test']
 # 数据库信息
-database.metadata['test'] = 'data
+database.metadata['test'] = 'data'
 database.metadata['test']
 ```
 
