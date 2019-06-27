@@ -70,7 +70,7 @@ class SelectionTestCase(TestCase):
             try:
                 path = i.image.get_one().path
                 i.image.set(path)
-            except IndexError:
+            except (IndexError, FileNotFoundError):
                 path = util.path('resource', 'gray.png')
             i.image.set(path)
 
