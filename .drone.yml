@@ -1,0 +1,82 @@
+---
+kind: pipeline
+name: python-3.7
+
+steps:
+  - name: test
+    image: python:3.7
+    environment:
+      CGTWQ_TEST_ACCOUNT:
+        from_secret: 'CGTWQ_TEST_ACCOUNT'
+      CGTWQ_TEST_PASSWORD:
+        from_secret: 'CGTWQ_TEST_PASSWORD'
+      PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
+      TOXENV: py37
+    commands:
+      - pip install -U pip virtualenv
+      - sed -i "s@https://github\.com/@https://git.wlf.com/@g" ./requirements.txt ./setup.py
+      - make test
+---
+kind: pipeline
+name: python-3.6
+
+steps:
+  - name: test
+    image: python:3.6
+    environment:
+      CGTWQ_TEST_ACCOUNT:
+        from_secret: 'CGTWQ_TEST_ACCOUNT'
+      CGTWQ_TEST_PASSWORD:
+        from_secret: 'CGTWQ_TEST_PASSWORD'
+      PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
+      TOXENV: py36
+    commands:
+      - pip install -U pip virtualenv
+      - sed -i "s@https://github\.com/@https://git.wlf.com/@g" ./requirements.txt ./setup.py
+      - make test
+---
+kind: pipeline
+name: python-2.7
+
+steps:
+  - name: test
+    image: python:2.7
+    environment:
+      CGTWQ_TEST_ACCOUNT:
+        from_secret: 'CGTWQ_TEST_ACCOUNT'
+      CGTWQ_TEST_PASSWORD:
+        from_secret: 'CGTWQ_TEST_PASSWORD'
+      PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
+      TOXENV: py27
+    commands:
+      - pip install -U pip virtualenv
+      - sed -i "s@https://github\.com/@https://git.wlf.com/@g" ./requirements.txt ./setup.py
+      - make test
+---
+kind: pipeline
+name: notification
+
+clone:
+  disable: true
+
+steps:
+  - name: rocket-chat
+    image: mike1pol/drone-rocket
+    settings:
+      url:
+        from_secret: ROCKETCHAT_URL
+      user_id:
+        from_secret: ROCKETCHAT_USER_ID
+      token:
+        from_secret: ROCKETCHAT_TOKEN
+      channel:
+        from_secret: ROCKETCHAT_CHANNEL
+
+depends_on:
+  - python-3.7
+  - python-3.6
+  - python-2.7
+trigger:
+  status:
+    - success
+    - failure
