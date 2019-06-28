@@ -14,5 +14,5 @@ endif
 .venv:
 	virtualenv .venv
 
-test:
-	. $(activate) && pytest
+test: .venv/Lib/site-packages
+	. $(activate) && tox
