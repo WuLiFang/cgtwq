@@ -1,4 +1,4 @@
-.PHONY: all test
+.PHONY: all test deploy-docs
 
 all: .venv/Lib/site-packages
 
@@ -16,3 +16,12 @@ endif
 
 test: .venv/Lib/site-packages
 	. $(activate) && tox
+
+docs: docs/* docs/_build/html/.git
+	. $(activate) && $(MAKE) -C docs html
+
+deploy-docs:
+	cd docs/_build/html ; git add --all && git commit -m 'docs: build' && git push
+
+docs/_build/html/.git:
+	git worktree add -f --checkout docs/_build/html gh-pages
