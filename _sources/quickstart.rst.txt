@@ -8,7 +8,7 @@
 
 .. code:: shell
 
-   pip install https://github.com/WuLiFang/cgtwq/archive/3.0.0-alpha.8.zip#egg=cgtwq
+   pip install https://github.com/WuLiFang/cgtwq/archive/v3.0.0-beta.0.zip#egg=cgtwq
 
 初始设置
 --------

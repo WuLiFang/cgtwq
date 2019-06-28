@@ -1004,6 +1004,11 @@ namespace (str, optional): Default field namespace.</p>
 <dt id="cgtwq.Selection">
 <em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">Selection</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">*id_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection" title="永久链接至目标">¶</a></dt>
 <dd><p>Selection with all feature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">引发</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cgtwq.EmptySelection" title="cgtwq.EmptySelection"><strong>EmptySelection</strong></a> – when selection size is 0.</p>
+</dd>
+</dl>
 <dl class="method">
 <dt id="cgtwq.Selection.call">
 <code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.call"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.call" title="永久链接至目标">¶</a></dt>
@@ -1267,7 +1272,7 @@ id_list(list): Id list.</p>
 <dl class="exception">
 <dt id="cgtwq.AccountNotFoundError">
 <em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">AccountNotFoundError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#AccountNotFoundError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.AccountNotFoundError" title="永久链接至目标">¶</a></dt>
-<dd><p>Inicate account not found.</p>
+<dd><p>Indicate account not found.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1291,13 +1296,13 @@ id_list(list): Id list.</p>
 <dl class="exception">
 <dt id="cgtwq.PasswordError">
 <em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">PasswordError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#PasswordError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PasswordError" title="永久链接至目标">¶</a></dt>
-<dd><p>Inicate password not correct.</p>
+<dd><p>Indicate password not correct.</p>
 </dd></dl>
 
 <dl class="exception">
 <dt id="cgtwq.PermissionError">
 <em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">PermissionError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#PermissionError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PermissionError" title="永久链接至目标">¶</a></dt>
-<dd><p>Indicate suffcient permission.</p>
+<dd><p>Indicate sufficient permission.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -1310,6 +1315,12 @@ id_list(list): Id list.</p>
 <dt id="cgtwq.SignError">
 <em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">SignError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#SignError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.SignError" title="永久链接至目标">¶</a></dt>
 <dd><p>Indicate can’t found matched sign.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.EmptySelection">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">EmptySelection</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#EmptySelection"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.EmptySelection" title="永久链接至目标">¶</a></dt>
+<dd><p>Indicate no entry match the criteria.</p>
 </dd></dl>
 
 </div>

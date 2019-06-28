@@ -111,14 +111,22 @@
     <span class="sd">&quot;&quot;&quot;Indicate no shot match the prefix.&quot;&quot;&quot;</span></div>
 
 
+<div class="viewcode-block" id="EmptySelection"><a class="viewcode-back" href="../../reference.html#cgtwq.EmptySelection">[文档]</a><span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span>
+    <span class="n">_template_meta</span><span class="p">(</span>
+        <span class="s1">&#39;Can not found any prefix matched shots&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;无镜头匹配此前缀&#39;</span><span class="p">))</span>
+<span class="k">class</span> <span class="nc">EmptySelection</span><span class="p">(</span><span class="n">CGTeamWorkException</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Indicate no entry match the criteria.&quot;&quot;&quot;</span></div>
+
+
 <div class="viewcode-block" id="PasswordError"><a class="viewcode-back" href="../../reference.html#cgtwq.PasswordError">[文档]</a><span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span><span class="n">_template_meta</span><span class="p">(</span><span class="s1">&#39;Wrong password&#39;</span><span class="p">,</span> <span class="s1">&#39;密码错误&#39;</span><span class="p">))</span>
 <span class="k">class</span> <span class="nc">PasswordError</span><span class="p">(</span><span class="n">CGTeamWorkException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Inicate password not correct.  &quot;&quot;&quot;</span></div>
+    <span class="sd">&quot;&quot;&quot;Indicate password not correct.  &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="AccountNotFoundError"><a class="viewcode-back" href="../../reference.html#cgtwq.AccountNotFoundError">[文档]</a><span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span><span class="n">_template_meta</span><span class="p">(</span><span class="s1">&#39;Account not found&#39;</span><span class="p">,</span> <span class="s1">&#39;无此帐号&#39;</span><span class="p">))</span>
 <span class="k">class</span> <span class="nc">AccountNotFoundError</span><span class="p">(</span><span class="n">CGTeamWorkException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Inicate account not found.  &quot;&quot;&quot;</span></div>
+    <span class="sd">&quot;&quot;&quot;Indicate account not found.  &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="AccountError"><a class="viewcode-back" href="../../reference.html#cgtwq.AccountError">[文档]</a><span class="k">class</span> <span class="nc">AccountError</span><span class="p">(</span><span class="n">CGTeamWorkException</span><span class="p">):</span>
@@ -136,12 +144,12 @@
         <span class="k">return</span> <span class="s1">&#39;用户不匹配</span><span class="se">\n\t</span><span class="s1">已分配给:</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n\t</span><span class="s1">当前用户:</span><span class="se">\t</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">owner</span> <span class="ow">or</span> <span class="s1">&#39;&lt;未分配&gt;&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">current</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="PermissionError"><a class="viewcode-back" href="../../reference.html#cgtwq.PermissionError">[文档]</a><span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span>
+<div class="viewcode-block" id="PermissionError"><a class="viewcode-back" href="../../reference.html#cgtwq.PermissionError">[文档]</a><span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
     <span class="n">_template_meta</span><span class="p">(</span>
-        <span class="s1">&#39;Suffcient permission&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Sufficient permission&#39;</span><span class="p">,</span>
         <span class="s1">&#39;权限不足&#39;</span><span class="p">))</span>
 <span class="k">class</span> <span class="nc">PermissionError</span><span class="p">(</span><span class="n">CGTeamWorkException</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Indicate suffcient permission.  &quot;&quot;&quot;</span></div>
+    <span class="sd">&quot;&quot;&quot;Indicate sufficient permission.  &quot;&quot;&quot;</span></div>
 </pre></div>
 
           </div>
