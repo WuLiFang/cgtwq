@@ -27,14 +27,14 @@ class DesktopClientAttachment(object):
 
 
 def call(socket_url, controller, method, **kwargs):
-    """Call method on the cgteamwork client.
+    r"""Call method on the cgteamwork client.
 
     Args:
         socket_url(str): Desktop client websocket url.
         controller(str): Client defined controller name.
         method (str): Client defined method name
             on the controller.
-        **kwargs: Client defined method keyword arguments.
+        \*\*kwargs: Client defined method keyword arguments.
 
     Returns:
         dict or str: Received data.

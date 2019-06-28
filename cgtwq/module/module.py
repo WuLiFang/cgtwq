@@ -73,10 +73,10 @@ class Module(ControllerGetterMixin):
         return self.database.call(*args, **kwargs)
 
     def select(self, *id_list):
-        """Create selection on this module.
+        r"""Create selection on this module.
 
         Args:
-            *id_list (text_type): Id list to select.
+            \*id_list (text_type): Id list to select.
 
         Returns:
             Selection: Created selection.
@@ -85,12 +85,15 @@ class Module(ControllerGetterMixin):
         return Selection(self, *id_list)
 
     def filter(self, *filters, **kwargs):
-        """Create selection with filter on this module.
+        r"""Create selection with filter on this module.
 
         Args:
-            *filters (FilterList, Filter): Filters for server.
-            **kwargs:
-                namespace (str, optional): Default field namespace.
+            \*filters (FilterList, Filter): Filters for server.
+            \*\*kwargs:
+
+        \*\*kwargs:
+            namespace (str, optional): Default field namespace.
+
         Returns:
             Selection: Created selection.
         """
@@ -109,13 +112,15 @@ class Module(ControllerGetterMixin):
         return Selection(self, *id_list)
 
     def distinct(self, *filters, **kwargs):
-        """Get distinct value in the module.
+        r"""Get distinct value in the module.
 
         Args:
-            *filters (FilterList, Filter): Filters for server.
-            **kwargs:
-                key: Distinct key, defaults to field of first filter.
-                namespace (str, optional): Default field namespace.
+            \*filters (FilterList, Filter): Filters for server.
+            \*\*kwargs:
+
+        \*\*kwargs:
+            key: Distinct key, defaults to field of first filter.
+            namespace (str, optional): Default field namespace.
 
         Returns:
             tuple
@@ -136,12 +141,14 @@ class Module(ControllerGetterMixin):
         return tuple(i[0] for i in resp)
 
     def create(self, kwargs=None, **data):
-        """Create entry from data.
+        r"""Create entry from data.
 
         Args:
             kwargs (dict):
-                namespace (str, optional): Default field namespace.
-            **data[str, Any]: Data to create a entry.
+            \*\*data[str, Any]: Data to create a entry.
+
+        \*\*data:
+            namespace (str, optional): Default field namespace.
         """
 
         kwargs = kwargs or dict()
@@ -154,11 +161,11 @@ class Module(ControllerGetterMixin):
                   sign_data_array=data)
 
     def count(self, *filters, **kwargs):
-        """Count matched entity in database.
+        r"""Count matched entity in database.
 
         Args:
-            *filters (FilterList, Filter): Filters for server.
-            **kwargs:
+            \\*filters (FilterList, Filter): Filters for server.
+            \*\*kwargs:
                 namespace (str, optional): Default field namespace.
 
         Returns:
@@ -213,7 +220,7 @@ class Module(ControllerGetterMixin):
         _format_field, reason='Use `Module.field.format` insted.')
 
     def _create_field(self, sign, type_, name=None, label=None):
-        """Create new field in the module.
+        r"""Create new field in the module.
 
         Args:
             sign (str): Field sign
@@ -227,7 +234,7 @@ class Module(ControllerGetterMixin):
         _create_field, reason='Use `Module.field.create` insted.')
 
     def _delete_field(self, id_):
-        """Delete field in the module.
+        r"""Delete field in the module.
 
         Args:
             id_ (str): Field id.

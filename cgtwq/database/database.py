@@ -64,7 +64,7 @@ class Database(core.ControllerGetterMixin):
         """Filter modules in this database.
 
         Args:
-            *filters (FilterList, Filter): Filters for server.
+            \\*filters (FilterList, Filter): Filters for server.
 
         Returns:
             tuple[Module]: Modules
@@ -96,7 +96,7 @@ class Database(core.ControllerGetterMixin):
             key (text_type): Data key.
             value (text_type): Data value
             is_user (bool, optional): Defaults to True.
-                If `is_user` is True, this data will be user specific.
+            If `is_user` is True, this data will be user specific.
         """
 
         accessor = self.userdata if is_user else self.metadata
@@ -112,7 +112,7 @@ class Database(core.ControllerGetterMixin):
         Args:
             key (text_type): Data key.
             is_user (bool, optional): Defaults to True.
-                If `is_user` is True, this data will be user specific.
+            If `is_user` is True, this data will be user specific.
 
         Returns:
             text_type: Data value.
@@ -126,7 +126,9 @@ class Database(core.ControllerGetterMixin):
         reason='Use `Database.metadata` or `Database.userdata` instead.')
 
     def _get_fileboxes(self, filters=None, id_=None):
-        """Get fileboxes in this database.
+        r"""Get fileboxes in this database.
+
+        Args:
             filters (FilterList, optional): Defaults to None. Filters to get filebox.
             id_ (text_type, optional): Defaults to None. Filebox id.
 
@@ -216,7 +218,7 @@ class Database(core.ControllerGetterMixin):
         """Get piplines from database.
 
         Args:
-            *filters (FilterList): Filter to get pipeline.
+            \*filters (FilterList): Filter to get pipeline.
 
         Returns:
             tuple[PipelineInfo]: namedtuple for ('id', 'name', 'module')

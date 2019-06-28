@@ -35,10 +35,10 @@ class Entry(Selection):
         return tuple(ret)
 
     def related(self, *filters):
-        """Select related entries.
+        r"""Select related entries.
 
         Args:
-            *filters: Pipeline filters.
+            \*filters: Pipeline filters.
 
         Returns:
             Selection

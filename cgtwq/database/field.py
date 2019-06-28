@@ -3,20 +3,20 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from . import core
 from ..core import FIELD_TYPES, ControllerGetterMixin
 from ..filter import Field, FilterList
 from ..model import FieldMeta
+from . import core
 
 
 class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
     """Field feature for database.  """
 
     def filter(self, *filters):
-        """Get field metadata in the database.
+        r"""Get field metadata in the database.
 
         Args:
-            *filters (FilterList, Filter): Filters for server.
+            \*filters (FilterList, Filter): Filters for server.
 
         Returns:
             tuple[FieldMeta]: Field information.
@@ -73,7 +73,7 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
         )
 
     def delete(self, id_):
-        """Delete field in the module.
+        r"""Delete field in the module.
 
         Args:
             id_ (str): Field id.

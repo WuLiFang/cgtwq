@@ -68,11 +68,11 @@ class PluginMeta(object):
         self.last_fetch_time = time.time()
 
     def set_fields(self, token=None, **data):
-        """Set field data for the plug-in.
+        r"""Set field data for the plug-in.
 
         Args:
             token (str, optional): Defaults to None. User token.
-            **data: Field name as key, Value as value.
+            \*\*data: Field name as key, Value as value.
         """
 
         token = token or core.CONFIG['DEFAULT_TOKEN']

@@ -3,20 +3,20 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from . import core
 from ..core import ControllerGetterMixin
 from ..filter import Field, FilterList
 from ..model import FileBoxMeta
+from . import core
 
 
 class DatabaseFilebox(core.DatabaseAttachment, ControllerGetterMixin):
     """Filebox feature for database.  """
 
     def filter(self, *filters):
-        """Filter fileboxes metadata in the database.
+        r"""Filter fileboxes metadata in the database.
 
         Args:
-            *filters (FilterList, Filter): Filters for server.
+            \*filters (FilterList, Filter): Filters for server.
 
         Returns:
             tuple[FileBoxMeta]: namedtuple for ('id', 'pipeline_id', 'title')
@@ -29,7 +29,7 @@ class DatabaseFilebox(core.DatabaseAttachment, ControllerGetterMixin):
                                   filters=filters,)
 
     def get(self, id_):
-        """Get filebox metadata from the database.
+        r"""Get filebox metadata from the database.
 
         Args:
             id_ (str): Filebox id.

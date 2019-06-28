@@ -13,7 +13,7 @@ class SelectionFilebox(SelectionAttachment):
     """File operation on selection.  """
 
     def from_id(self, id_):
-        """Get filebox information from id.
+        r"""Get filebox information from id.
 
         Args:
             id_ (str): Filebox id.

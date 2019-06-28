@@ -83,10 +83,10 @@ class Selection(tuple):
         return self.module.call(*args, **kwargs)
 
     def filter(self, *filters):
-        """Filter selection again.
+        r"""Filter selection again.
 
         Args:
-            *filters (Filter,FilterList): Additional filters.
+            \*filters (Filter,FilterList): Additional filters.
 
         Returns:
             Selection: Filtered selection.
@@ -95,10 +95,10 @@ class Selection(tuple):
         return self.module.filter(Field('id').in_(self), *filters)
 
     def count(self, *filters):
-        """Count matched entity in the selection.
+        r"""Count matched entity in the selection.
 
         Args:
-            *filters (Filter,FilterList): Filters.
+            \*filters (Filter,FilterList): Filters.
 
         Returns:
             int: Count value.
@@ -107,12 +107,14 @@ class Selection(tuple):
         return self.module.count(Field('id').in_(self), *filters)
 
     def distinct(self, *filters, **kwargs):
-        """Get distinct value in the selection.
+        r"""Get distinct value in the selection.
 
         Args:
-            *filters (FilterList, Filter): Filters for server.
-            **kwargs:
-                key: Distinct key, defaults to field of first filter.
+            \*filters (FilterList, Filter): Filters for server.
+            \*\*kwargs:
+
+        \*\*kwargs:
+            key: Distinct key, defaults to field of first filter.
 
         Returns:
             tuple
@@ -121,12 +123,15 @@ class Selection(tuple):
         return self.module.distinct(Field('id').in_(self), *filters, **kwargs)
 
     def get_fields(self, *fields, **kwargs):
-        """Get field information for the selection.
+        r"""Get field information for the selection.
 
         Args:
-            *fields: Server defined field sign.
-            **kwargs:
-                namespace (str, optional): Default namespace for key.
+            \*fields: Server defined field sign.
+            \*\*kwargs:
+
+        \*\*kwargs:
+            namespace (str, optional): Default namespace for key.
+
         Returns:
             ResultSet: Optimized tuple object contains fields data.
         """
@@ -141,12 +146,14 @@ class Selection(tuple):
         return ResultSet(server_fields, resp, self.module)
 
     def set_fields(self, kwargs=None, **data):
-        """Set field data for the selection.
+        r"""Set field data for the selection.
 
         Args:
             kwargs (dict):
-                namespace (str, optional): Default namespace for key.
-            **data: Field name as key, Value as value.
+            \*\*data: Field name as key, Value as value.
+
+        kwargs:
+            namespace (str, optional): Default namespace for key.
         """
 
         kwargs = kwargs or dict()
@@ -214,10 +221,10 @@ class Selection(tuple):
 
     @classmethod
     def from_data(cls, **kwargs):
-        """Get selection from dictionary-like data.
+        r"""Get selection from dictionary-like data.
 
         Arguments:
-            **kwargs:
+            \*\*kwargs:
                 database(str): Database name.
                 module(str): Module name.
                 module_type(str): Module type.

@@ -61,13 +61,13 @@ def call(controller, method, token, **data):
 
 
 def post(pathname, data, token, **kwargs):
-    """`POST` data to CGTeamWork server.
+    r"""`POST` data to CGTeamWork server.
 
     Args:
         pathname (str): Pathname for http host.
         data: Data to post.
         token (str): User token.
-        **kwargs: kwargs for `requests.post`
+        \*\*kwargs: kwargs for `requests.post`
 
     Returns:
         Server execution result.
@@ -94,12 +94,12 @@ def post(pathname, data, token, **kwargs):
 
 
 def get(pathname, token, **kwargs):
-    """`GET` request to CGTeamWork server.
+    r"""`GET` request to CGTeamWork server.
 
     Args:
         token (str unicode, optional): Defaults to None. If `token` is None,
             will use token from setting.
-        **kwargs: kwargs for `requests.get`
+        \*\*kwargs: kwargs for `requests.get`
 
     Returns:
         json server response .

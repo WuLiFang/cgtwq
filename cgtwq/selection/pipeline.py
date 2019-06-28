@@ -3,10 +3,10 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from . import core
 from ..core import ControllerGetterMixin
 from ..filter import Field
 from ..model import PipelineInfo
+from . import core
 
 
 class SelectionPipeline(core.SelectionAttachment, ControllerGetterMixin):
@@ -14,10 +14,10 @@ class SelectionPipeline(core.SelectionAttachment, ControllerGetterMixin):
     # pylint: disable=too-few-public-methods
 
     def all(self):
-        """Get all selection related pipelines.
+        r"""Get all selection related pipelines.
 
         Args:
-            *filters (FilterList, Filter): Filters for server.
+            \*filters (FilterList, Filter): Filters for server.
 
         Returns:
             tuple[PipelineInfo]

@@ -13,15 +13,15 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
 
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'cgtwq'
-copyright = '2019, NateScarlet <NateScarlet@Gmail.com>'
+copyright = '2018-2019, 北京吾立方数码科技有限公司'
 author = 'NateScarlet <NateScarlet@Gmail.com>'
 
 # The short X.Y version
@@ -41,10 +41,11 @@ release = '3.0.0-alpha.8'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
     'sphinx.ext.coverage',
-    'sphinx.ext.viewcode',
+    'sphinx.ext.doctest',
     'sphinx.ext.githubpages',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -103,6 +104,7 @@ html_static_path = ['_static']
 #
 # html_sidebars = {}
 
+html_search_language = 'zh'
 
 # -- Options for HTMLHelp output ---------------------------------------------
 

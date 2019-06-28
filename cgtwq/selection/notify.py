@@ -52,13 +52,13 @@ class SelectionNotify(SelectionAttachment):
                         "#from_account_id": account})
 
     def send(self, title, content, *to, **kwargs):
-        """Send message to users.
+        r"""Send message to users.
 
         Args:
             title (text_type): Message title.
             content (text_type): Message content, support html.
             *to: Users that will recives message, use account_id.
-            **kwargs:
+            \*\*kwargs:
                 from_: Unknown effect. used in `cgtw` module.
         """
         # pylint: disable=invalid-name

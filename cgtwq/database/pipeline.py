@@ -3,10 +3,10 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from . import core
 from ..core import ControllerGetterMixin
 from ..filter import Field, FilterList
 from ..model import PipelineInfo
+from . import core
 
 
 class DatabasePipeline(core.DatabaseAttachment, ControllerGetterMixin):
@@ -14,10 +14,10 @@ class DatabasePipeline(core.DatabaseAttachment, ControllerGetterMixin):
     # pylint: disable=too-few-public-methods
 
     def filter(self, *filters):
-        """Filter pipeline in the database.
+        r"""Filter pipeline in the database.
 
         Args:
-            *filters (FilterList, Filter): Filters for server.
+            \*filters (FilterList, Filter): Filters for server.
 
         Returns:
             tuple[PipelineInfo]

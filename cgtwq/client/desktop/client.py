@@ -13,10 +13,10 @@ from six import text_type
 
 from wlf.decorators import deprecated
 
-from . import core
 from ...core import CONFIG, CachedFunctionMixin
 from ...exceptions import IDError
 from ...selection import Selection
+from . import core
 from .plugin import DesktopClientPlugin
 
 LOGGER = logging.getLogger(__name__)
@@ -180,13 +180,12 @@ class DesktopClient(CachedFunctionMixin):
         return Selection.from_data(**plugin_data._asdict())
 
     def call(self, controller, method, **kwargs):
-        """Call method on the cgteamwork client.
+        r"""Call method on the cgteamwork client.
 
         Args:
             controller (str): Client defined controller name.
-            method (str): Client defined method name
-                on the controller.
-            **kwargs: Client defined method keyword arguments.
+            method (str): Client defined method name on the controller.
+            \*\*kwargs: Client defined method keyword arguments.
 
         Returns:
             dict or str: Received data.
