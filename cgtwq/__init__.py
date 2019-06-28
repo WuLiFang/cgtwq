@@ -11,9 +11,9 @@ from .account import get_account, get_account_id, login
 from .client import DesktopClient
 from .database import Database
 from .exceptions import (AccountError, AccountNotFoundError,
-                         CGTeamWorkException, IDError, LoginError,
-                         PasswordError, PermissionError, PrefixError,
-                         SignError)
+                         CGTeamWorkException, EmptySelection, IDError,
+                         LoginError, PasswordError, PermissionError,
+                         PrefixError, SignError)
 from .filter import Field, Filter, FilterList
 from .message import Message
 from .module import Module
@@ -34,4 +34,4 @@ __all__ = ['login', 'get_account',
            'ACCOUNT', 'PROJECT', 'ResultSet', 'Entry',
            'Selection', 'AccountError', 'AccountNotFoundError',
            'CGTeamWorkException', 'IDError', 'LoginError', 'PasswordError',
-           'PermissionError', 'PrefixError', 'SignError']
+           'PermissionError', 'PrefixError', 'SignError','EmptySelection']

@@ -77,14 +77,22 @@ class PrefixError(CGTeamWorkException):
     """Indicate no shot match the prefix."""
 
 
+@six.add_metaclass(
+    _template_meta(
+        'Can not found any prefix matched shots',
+        '无镜头匹配此前缀'))
+class EmptySelection(CGTeamWorkException, ValueError):
+    """Indicate no entry match the criteria."""
+
+
 @six.add_metaclass(_template_meta('Wrong password', '密码错误'))
 class PasswordError(CGTeamWorkException):
-    """Inicate password not correct.  """
+    """Indicate password not correct.  """
 
 
 @six.add_metaclass(_template_meta('Account not found', '无此帐号'))
 class AccountNotFoundError(CGTeamWorkException):
-    """Inicate account not found.  """
+    """Indicate account not found.  """
 
 
 class AccountError(CGTeamWorkException):
@@ -102,9 +110,9 @@ class AccountError(CGTeamWorkException):
         return '用户不匹配\n\t已分配给:\t{}\n\t当前用户:\t{}'.format(self.owner or '<未分配>', self.current)
 
 
-@six.add_metaclass(
+@six.add_metaclass(  # pylint: disable=redefined-builtin
     _template_meta(
-        'Suffcient permission',
+        'Sufficient permission',
         '权限不足'))
 class PermissionError(CGTeamWorkException):
-    """Indicate suffcient permission.  """
+    """Indicate sufficient permission.  """

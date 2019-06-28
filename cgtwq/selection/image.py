@@ -62,6 +62,7 @@ class SelectionImage(SelectionAttachment):
         return ret
 
     def get_one(self, field='image'):
+        # type: (str) -> ImageInfo
         """Get single imageinfo used on the field.
 
         Args:
@@ -77,6 +78,6 @@ class SelectionImage(SelectionAttachment):
         try:
             images = self.get(field)
             assert len(images) == 1, 'Multiple image on the selection.'
-            return images[0]  # type: ImageInfo
+            return images[0]
         except IndexError:
             raise ValueError('No image on this selection.')

@@ -7,6 +7,7 @@ import six
 
 from wlf.decorators import deprecated
 
+from ..exceptions import EmptySelection
 from ..filter import Field
 from ..resultset import ResultSet
 from .core import _OS
@@ -21,14 +22,18 @@ from .pipeline import SelectionPipeline
 
 
 class Selection(tuple):
-    """Selection with all feature.  """
+    """Selection with all feature.  
+
+    Raises:
+        EmptySelection: when selection size is 0.
+    """
     # pylint: disable=too-many-instance-attributes
     _token = None
 
     def __new__(cls, module, *id_list):
         # pylint: disable=unused-argument
         if not id_list:
-            raise ValueError('Empty selection.')
+            raise EmptySelection()
         assert all(isinstance(i, six.text_type) for i in id_list), id_list
         return super(Selection, cls).__new__(cls, id_list)
 
