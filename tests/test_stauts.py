@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import cgtwq
-import util
+from tests import util
 
 
 @util.skip_if_not_logged_in

@@ -28,3 +28,11 @@ CGTEAMWORK_MIN_FETCH_INTERVAL
   默认值: ``1``
 
   CGTeamWork 插件数据缓存有效秒数。
+
+CGTWQ_TEST_ACCOUNT
+
+  运行测试时使用的账号，如果未提供则尝试使用当前运行桌面客户端帐号。
+
+CGTWQ_TEST_PASSWORD
+
+  运行测试时使用的密码，如果未提供则尝试使用当前运行桌面客户端帐号。

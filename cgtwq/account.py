@@ -38,6 +38,7 @@ def get_account_id(token=None):
 
 
 def login(account, password):
+    # type: (str, str) -> AccountInfo
     """Login on server.
 
     Args:

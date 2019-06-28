@@ -9,7 +9,7 @@ import uuid
 import pytest
 
 import cgtwq
-import util
+from tests import util
 
 TEST_PLUGIN_META = {'id': '9C8691BA-1CA1-4081-EED0-09BAFA388E8B',
                     'name': '上传工具',
@@ -19,13 +19,11 @@ TEST_PLUGIN_META = {'id': '9C8691BA-1CA1-4081-EED0-09BAFA388E8B',
 @pytest.fixture(name='plugin')
 @util.skip_if_not_logged_in
 def _plugin():
-    cgtwq.DesktopClient().connect()
     return cgtwq.PluginMeta(TEST_PLUGIN_META['id'])
 
 
 @util.skip_if_not_logged_in
 def test_filter_plugin():
-    cgtwq.DesktopClient().connect()
     result = cgtwq.PluginMeta.filter()
     for i in result:
         assert isinstance(i, cgtwq.PluginMeta)
@@ -35,7 +33,7 @@ def test_filter_plugin():
 
 
 @util.skip_if_not_logged_in
-def test_plugin_accesor(plugin):
+def test_plugin_accessor(plugin):
 
     assert plugin.name == TEST_PLUGIN_META['name']
     assert plugin.type == TEST_PLUGIN_META['type']

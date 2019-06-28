@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import cgtwq
 import cgtwq.server.web
-import util
+from tests import util
 
 
 @util.skip_if_not_logged_in

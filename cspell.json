@@ -18,6 +18,7 @@
         "Popen",
         "pylint",
         "pytest",
+        "pytestmark",
         "quickstart",
         "sdktest",
         "skipif",

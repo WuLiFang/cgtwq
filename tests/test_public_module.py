@@ -5,20 +5,18 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import cgtwq
-from util import skip_if_not_logged_in
+from tests import util
 
 
-@skip_if_not_logged_in
+@util.skip_if_not_logged_in
 def test_select_all():
-    cgtwq.DesktopClient().connect()
 
     cgtwq.ACCOUNT.select_all()
     cgtwq.PROJECT.select_all()
 
 
-@skip_if_not_logged_in
+@util.skip_if_not_logged_in
 def test_select_activated():
-    cgtwq.DesktopClient().connect()
 
     cgtwq.ACCOUNT.select_activated()
     cgtwq.PROJECT.select_activated()
@@ -27,9 +25,8 @@ def test_select_activated():
     cgtwq.ACCOUNT.all()
 
 
-@skip_if_not_logged_in
+@util.skip_if_not_logged_in
 def test_get_public_module_names():
-    cgtwq.DesktopClient().connect()
 
     cgtwq.ACCOUNT.names()
     cgtwq.PROJECT.names()

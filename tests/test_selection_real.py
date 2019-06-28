@@ -1,4 +1,5 @@
 # -*- coding=UTF-8 -*-
+# pylint: disable=invalid-name
 """Test module `cgtwq.database`."""
 
 from __future__ import (absolute_import, division, print_function,
@@ -14,17 +15,16 @@ import six
 import cgtwq
 import cgtwq.database
 import cgtwq.model
-import util
-from util import skip_if_not_logged_in
+from tests import util
 
-database = cgtwq.database  # pylint: disable=invalid-name
-model = cgtwq.model  # pylint: disable=invalid-name
+database = cgtwq.database
+model = cgtwq.model
+
+pytestmark = [util.skip_if_not_logged_in]
 
 
-@skip_if_not_logged_in
 class SelectionTestCase(TestCase):
     def setUp(self):
-        cgtwq.DesktopClient().connect()
         module = database.Database('proj_sdktest').module('shot')
         select = module.filter(cgtwq.Filter('flow_name', '合成') &
                                cgtwq.Filter('shot.shot',
@@ -96,7 +96,6 @@ class SelectionTestCase(TestCase):
 
 
 @pytest.fixture(name='select')
-@skip_if_not_logged_in
 def _select():
     return cgtwq.Database('proj_sdktest').module('shot').select(
         'D84AF30B-89FD-D06D-349A-F01F5D99744C')
@@ -105,7 +104,6 @@ def _select():
 logging.basicConfig(level=10)
 
 
-@skip_if_not_logged_in
 def test_flow(select):
     for i in ('leader_status', 'director_status', 'client_status'):
         try:
@@ -119,21 +117,18 @@ def test_flow(select):
             continue
 
 
-@skip_if_not_logged_in
 def test_flow_submit(select):
     select.flow.submit(message='test submit')
     # TODO:Remove below test at next major version.
     select.submit(note='test submit old')
 
 
-@skip_if_not_logged_in
 def test_flow_assign(select):
     accounts = [cgtwq.account.get_account_id(
         cgtwq.core.CONFIG['DEFAULT_TOKEN'])]
     select.flow.assign(accounts)
 
 
-@skip_if_not_logged_in
 def test_history(select):
 
     # Count
@@ -152,7 +147,6 @@ def test_history(select):
     assert select['leader_status'][0] == 'Close'
 
 
-@skip_if_not_logged_in
 def test_note(select):
     assert isinstance(select, cgtwq.Selection)
     note_message = 'TEST-{}'.format(uuid.uuid4().hex)
@@ -168,19 +162,16 @@ def test_note(select):
     assert list(set(notes).difference(select.notify.get()))[0] is note
 
 
-@skip_if_not_logged_in
 def test_selection_count(select):
     result = select.count(cgtwq.Field('shot.shot').has('_sc001'))
     assert isinstance(result, int)
 
 
-@skip_if_not_logged_in
 def test_selection_distinct(select):
     result = select.distinct(cgtwq.Field('shot.shot').has('_sc001'))
     assert isinstance(result, tuple)
 
 
-@skip_if_not_logged_in
 def test_selection_pipeline(select):
     result = select.pipeline.all()
     assert result
@@ -190,7 +181,6 @@ def test_selection_pipeline(select):
     assert isinstance(result, cgtwq.model.PipelineInfo)
 
 
-@skip_if_not_logged_in
 def test_selection_folder(select):
     result = select.folder.all()
     assert isinstance(result, list)

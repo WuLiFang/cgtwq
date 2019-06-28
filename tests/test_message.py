@@ -7,7 +7,7 @@ from __future__ import (absolute_import, division, print_function,
 import pytest
 
 import cgtwq
-import util
+from tests import util
 
 Message = cgtwq.message.Message
 

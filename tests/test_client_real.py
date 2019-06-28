@@ -1,4 +1,5 @@
 # -*- coding=UTF-8 -*-
+# pylint: disable=invalid-name
 """Test `cgtw.client` module on real server.  """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
@@ -6,10 +7,11 @@ from __future__ import (absolute_import, division, print_function,
 from unittest import TestCase, main
 
 import cgtwq
-from util import skip_if_not_logged_in
+from tests import util
+
+pytestmark = [util.skip_if_desktop_client_not_running]
 
 
-@skip_if_not_logged_in
 class DesktopClientTestCase(TestCase):
     def test_plugin_data(self):
         try:
@@ -25,7 +27,6 @@ class DesktopClientTestCase(TestCase):
         cgtwq.DesktopClient().refresh_selected('proj_sdktest', 'shot')
 
 
-@skip_if_not_logged_in
 def test_current_select():
     try:
         select = cgtwq.DesktopClient().current_select()

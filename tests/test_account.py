@@ -10,7 +10,7 @@ import uuid
 import pytest
 
 import cgtwq.account
-import util
+from tests import util
 
 
 @util.skip_if_not_logged_in

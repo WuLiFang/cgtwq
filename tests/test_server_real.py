@@ -5,10 +5,10 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import cgtwq
-from util import skip_if_not_logged_in
+from tests import util
 
 
-@skip_if_not_logged_in
+@util.skip_if_not_logged_in
 def test_account():
     account = cgtwq.get_account()
     account_id = cgtwq.get_account_id()

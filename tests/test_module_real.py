@@ -9,7 +9,7 @@ import random
 import pytest
 
 import cgtwq
-import util
+from tests import util
 
 
 @pytest.fixture(name='module')

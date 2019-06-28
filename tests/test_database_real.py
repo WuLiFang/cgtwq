@@ -13,13 +13,11 @@ import six
 
 import cgtwq
 from cgtwq import Filter, model
-from util import skip_if_not_logged_in
+from tests import util
 
 
-@skip_if_not_logged_in
 class DataBaseTestCase(TestCase):
     def setUp(self):
-        cgtwq.DesktopClient().connect()
         self.database = cgtwq.Database('proj_sdktest')
 
     def test_get_filebox(self):
@@ -46,10 +44,8 @@ class DataBaseTestCase(TestCase):
         self.assertEqual(result, dummy_data)
 
 
-@skip_if_not_logged_in
 class ModuleTestCase(TestCase):
     def setUp(self):
-        cgtwq.DesktopClient().connect()
         self.module = cgtwq.Database('proj_sdktest').module('shot')
 
     def test_pipeline(self):
@@ -70,20 +66,16 @@ class ModuleTestCase(TestCase):
         self.assertIsInstance(result, int)
 
 
-@skip_if_not_logged_in
 class ProjectTestCase(TestCase):
     def test_names(self):
-        cgtwq.DesktopClient().connect()
         result = cgtwq.PROJECT.names()
         self.assertIsInstance(result, tuple)
         for i in result:
             self.assertIsInstance(i, six.text_type)
 
 
-@skip_if_not_logged_in
 class AccountTestCase(TestCase):
     def test_names(self):
-        cgtwq.DesktopClient().connect()
         result = cgtwq.ACCOUNT.names()
         self.assertIsInstance(result, tuple)
         for i in result:
@@ -91,25 +83,21 @@ class AccountTestCase(TestCase):
 
 
 @pytest.fixture(name='database')
-@skip_if_not_logged_in
 def _database():
     return cgtwq.Database('proj_sdktest')
 
 
-@skip_if_not_logged_in
 def test_get_software(database):
     assert isinstance(database, cgtwq.Database)
     path = database.software.get_path('maya')
     assert isinstance(path, six.text_type)
 
 
-@skip_if_not_logged_in
 def test_database_modules(database):
     result = database.filter()
     assert all(isinstance(i, cgtwq.Module) for i in result)
 
 
-@skip_if_not_logged_in
 def test_database_fields(database):
     # Get
     assert isinstance(database, cgtwq.Database)
@@ -129,7 +117,6 @@ def test_database_fields(database):
     database.field.delete(field.id)
 
 
-@skip_if_not_logged_in
 def test_database_filebox(database):
     result = database.filebox.filter()
     assert all(isinstance(i, cgtwq.model.FileBoxMeta) for i in result)
@@ -137,7 +124,6 @@ def test_database_filebox(database):
     result = database.filebox.from_id('271')
 
 
-@skip_if_not_logged_in
 def test_database_software(database):
     assert isinstance(database, cgtwq.Database)
     result = database.software.get_path('maya')
