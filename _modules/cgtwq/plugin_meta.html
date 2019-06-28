@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>cgtwq.plugin_meta &#8212; cgtwq 3.0.0-alpha.8 文档</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>cgtwq.plugin_meta 源代码</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding=UTF-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Handle CGTeamWork plugin metadata.  &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span>
+                        <span class="n">unicode_literals</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+
+<span class="kn">import</span> <span class="nn">six</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">core</span><span class="p">,</span> <span class="n">server</span>
+<span class="kn">from</span> <span class="nn">.filter</span> <span class="k">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">FilterList</span>
+<span class="kn">from</span> <span class="nn">.model</span> <span class="k">import</span> <span class="n">PluginArgumentInfo</span><span class="p">,</span> <span class="n">PluginInfo</span>
+
+
+<span class="k">def</span> <span class="nf">_accessor</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+    <span class="c1"># pylint:disable=protected-access</span>
+    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cached_info</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fields</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+            <span class="n">_get_server_field</span><span class="p">(</span><span class="n">PluginInfo</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+            <span class="n">value</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get</span><span class="p">,</span> <span class="n">_set</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PluginMeta"><a class="viewcode-back" href="../../reference.html#cgtwq.PluginMeta">[文档]</a><span class="nd">@six</span><span class="o">.</span><span class="n">python_2_unicode_compatible</span>
+<span class="k">class</span> <span class="nc">PluginMeta</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; CGTeamWork plug-in metadata.  &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">_accessor</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">_accessor</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PluginMeta</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">uuid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_fetch_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_info</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">call</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">call</span><span class="p">,</span> <span class="s1">&#39;c_plugin&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span> <span class="o">=</span> <span class="n">PluginMetaArguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;arguments&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Plugin&lt;uuid=</span><span class="si">{0.uuid}</span><span class="s1">, name=</span><span class="si">{0.name}</span><span class="s1">, type=</span><span class="si">{0.type}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PluginMeta.fetch"><a class="viewcode-back" href="../../reference.html#cgtwq.PluginMeta.fetch">[文档]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch plugin data from server.  &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_fetch_time</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_fetch_time</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">core</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;MIN_FETCH_INTERVAL&#39;</span><span class="p">])):</span>
+            <span class="k">return</span>
+
+        <span class="n">token</span> <span class="o">=</span> <span class="n">token</span> <span class="ow">or</span> <span class="n">core</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;DEFAULT_TOKEN&#39;</span><span class="p">]</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+            <span class="s1">&#39;c_plugin&#39;</span><span class="p">,</span> <span class="s1">&#39;get_one_with_id&#39;</span><span class="p">,</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+            <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+            <span class="n">field_array</span><span class="o">=</span><span class="n">PluginInfo</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cached_info</span> <span class="o">=</span> <span class="n">PluginInfo</span><span class="p">(</span><span class="o">*</span><span class="n">resp</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_fetch_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PluginMeta.set_fields"><a class="viewcode-back" href="../../reference.html#cgtwq.PluginMeta.set_fields">[文档]</a>    <span class="k">def</span> <span class="nf">set_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Set field data for the plug-in.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (str, optional): Defaults to None. User token.</span>
+<span class="sd">            \*\*data: Field name as key, Value as value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">token</span> <span class="o">=</span> <span class="n">token</span> <span class="ow">or</span> <span class="n">core</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;DEFAULT_TOKEN&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;set_one_with_id&#39;</span><span class="p">,</span>
+                  <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+                  <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uuid</span><span class="p">,</span>
+                  <span class="n">field_data_array</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_fetch_time</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="PluginMeta.get_argument"><a class="viewcode-back" href="../../reference.html#cgtwq.PluginMeta.get_argument">[文档]</a>    <span class="k">def</span> <span class="nf">get_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get argument information.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): Argument key.</span>
+<span class="sd">            token (str, optional): Defaults to None. User token.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            PluginArgumentInfo: Plug-in argument information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached_info</span><span class="o">.</span><span class="n">arguments</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">PluginArgumentInfo</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="PluginMeta.set_argument"><a class="viewcode-back" href="../../reference.html#cgtwq.PluginMeta.set_argument">[文档]</a>    <span class="k">def</span> <span class="nf">set_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set argument data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (str): Data key.</span>
+<span class="sd">            value (any, optional): Defaults to None. Data value.</span>
+<span class="sd">            description (str, optional): Defaults to None. Argument description.</span>
+<span class="sd">            token (str, optional): Defaults to None. User token.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="n">default_value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">default_descrtion</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
+            <span class="n">old_value</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old_value</span><span class="p">,</span> <span class="n">PluginArgumentInfo</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">old_value</span><span class="p">)</span>
+            <span class="n">default_value</span> <span class="o">=</span> <span class="n">old_value</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">default_descrtion</span> <span class="o">=</span> <span class="n">old_value</span><span class="o">.</span><span class="n">description</span>
+
+        <span class="n">new_value</span> <span class="o">=</span> <span class="n">PluginArgumentInfo</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">value</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">default_value</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description</span> <span class="k">if</span> <span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">default_descrtion</span>
+        <span class="p">)</span>
+
+        <span class="n">payload</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">_asdict</span><span class="p">())</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">v</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fields</span><span class="p">(</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+            <span class="n">argv</span><span class="o">=</span><span class="n">payload</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="PluginMeta.filter"><a class="viewcode-back" href="../../reference.html#cgtwq.PluginMeta.filter">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter plugins from server.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filters (Filter or FilterList, optional): Defaults to None. Plugin filter</span>
+<span class="sd">            token (str, optional): Defaults to None. User token.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[Plugin]: Matched plug-ins.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">filters</span> <span class="o">=</span> <span class="n">filters</span> <span class="ow">or</span> <span class="n">Field</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">token</span> <span class="ow">or</span> <span class="n">core</span><span class="o">.</span><span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;DEFAULT_TOKEN&#39;</span><span class="p">]</span>
+
+        <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+            <span class="s1">&#39;c_plugin&#39;</span><span class="p">,</span> <span class="s1">&#39;get_with_filter&#39;</span><span class="p">,</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+            <span class="n">field_array</span><span class="o">=</span><span class="n">PluginInfo</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span>
+            <span class="n">filter_array</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">from_info</span><span class="p">(</span><span class="n">PluginInfo</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="PluginMeta.from_info"><a class="viewcode-back" href="../../reference.html#cgtwq.PluginMeta.from_info">[文档]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_info</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Plugin object from info.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            info (PluginInfo): Plugin information.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Plugin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">PluginInfo</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">_cached_info</span> <span class="o">=</span> <span class="n">info</span>  <span class="c1"># pylint:disable=protected-access</span>
+        <span class="k">return</span> <span class="n">ret</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_get_server_field</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">field</span><span class="p">)]</span>
+
+
+<span class="k">class</span> <span class="nc">PluginMetaArguments</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plugin metadata argument accessor.  &quot;&quot;&quot;</span>
+    <span class="c1"># pylint:disable=protected-access</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span> <span class="n">PluginMeta</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span> <span class="o">=</span> <span class="n">plugin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_field</span> <span class="o">=</span> <span class="n">_get_server_field</span><span class="p">(</span><span class="n">PluginInfo</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Corresponse information data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A copy of data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span><span class="o">.</span><span class="n">fetch</span><span class="p">()</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plugin</span><span class="o">.</span><span class="n">_cached_info</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span><span class="o">.</span><span class="n">get_argument</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span><span class="o">.</span><span class="n">set_argument</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
+        <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span><span class="o">.</span><span class="n">set_fields</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">server_field</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">cgtwq</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+<p class="caption"><span class="caption-text">内容:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../env-vars.html">环境变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference.html">编程参考</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">模块代码</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="转向" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2019, 北京吾立方数码科技有限公司.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

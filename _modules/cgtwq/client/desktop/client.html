@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>cgtwq.client.desktop.client &#8212; cgtwq 3.0.0-alpha.8 文档</title>
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>cgtwq.client.desktop.client 源代码</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding=UTF-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Get information from CGTeamWork GUI client.  &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">Popen</span>
+
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">text_type</span>
+
+<span class="kn">from</span> <span class="nn">wlf.decorators</span> <span class="k">import</span> <span class="n">deprecated</span>
+
+<span class="kn">from</span> <span class="nn">...core</span> <span class="k">import</span> <span class="n">CONFIG</span><span class="p">,</span> <span class="n">CachedFunctionMixin</span>
+<span class="kn">from</span> <span class="nn">...exceptions</span> <span class="k">import</span> <span class="n">IDError</span>
+<span class="kn">from</span> <span class="nn">...selection</span> <span class="k">import</span> <span class="n">Selection</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">core</span>
+<span class="kn">from</span> <span class="nn">.plugin</span> <span class="k">import</span> <span class="n">DesktopClientPlugin</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DesktopClient"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient">[文档]</a><span class="k">class</span> <span class="nc">DesktopClient</span><span class="p">(</span><span class="n">CachedFunctionMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Communicate with a CGTeamWork official GUI clients.  &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">socket_url</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DesktopClient</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">socket_url</span> <span class="o">=</span> <span class="n">socket_url</span> <span class="ow">or</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;DESKTOP_WEBSOCKET_URL&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Attachment.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span> <span class="o">=</span> <span class="n">DesktopClientPlugin</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Shorthand method.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_main_widget</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">,</span> <span class="s2">&quot;main_widget&quot;</span><span class="p">,</span>
+            <span class="n">module</span><span class="o">=</span><span class="s2">&quot;main_widget&quot;</span><span class="p">,</span>
+            <span class="n">database</span><span class="o">=</span><span class="s2">&quot;main_widget&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DesktopClient.connect"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.connect">[文档]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update module config from desktop client.  &quot;&quot;&quot;</span>
+
+        <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;URL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;http://</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server_ip</span><span class="p">())</span>
+        <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;DEFAULT_TOKEN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DesktopClient.executable"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.executable">[文档]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">executable</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Get a cgteamwork client executable.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            text_type: Executable path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get client executable.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">cgtw</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">cgtw</span><span class="o">.</span><span class="vm">__file__</span><span class="p">,</span> <span class="s1">&#39;../../cgtw/CgTeamWork.exe&#39;</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="c1"># Try use default when sys.path not been set correctly.</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="s2">&quot;C:/cgteamwork/bin/cgtw/CgTeamWork.exe&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">executable</span><span class="p">):</span>
+            <span class="n">executable</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">executable</span></div>
+
+<div class="viewcode-block" id="DesktopClient.start"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.start">[文档]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Start client if not running.  &quot;&quot;&quot;</span>
+
+        <span class="n">executable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executable</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">executable</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
+            <span class="n">Popen</span><span class="p">(</span><span class="n">executable</span><span class="p">,</span>
+                  <span class="n">cwd</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">executable</span><span class="p">),</span>
+                  <span class="n">close_fds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DesktopClient.is_running"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.is_running">[文档]</a>    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if client is running.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if client is running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="DesktopClient.is_logged_in"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.is_logged_in">[文档]</a>    <span class="k">def</span> <span class="nf">is_logged_in</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if client is logged in.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if client is logged in.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+    <span class="k">def</span> <span class="nf">_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">is_selected_only</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;view_control&#39;</span><span class="p">,</span>
+                  <span class="s1">&#39;refresh_select&#39;</span> <span class="k">if</span> <span class="n">is_selected_only</span> <span class="k">else</span> <span class="s1">&#39;refresh&#39;</span><span class="p">,</span>
+                  <span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span>
+                  <span class="n">database</span><span class="o">=</span><span class="n">database</span><span class="p">,</span>
+                  <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;send&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DesktopClient.refresh"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.refresh">[文档]</a>    <span class="k">def</span> <span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Refresh specified view in client</span>
+<span class="sd">        if matched view is opened.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            database (text_type): Database of view.</span>
+<span class="sd">            module (text_type): Module of view.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DesktopClient.refresh_selected"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.refresh_selected">[文档]</a>    <span class="k">def</span> <span class="nf">refresh_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Refresh selected part of specified view in client</span>
+<span class="sd">        if matched view is opened.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            database (text_type): Database of view.</span>
+<span class="sd">            module (text_type): Module of view.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DesktopClient.token"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.token">[文档]</a>    <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_age</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cached client token.  &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached</span><span class="p">(</span><span class="s1">&#39;token&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token</span><span class="p">,</span> <span class="n">max_age</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Client token.  &quot;&quot;&quot;</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_main_widget</span><span class="p">(</span><span class="s2">&quot;get_token&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">text_type</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text_type</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DesktopClient.server_ip"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.server_ip">[文档]</a>    <span class="k">def</span> <span class="nf">server_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_age</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cached server ip.  &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cached</span><span class="p">(</span><span class="s1">&#39;server_ip&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server_ip</span><span class="p">,</span> <span class="n">max_age</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_server_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Server ip current using by client.  &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">_get_typed_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">call_main_widget</span><span class="p">(</span><span class="s2">&quot;get_server_ip&quot;</span><span class="p">),</span>
+            <span class="n">text_type</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DesktopClient.server_http"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.server_http">[文档]</a>    <span class="k">def</span> <span class="nf">server_http</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Server http current using by client.  &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">_get_typed_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">call_main_widget</span><span class="p">(</span><span class="s2">&quot;get_server_http&quot;</span><span class="p">),</span>
+            <span class="n">text_type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DesktopClient.selection"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.selection">[文档]</a>    <span class="k">def</span> <span class="nf">selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get current selection from client.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Selection: Current selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">plugin_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_data</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">IDError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Empty selection.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Selection</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span><span class="o">**</span><span class="n">plugin_data</span><span class="o">.</span><span class="n">_asdict</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="DesktopClient.call"><a class="viewcode-back" href="../../../../reference.html#cgtwq.DesktopClient.call">[文档]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Call method on the cgteamwork client.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            controller (str): Client defined controller name.</span>
+<span class="sd">            method (str): Client defined method name on the controller.</span>
+<span class="sd">            \*\*kwargs: Client defined method keyword arguments.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict or str: Received data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">socket_url</span><span class="p">,</span> <span class="n">controller</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="c1"># Deprecated methods.</span>
+
+    <span class="n">current_select</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">selection</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `Desktop.selection` instead.&#39;</span><span class="p">)</span>
+
+    <span class="n">get_plugin_data</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">uuid</span><span class="p">),</span>
+        <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `DesktopClient.plugin.data` instead.&#39;</span><span class="p">)</span>
+
+    <span class="n">send_plugin_result</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">False</span><span class="p">:</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">plugin</span><span class="o">.</span><span class="n">send_result</span><span class="p">(</span><span class="n">process_id</span><span class="o">=</span><span class="n">uuid</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">)),</span>
+        <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `DesktopClient.plugin.send_result` instead.&#39;</span>
+    <span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_typed_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">type_</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">type_</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">cgtwq</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+<p class="caption"><span class="caption-text">内容:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../env-vars.html">环境变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../reference.html">编程参考</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">模块代码</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="转向" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2019, 北京吾立方数码科技有限公司.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

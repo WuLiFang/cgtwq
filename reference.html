@@ -1,0 +1,1387 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>编程参考 &#8212; cgtwq 3.0.0-alpha.8 文档</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="prev" title="环境变量" href="env-vars.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-cgtwq">
+<span id="id1"></span><h1>编程参考<a class="headerlink" href="#module-cgtwq" title="永久链接至标题">¶</a></h1>
+<p>CGTeamWork python client for humans.</p>
+<dl class="function">
+<dt id="cgtwq.login">
+<code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">login</code><span class="sig-paren">(</span><em class="sig-param">account</em>, <em class="sig-param">password</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/account.html#login"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.login" title="永久链接至目标">¶</a></dt>
+<dd><p>Login on server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>account</strong> (<em>str</em>) – Account name.</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – Password.</p></li>
+</ul>
+</dd>
+<dt class="field-even">引发</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – When login fail.</p>
+</dd>
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Account information.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>AccountInfo</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgtwq.get_account">
+<code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">get_account</code><span class="sig-paren">(</span><em class="sig-param">token=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/account.html#get_account"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.get_account" title="永久链接至目标">¶</a></dt>
+<dd><p>Get account from token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>str</em>) – Server token</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Account name.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgtwq.get_account_id">
+<code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">get_account_id</code><span class="sig-paren">(</span><em class="sig-param">token=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/account.html#get_account_id"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.get_account_id" title="永久链接至目标">¶</a></dt>
+<dd><p>Get account id from token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>token</strong> (<em>str</em>) – Server token</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Account id.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.DesktopClient">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">DesktopClient</code><span class="sig-paren">(</span><em class="sig-param">socket_url=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient" title="永久链接至目标">¶</a></dt>
+<dd><p>Communicate with a CGTeamWork official GUI clients.</p>
+<dl class="method">
+<dt id="cgtwq.DesktopClient.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param">controller</em>, <em class="sig-param">method</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.call"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.call" title="永久链接至目标">¶</a></dt>
+<dd><p>Call method on the cgteamwork client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>controller</strong> (<em>str</em>) – Client defined controller name.</p></li>
+<li><p><strong>method</strong> (<em>str</em>) – Client defined method name on the controller.</p></li>
+<li><p><strong>**kwargs</strong> – Client defined method keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Received data.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>dict or str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.connect">
+<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.connect"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.connect" title="永久链接至目标">¶</a></dt>
+<dd><p>Update module config from desktop client.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.current_select">
+<code class="sig-name descname">current_select</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.DesktopClient.current_select" title="永久链接至目标">¶</a></dt>
+<dd><p>Get current selection from client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Current selection.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p><a class="reference internal" href="#cgtwq.Selection" title="cgtwq.Selection">Selection</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.executable">
+<em class="property">static </em><code class="sig-name descname">executable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.executable"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.executable" title="永久链接至目标">¶</a></dt>
+<dd><p>Get a cgteamwork client executable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Executable path.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>text_type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.is_logged_in">
+<code class="sig-name descname">is_logged_in</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.is_logged_in"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.is_logged_in" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if client is logged in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>True if client is logged in.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.is_running">
+<code class="sig-name descname">is_running</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.is_running"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.is_running" title="永久链接至目标">¶</a></dt>
+<dd><p>Check if client is running.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>True if client is running.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.refresh">
+<code class="sig-name descname">refresh</code><span class="sig-paren">(</span><em class="sig-param">database</em>, <em class="sig-param">module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.refresh"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.refresh" title="永久链接至目标">¶</a></dt>
+<dd><p>Refresh specified view in client
+if matched view is opened.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>database</strong> (<em>text_type</em>) – Database of view.</p></li>
+<li><p><strong>module</strong> (<em>text_type</em>) – Module of view.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.refresh_selected">
+<code class="sig-name descname">refresh_selected</code><span class="sig-paren">(</span><em class="sig-param">database</em>, <em class="sig-param">module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.refresh_selected"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.refresh_selected" title="永久链接至目标">¶</a></dt>
+<dd><p>Refresh selected part of specified view in client
+if matched view is opened.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>database</strong> (<em>text_type</em>) – Database of view.</p></li>
+<li><p><strong>module</strong> (<em>text_type</em>) – Module of view.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.selection">
+<code class="sig-name descname">selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.selection"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.selection" title="永久链接至目标">¶</a></dt>
+<dd><p>Get current selection from client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Current selection.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p><a class="reference internal" href="#cgtwq.Selection" title="cgtwq.Selection">Selection</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.server_http">
+<code class="sig-name descname">server_http</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.server_http"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.server_http" title="永久链接至目标">¶</a></dt>
+<dd><p>Server http current using by client.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.server_ip">
+<code class="sig-name descname">server_ip</code><span class="sig-paren">(</span><em class="sig-param">max_age=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.server_ip"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.server_ip" title="永久链接至目标">¶</a></dt>
+<dd><p>Cached server ip.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.start">
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.start"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.start" title="永久链接至目标">¶</a></dt>
+<dd><p>Start client if not running.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.DesktopClient.token">
+<code class="sig-name descname">token</code><span class="sig-paren">(</span><em class="sig-param">max_age=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/client/desktop/client.html#DesktopClient.token"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.DesktopClient.token" title="永久链接至目标">¶</a></dt>
+<dd><p>Cached client token.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.Database">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">Database</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/database/database.html#Database"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Database" title="永久链接至目标">¶</a></dt>
+<dd><p>Database on server.</p>
+<dl class="method">
+<dt id="cgtwq.Database.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/database/database.html#Database.call"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Database.call" title="永久链接至目标">¶</a></dt>
+<dd><p>Call on this database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.create_field">
+<code class="sig-name descname">create_field</code><span class="sig-paren">(</span><em class="sig-param">sign</em>, <em class="sig-param">type_</em>, <em class="sig-param">name=None</em>, <em class="sig-param">label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.create_field" title="永久链接至目标">¶</a></dt>
+<dd><p>Create new field in the module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sign</strong> (<em>str</em>) – Field sign</p></li>
+<li><p><strong>type_</strong> (<em>str</em>) – Field type, see <cite>core.FIELD_TYPES</cite>.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. Field english name.</p></li>
+<li><p><strong>label</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. Field chinese name.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.delete_field">
+<code class="sig-name descname">delete_field</code><span class="sig-paren">(</span><em class="sig-param">field_id</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.delete_field" title="永久链接至目标">¶</a></dt>
+<dd><p>Delete field in the module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>id_</strong> (<em>str</em>) – Field id.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.filter">
+<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">*filters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/database/database.html#Database.filter"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Database.filter" title="永久链接至目标">¶</a></dt>
+<dd><p>Filter modules in this database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>*filters</strong> (<a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a><em>, </em><a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a>) – Filters for server.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Modules</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>tuple[<a class="reference internal" href="#cgtwq.Module" title="cgtwq.Module">Module</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.get_data">
+<code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">is_user=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.get_data" title="永久链接至目标">¶</a></dt>
+<dd><p>Get additional data set in this database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>text_type</em>) – Data key.</p></li>
+<li><p><strong>is_user</strong> (<em>bool</em><em>, </em><em>optional</em>) – Defaults to True.</p></li>
+<li><p><strong>is_user is True</strong><strong>, </strong><strong>this data will be user specific.</strong> (<em>If</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Data value.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>text_type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.get_field">
+<code class="sig-name descname">get_field</code><span class="sig-paren">(</span><em class="sig-param">filters</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.get_field" title="永久链接至目标">¶</a></dt>
+<dd><dl class="simple">
+<dt>Get one field in the database.</dt><dd><p>filters (Filter or FilterList): Filter.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Field information.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>FieldMeta</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.get_fields">
+<code class="sig-name descname">get_fields</code><span class="sig-paren">(</span><em class="sig-param">filters=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.get_fields" title="永久链接至目标">¶</a></dt>
+<dd><dl class="simple">
+<dt>Get fields in the database.</dt><dd><p>filters (Filter or FilterList, optional): Defaults to None. Filter.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Field information.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>tuple[FieldMeta]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.get_fileboxes">
+<code class="sig-name descname">get_fileboxes</code><span class="sig-paren">(</span><em class="sig-param">filters=None</em>, <em class="sig-param">id_=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.get_fileboxes" title="永久链接至目标">¶</a></dt>
+<dd><p>Get fileboxes in this database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filters</strong> (<a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a><em>, </em><em>optional</em>) – Defaults to None. Filters to get filebox.</p></li>
+<li><p><strong>id_</strong> (<em>text_type</em><em>, </em><em>optional</em>) – Defaults to None. Filebox id.</p></li>
+</ul>
+</dd>
+<dt class="field-even">引发</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Not enough arguments.</p></li>
+<li><p><strong>ValueError</strong> – No matched filebox.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>namedtuple for (‘id’, ‘pipeline_id’, ‘title’)</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>tuple[FileBoxCategoryInfo]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.get_pipelines">
+<code class="sig-name descname">get_pipelines</code><span class="sig-paren">(</span><em class="sig-param">*filters</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.get_pipelines" title="永久链接至目标">¶</a></dt>
+<dd><p>Get piplines from database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>*filters</strong> (<a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a>) – Filter to get pipeline.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>namedtuple for (‘id’, ‘name’, ‘module’)</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>tuple[PipelineInfo]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.get_software">
+<code class="sig-name descname">get_software</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.get_software" title="永久链接至目标">¶</a></dt>
+<dd><p>Get software path for this database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>text_type</em>) – Software name.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Path set in <cite>系统设置</cite> -&gt; <cite>软件设置</cite>.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.module">
+<code class="sig-name descname">module</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">module_type='task'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/database/database.html#Database.module"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Database.module" title="永久链接至目标">¶</a></dt>
+<dd><p>Get module in the database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.modules">
+<code class="sig-name descname">modules</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.modules" title="永久链接至目标">¶</a></dt>
+<dd><p>All modules in this database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Modules</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>tuple[<a class="reference internal" href="#cgtwq.Module" title="cgtwq.Module">Module</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.set_data">
+<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">is_user=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Database.set_data" title="永久链接至目标">¶</a></dt>
+<dd><p>Set additional data in this database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>text_type</em>) – Data key.</p></li>
+<li><p><strong>value</strong> (<em>text_type</em>) – Data value</p></li>
+<li><p><strong>is_user</strong> (<em>bool</em><em>, </em><em>optional</em>) – Defaults to True.</p></li>
+<li><p><strong>is_user is True</strong><strong>, </strong><strong>this data will be user specific.</strong> (<em>If</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Database.token">
+<em class="property">property </em><code class="sig-name descname">token</code><a class="headerlink" href="#cgtwq.Database.token" title="永久链接至目标">¶</a></dt>
+<dd><p>User token.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.Field">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">Field</code><a class="reference internal" href="_modules/cgtwq/filter.html#Field"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Field" title="永久链接至目标">¶</a></dt>
+<dd><p>Data base field name for filter.</p>
+<dl class="method">
+<dt id="cgtwq.Field.contains">
+<code class="sig-name descname">contains</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#Field.contains"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Field.contains" title="永久链接至目标">¶</a></dt>
+<dd><p>Represents value in data item list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Field.has">
+<code class="sig-name descname">has</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#Field.has"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Field.has" title="永久链接至目标">¶</a></dt>
+<dd><p>Represents data has value in it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Field.in_">
+<code class="sig-name descname">in_</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#Field.in_"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Field.in_" title="永久链接至目标">¶</a></dt>
+<dd><p>Represents matched data in value list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Field.in_namespace">
+<code class="sig-name descname">in_namespace</code><span class="sig-paren">(</span><em class="sig-param">namespace</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#Field.in_namespace"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Field.in_namespace" title="永久链接至目标">¶</a></dt>
+<dd><p>Get a new <cite>Field</cite> instance in the namespace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>namespace</strong> (<em>str</em>) – Default namespace for keys.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Field</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.Filter">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">Filter</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value</em>, <em class="sig-param">operator=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#Filter"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Filter" title="永久链接至目标">¶</a></dt>
+<dd><p>CGTeamWork style filter.</p>
+<dl class="method">
+<dt id="cgtwq.Filter.from_list">
+<em class="property">classmethod </em><code class="sig-name descname">from_list</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#Filter.from_list"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Filter.from_list" title="永久链接至目标">¶</a></dt>
+<dd><p>Create filter instance from a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>list</em>) – A list match [key, operater, value].</p>
+</dd>
+<dt class="field-even">引发</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – can not convert <cite>obj</cite> to filter.</p>
+</dd>
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Filter</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Filter.in_namespace">
+<code class="sig-name descname">in_namespace</code><span class="sig-paren">(</span><em class="sig-param">namespace</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#Filter.in_namespace"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Filter.in_namespace" title="永久链接至目标">¶</a></dt>
+<dd><p>Get a new <cite>Filter</cite> instance in the namespace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>namespace</strong> (<em>str</em>) – Default namespace for keys.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Filter</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.FilterList">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">FilterList</code><span class="sig-paren">(</span><em class="sig-param">list_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#FilterList"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.FilterList" title="永久链接至目标">¶</a></dt>
+<dd><p>CGTeamWork style filter list.</p>
+<dl class="method">
+<dt id="cgtwq.FilterList.from_arbitrary_args">
+<em class="property">classmethod </em><code class="sig-name descname">from_arbitrary_args</code><span class="sig-paren">(</span><em class="sig-param">*filters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#FilterList.from_arbitrary_args"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.FilterList.from_arbitrary_args" title="永久链接至目标">¶</a></dt>
+<dd><p>Create filterlist from arbitrary arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>FilterList</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.FilterList.in_namespace">
+<code class="sig-name descname">in_namespace</code><span class="sig-paren">(</span><em class="sig-param">namespace</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/filter.html#FilterList.in_namespace"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.FilterList.in_namespace" title="永久链接至目标">¶</a></dt>
+<dd><p>Create new <cite>FilterList</cite> instance in the namespace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>namespace</strong> (<em>str</em>) – Default namespace for keys.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>FilterList</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.Message">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">Message</code><a class="reference internal" href="_modules/cgtwq/message.html#Message"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Message" title="永久链接至目标">¶</a></dt>
+<dd><p>CGTeamWork style message, support image.</p>
+<dl class="method">
+<dt id="cgtwq.Message.dumps">
+<code class="sig-name descname">dumps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/message.html#Message.dumps"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Message.dumps" title="永久链接至目标">¶</a></dt>
+<dd><p>Dump data to string in server defined format.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Message.load">
+<em class="property">classmethod </em><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/message.html#Message.load"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Message.load" title="永久链接至目标">¶</a></dt>
+<dd><p>Create message from data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Message.upload_images">
+<code class="sig-name descname">upload_images</code><span class="sig-paren">(</span><em class="sig-param">folder</em>, <em class="sig-param">token</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/message.html#Message.upload_images"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Message.upload_images" title="永久链接至目标">¶</a></dt>
+<dd><p>Upload contianed images to server. will replace items in <cite>self.image</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.Module">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">Module</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">database</em>, <em class="sig-param">module_type='task'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/module/module.html#Module"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Module" title="永久链接至目标">¶</a></dt>
+<dd><p>Module(Database table) in database.</p>
+<dl class="method">
+<dt id="cgtwq.Module.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/module/module.html#Module.call"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Module.call" title="永久链接至目标">¶</a></dt>
+<dd><p>Call on this module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.count">
+<code class="sig-name descname">count</code><span class="sig-paren">(</span><em class="sig-param">*filters</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/module/module.html#Module.count"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Module.count" title="永久链接至目标">¶</a></dt>
+<dd><p>Count matched entity in database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>\*filters</strong> (<a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a><em>, </em><a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a>) – Filters for server.</p></li>
+<li><p><strong>**kwargs</strong> – namespace (str, optional): Default field namespace.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Count value.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.count_history">
+<code class="sig-name descname">count_history</code><span class="sig-paren">(</span><em class="sig-param">filters</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Module.count_history" title="永久链接至目标">¶</a></dt>
+<dd><p>Count history records in the module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>filters</strong> (<a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a><em> or </em><a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a>) – History filters.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Records count.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.create">
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">kwargs=None</em>, <em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/module/module.html#Module.create"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Module.create" title="永久链接至目标">¶</a></dt>
+<dd><p>Create entry from data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kwargs</strong> (<em>dict</em>) – </p></li>
+<li><p><strong>Any</strong><strong>]</strong> (<em>**data</em><em>[</em><em>str</em><em>,</em>) – Data to create a entry.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>**data:</dt><dd><p>namespace (str, optional): Default field namespace.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.create_field">
+<code class="sig-name descname">create_field</code><span class="sig-paren">(</span><em class="sig-param">sign</em>, <em class="sig-param">type_</em>, <em class="sig-param">name=None</em>, <em class="sig-param">label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Module.create_field" title="永久链接至目标">¶</a></dt>
+<dd><p>Create new field in the module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sign</strong> (<em>str</em>) – Field sign</p></li>
+<li><p><strong>type_</strong> (<em>str</em>) – Field type, see <cite>core.FIELD_TYPES</cite>.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. Field english name.</p></li>
+<li><p><strong>label</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. Field chinese name.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.delete_field">
+<code class="sig-name descname">delete_field</code><span class="sig-paren">(</span><em class="sig-param">id_</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Module.delete_field" title="永久链接至目标">¶</a></dt>
+<dd><p>Delete field in the module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>id_</strong> (<em>str</em>) – Field id.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.distinct">
+<code class="sig-name descname">distinct</code><span class="sig-paren">(</span><em class="sig-param">*filters</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/module/module.html#Module.distinct"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Module.distinct" title="永久链接至目标">¶</a></dt>
+<dd><p>Get distinct value in the module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*filters</strong> (<a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a><em>, </em><a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a>) – Filters for server.</p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>**kwargs:</dt><dd><p>key: Distinct key, defaults to field of first filter.
+namespace (str, optional): Default field namespace.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.fields">
+<code class="sig-name descname">fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Module.fields" title="永久链接至目标">¶</a></dt>
+<dd><p>Get fields in this module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.filter">
+<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">*filters</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/module/module.html#Module.filter"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Module.filter" title="永久链接至目标">¶</a></dt>
+<dd><p>Create selection with filter on this module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*filters</strong> (<a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a><em>, </em><a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a>) – Filters for server.</p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>**kwargs:</dt><dd><p>namespace (str, optional): Default field namespace.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Created selection.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p><a class="reference internal" href="#cgtwq.Selection" title="cgtwq.Selection">Selection</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.flow">
+<code class="sig-name descname">flow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/module/module.html#Module.flow"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Module.flow" title="永久链接至目标">¶</a></dt>
+<dd><p>Workflow of the module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.format_field">
+<code class="sig-name descname">format_field</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Module.format_field" title="永久链接至目标">¶</a></dt>
+<dd><p>Formatted field name for this module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>text_type</em>) – Short field name.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Full field name, for server.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>text_type</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.format_filters">
+<code class="sig-name descname">format_filters</code><span class="sig-paren">(</span><em class="sig-param">filters</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Module.format_filters" title="永久链接至目标">¶</a></dt>
+<dd><p>Format field name in filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>filters</strong> (<a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a><em>, </em><a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a>) – Format target.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Formatted filters.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList">FilterList</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.get_history">
+<code class="sig-name descname">get_history</code><span class="sig-paren">(</span><em class="sig-param">filters</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Module.get_history" title="永久链接至目标">¶</a></dt>
+<dd><dl class="simple">
+<dt>Get history record from the module.</dt><dd><p>filters (Filter or FilterList): History filters.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>History records.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>tuple[HistoryInfo]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.pipelines">
+<code class="sig-name descname">pipelines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/module/module.html#Module.pipelines"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Module.pipelines" title="永久链接至目标">¶</a></dt>
+<dd><p>All pipeline in this module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>namedtuple for (‘id’, ‘name’, ‘module’).</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>tuple[Pipeline]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.select">
+<code class="sig-name descname">select</code><span class="sig-paren">(</span><em class="sig-param">*id_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/module/module.html#Module.select"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Module.select" title="永久链接至目标">¶</a></dt>
+<dd><p>Create selection on this module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>*id_list</strong> (<em>text_type</em>) – Id list to select.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Created selection.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cgtwq.Selection" title="cgtwq.Selection">Selection</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.token">
+<em class="property">property </em><code class="sig-name descname">token</code><a class="headerlink" href="#cgtwq.Module.token" title="永久链接至目标">¶</a></dt>
+<dd><p>User token.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Module.undo_history">
+<code class="sig-name descname">undo_history</code><span class="sig-paren">(</span><em class="sig-param">history</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Module.undo_history" title="永久链接至目标">¶</a></dt>
+<dd><p>Undo a history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>history</strong> (<em>HistoryInfo</em>) – History information.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.PluginMeta">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">PluginMeta</code><span class="sig-paren">(</span><em class="sig-param">uuid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/plugin_meta.html#PluginMeta"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PluginMeta" title="永久链接至目标">¶</a></dt>
+<dd><p>CGTeamWork plug-in metadata.</p>
+<dl class="method">
+<dt id="cgtwq.PluginMeta.fetch">
+<code class="sig-name descname">fetch</code><span class="sig-paren">(</span><em class="sig-param">token=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/plugin_meta.html#PluginMeta.fetch"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PluginMeta.fetch" title="永久链接至目标">¶</a></dt>
+<dd><p>Fetch plugin data from server.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.PluginMeta.filter">
+<em class="property">classmethod </em><code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">filters=None</em>, <em class="sig-param">token=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/plugin_meta.html#PluginMeta.filter"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PluginMeta.filter" title="永久链接至目标">¶</a></dt>
+<dd><p>Filter plugins from server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filters</strong> (<a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a><em> or </em><a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a><em>, </em><em>optional</em>) – Defaults to None. Plugin filter</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. User token.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Matched plug-ins.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>list[Plugin]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.PluginMeta.from_info">
+<em class="property">classmethod </em><code class="sig-name descname">from_info</code><span class="sig-paren">(</span><em class="sig-param">info</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/plugin_meta.html#PluginMeta.from_info"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PluginMeta.from_info" title="永久链接至目标">¶</a></dt>
+<dd><p>Initialize Plugin object from info.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>info</strong> (<em>PluginInfo</em>) – Plugin information.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Plugin</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.PluginMeta.get_argument">
+<code class="sig-name descname">get_argument</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">token=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/plugin_meta.html#PluginMeta.get_argument"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PluginMeta.get_argument" title="永久链接至目标">¶</a></dt>
+<dd><p>Get argument information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – Argument key.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. User token.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Plug-in argument information.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>PluginArgumentInfo</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.PluginMeta.set_argument">
+<code class="sig-name descname">set_argument</code><span class="sig-paren">(</span><em class="sig-param">key</em>, <em class="sig-param">value=None</em>, <em class="sig-param">description=None</em>, <em class="sig-param">token=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/plugin_meta.html#PluginMeta.set_argument"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PluginMeta.set_argument" title="永久链接至目标">¶</a></dt>
+<dd><p>Set argument data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>str</em>) – Data key.</p></li>
+<li><p><strong>value</strong> (<em>any</em><em>, </em><em>optional</em>) – Defaults to None. Data value.</p></li>
+<li><p><strong>description</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. Argument description.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. User token.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.PluginMeta.set_fields">
+<code class="sig-name descname">set_fields</code><span class="sig-paren">(</span><em class="sig-param">token=None</em>, <em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/plugin_meta.html#PluginMeta.set_fields"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PluginMeta.set_fields" title="永久链接至目标">¶</a></dt>
+<dd><p>Set field data for the plug-in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to None. User token.</p></li>
+<li><p><strong>**data</strong> – Field name as key, Value as value.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.ResultSet">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">ResultSet</code><span class="sig-paren">(</span><em class="sig-param">roles</em>, <em class="sig-param">data</em>, <em class="sig-param">module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/resultset.html#ResultSet"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.ResultSet" title="永久链接至目标">¶</a></dt>
+<dd><p>Database query result.</p>
+<dl class="method">
+<dt id="cgtwq.ResultSet.column">
+<code class="sig-name descname">column</code><span class="sig-paren">(</span><em class="sig-param">field</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/resultset.html#ResultSet.column"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.ResultSet.column" title="永久链接至目标">¶</a></dt>
+<dd><p>Get a column from field name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>field</strong> (<em>text_type</em>) – Field name.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Column data.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.Entry">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">Entry</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">id_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/entry.html#Entry"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Entry" title="永久链接至目标">¶</a></dt>
+<dd><p>A selection that only has one item.</p>
+<dl class="method">
+<dt id="cgtwq.Entry.get_fields">
+<code class="sig-name descname">get_fields</code><span class="sig-paren">(</span><em class="sig-param">*fields</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/entry.html#Entry.get_fields"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Entry.get_fields" title="永久链接至目标">¶</a></dt>
+<dd><p>Get multiple fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Result fields with exactly same order with <cite>fields</cite>.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Entry.related">
+<code class="sig-name descname">related</code><span class="sig-paren">(</span><em class="sig-param">*filters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/entry.html#Entry.related"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Entry.related" title="永久链接至目标">¶</a></dt>
+<dd><p>Select related entries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>*filters</strong> – Pipeline filters.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Selection</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cgtwq.Selection">
+<em class="property">class </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">Selection</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">*id_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection" title="永久链接至目标">¶</a></dt>
+<dd><p>Selection with all feature.</p>
+<dl class="method">
+<dt id="cgtwq.Selection.call">
+<code class="sig-name descname">call</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.call"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.call" title="永久链接至目标">¶</a></dt>
+<dd><p>Call on this selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.count">
+<code class="sig-name descname">count</code><span class="sig-paren">(</span><em class="sig-param">*filters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.count"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.count" title="永久链接至目标">¶</a></dt>
+<dd><p>Count matched entity in the selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>*filters</strong> (<a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a><em>,</em><a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a>) – Filters.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Count value.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.delete"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.delete" title="永久链接至目标">¶</a></dt>
+<dd><p>Delete the selected item on database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.distinct">
+<code class="sig-name descname">distinct</code><span class="sig-paren">(</span><em class="sig-param">*filters</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.distinct"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.distinct" title="永久链接至目标">¶</a></dt>
+<dd><p>Get distinct value in the selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*filters</strong> (<a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a><em>, </em><a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a>) – Filters for server.</p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>**kwargs:</dt><dd><p>key: Distinct key, defaults to field of first filter.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.filter">
+<code class="sig-name descname">filter</code><span class="sig-paren">(</span><em class="sig-param">*filters</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.filter"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.filter" title="永久链接至目标">¶</a></dt>
+<dd><p>Filter selection again.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>*filters</strong> (<a class="reference internal" href="#cgtwq.Filter" title="cgtwq.Filter"><em>Filter</em></a><em>,</em><a class="reference internal" href="#cgtwq.FilterList" title="cgtwq.FilterList"><em>FilterList</em></a>) – Additional filters.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Filtered selection.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cgtwq.Selection" title="cgtwq.Selection">Selection</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.from_data">
+<em class="property">classmethod </em><code class="sig-name descname">from_data</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.from_data"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.from_data" title="永久链接至目标">¶</a></dt>
+<dd><p>Get selection from dictionary-like data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – database(str): Database name.
+module(str): Module name.
+module_type(str): Module type.
+id_list(list): Id list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.get_fields">
+<code class="sig-name descname">get_fields</code><span class="sig-paren">(</span><em class="sig-param">*fields</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.get_fields"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.get_fields" title="永久链接至目标">¶</a></dt>
+<dd><p>Get field information for the selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*fields</strong> – Server defined field sign.</p></li>
+<li><p><strong>**kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>**kwargs:</dt><dd><p>namespace (str, optional): Default namespace for key.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Optimized tuple object contains fields data.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p><a class="reference internal" href="#cgtwq.ResultSet" title="cgtwq.ResultSet">ResultSet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.get_folder">
+<code class="sig-name descname">get_folder</code><span class="sig-paren">(</span><em class="sig-param">*sign_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.get_folder"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.get_folder" title="永久链接至目标">¶</a></dt>
+<dd><p>Get signed folder path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>sign_list</strong> (<em>six.text_type</em>) – Sign name defined in CGTeemWork:
+<cite>项目设置</cite> -&gt; <cite>目录文件</cite> -&gt; <cite>标识</cite></p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Server returned path dictionary.</dt><dd><p>id as key, path as value.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.get_image">
+<code class="sig-name descname">get_image</code><span class="sig-paren">(</span><em class="sig-param">field='image'</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Selection.get_image" title="永久链接至目标">¶</a></dt>
+<dd><p>Get imageinfo used on the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>field</strong> (<em>six.text_type</em>) – Defaults to ‘image’, Server defined field name,</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Image information.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>set[ImageInfo]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.has_permission_on_status">
+<code class="sig-name descname">has_permission_on_status</code><span class="sig-paren">(</span><em class="sig-param">field</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Selection.has_permission_on_status" title="永久链接至目标">¶</a></dt>
+<dd><p>Return if user has permission to edit field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><p><strong>field</strong> (<em>str</em>) – Field name.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.set_fields">
+<code class="sig-name descname">set_fields</code><span class="sig-paren">(</span><em class="sig-param">kwargs=None</em>, <em class="sig-param">**data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.set_fields"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.set_fields" title="永久链接至目标">¶</a></dt>
+<dd><p>Set field data for the selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kwargs</strong> (<em>dict</em>) – </p></li>
+<li><p><strong>**data</strong> – Field name as key, Value as value.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>kwargs:</dt><dd><p>namespace (str, optional): Default namespace for key.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.set_image">
+<code class="sig-name descname">set_image</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">field='image'</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Selection.set_image" title="永久链接至目标">¶</a></dt>
+<dd><p>Set image for the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>six.text_type</em>) – Defaults to ‘image’, Server defined field name,</p></li>
+<li><p><strong>path</strong> (<em>six.text_type</em>) – File path.</p></li>
+</ul>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Uploaded image.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p>ImageInfo</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.submit">
+<code class="sig-name descname">submit</code><span class="sig-paren">(</span><em class="sig-param">pathnames=()</em>, <em class="sig-param">filenames=()</em>, <em class="sig-param">note=''</em><span class="sig-paren">)</span><a class="headerlink" href="#cgtwq.Selection.submit" title="永久链接至目标">¶</a></dt>
+<dd><p>Submit file to task, then change status to <cite>Check</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pathnames</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Defaults to (). Server pathnames.</p></li>
+<li><p><strong>filenames</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Defaults to (). Local filenames.</p></li>
+<li><p><strong>note</strong> (<em>str</em><em>, </em><em>optional</em>) – Defaults to “”. Submit note.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.to_entries">
+<code class="sig-name descname">to_entries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.to_entries"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.to_entries" title="永久链接至目标">¶</a></dt>
+<dd><p>Convert selection to entries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">返回</dt>
+<dd class="field-odd"><p>Entries.</p>
+</dd>
+<dt class="field-even">返回类型</dt>
+<dd class="field-even"><p>tuple[<a class="reference internal" href="#cgtwq.Entry" title="cgtwq.Entry">Entry</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.to_entry">
+<code class="sig-name descname">to_entry</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/selection/selection.html#Selection.to_entry"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.Selection.to_entry" title="永久链接至目标">¶</a></dt>
+<dd><p>Convert selection to one entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">引发</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – Not exactly one selected item.</p>
+</dd>
+<dt class="field-even">返回</dt>
+<dd class="field-even"><p>Entry.</p>
+</dd>
+<dt class="field-odd">返回类型</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#cgtwq.Entry" title="cgtwq.Entry">Entry</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cgtwq.Selection.token">
+<em class="property">property </em><code class="sig-name descname">token</code><a class="headerlink" href="#cgtwq.Selection.token" title="永久链接至目标">¶</a></dt>
+<dd><p>User token.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.AccountError">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">AccountError</code><span class="sig-paren">(</span><em class="sig-param">owner=''</em>, <em class="sig-param">current=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgtwq/exceptions.html#AccountError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.AccountError" title="永久链接至目标">¶</a></dt>
+<dd><p>Indicate account not match.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.AccountNotFoundError">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">AccountNotFoundError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#AccountNotFoundError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.AccountNotFoundError" title="永久链接至目标">¶</a></dt>
+<dd><p>Inicate account not found.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.CGTeamWorkException">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">CGTeamWorkException</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#CGTeamWorkException"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.CGTeamWorkException" title="永久链接至目标">¶</a></dt>
+<dd><p>Base exception class for CGTeamWork.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.IDError">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">IDError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#IDError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.IDError" title="永久链接至目标">¶</a></dt>
+<dd><p>Indicate can’t specify shot id on cgtw.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.LoginError">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">LoginError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#LoginError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.LoginError" title="永久链接至目标">¶</a></dt>
+<dd><p>Indicate not logged in.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.PasswordError">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">PasswordError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#PasswordError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PasswordError" title="永久链接至目标">¶</a></dt>
+<dd><p>Inicate password not correct.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.PermissionError">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">PermissionError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#PermissionError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PermissionError" title="永久链接至目标">¶</a></dt>
+<dd><p>Indicate suffcient permission.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.PrefixError">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">PrefixError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#PrefixError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.PrefixError" title="永久链接至目标">¶</a></dt>
+<dd><p>Indicate no shot match the prefix.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="cgtwq.SignError">
+<em class="property">exception </em><code class="sig-prename descclassname">cgtwq.</code><code class="sig-name descname">SignError</code><a class="reference internal" href="_modules/cgtwq/exceptions.html#SignError"><span class="viewcode-link">[源代码]</span></a><a class="headerlink" href="#cgtwq.SignError" title="永久链接至目标">¶</a></dt>
+<dd><p>Indicate can’t found matched sign.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">cgtwq</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+<p class="caption"><span class="caption-text">内容:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env-vars.html">环境变量</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">编程参考</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="env-vars.html" title="上一章">环境变量</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="转向" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2019, 北京吾立方数码科技有限公司.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/reference.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,310 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>快速入门 &#8212; cgtwq 3.0.0-alpha.8 文档</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="环境变量" href="env-vars.html" />
+    <link rel="prev" title="cgtwq 文档" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>快速入门<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id2">
+<h2>安装<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>因为使用了 PEP508 URL 依赖, 需求 pip 版本高于 18.1</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install https://github.com/WuLiFang/cgtwq/archive/3.0.0-alpha.8.zip#egg<span class="o">=</span>cgtwq
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>初始设置<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id4">
+<h3>从桌面客户端读取登录信息<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cgtwq</span>
+
+<span class="n">cgtwq</span><span class="o">.</span><span class="n">DesktopClient</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>官方库不支持这样做</p>
+</div>
+<div class="section" id="id5">
+<h3>手动设置<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cgtwq</span>
+
+<span class="n">token</span> <span class="o">=</span> <span class="n">cgtwq</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span><span class="s1">&#39;password&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">token</span>
+
+<span class="c1"># 设置服务器URL, 默认为 http://192.168.55.11</span>
+<span class="c1"># 或者设置环境变量: `CGTEAMWORK_URL`</span>
+<span class="n">cgtwq</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">URL</span><span class="o">=</span><span class="s1">&#39;http://192.168.199.88&#39;</span><span class="p">)</span>
+
+<span class="c1"># 模块级登录标识设置</span>
+<span class="n">cgtwq</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CONFIG</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">DEFAULT_TOKEN</span><span class="o">=</span><span class="n">token</span><span class="p">)</span>
+
+<span class="c1"># 对象级登录标识设置, 如果未设置则会自动向上一级读取</span>
+<span class="n">database</span> <span class="o">=</span> <span class="n">cgtwq</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">)</span>
+<span class="n">database</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+<span class="n">module</span> <span class="o">=</span> <span class="n">database</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="s1">&#39;shot&#39;</span><span class="p">)</span>
+<span class="n">module</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+<span class="n">select</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;dummy_id&#39;</span><span class="p">)</span>
+<span class="n">select</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+</pre></div>
+</div>
+<p>对应官方 cgtw2 库:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;c:/cgteamwork/bin/base&quot;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">cgtw2</span>
+<span class="n">t_tw</span> <span class="o">=</span> <span class="n">cgtw2</span><span class="o">.</span><span class="n">tw</span><span class="p">(</span><span class="s2">&quot;192.168.199.88&quot;</span><span class="p">,</span><span class="s2">&quot;username&quot;</span><span class="p">,</span><span class="s2">&quot;password&quot;</span><span class="p">)</span>
+<span class="c1"># 之后所有操作都在 t_tw 上进行</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id6">
+<h2>处理字段数据<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">module</span> <span class="o">=</span> <span class="n">cgtwq</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="s1">&#39;shot&#39;</span><span class="p">,</span> <span class="n">module_type</span><span class="o">=</span><span class="s1">&#39;task&#39;</span><span class="p">)</span>
+<span class="n">select</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+    <span class="n">cgtwq</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;shot.shot&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;sc001&#39;</span><span class="p">),</span>
+    <span class="n">cgtwq</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;shot.eps_name&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;ep01&#39;</span><span class="p">),</span>
+    <span class="n">cgtwq</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;task_name&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Layout&#39;</span><span class="p">),)</span>
+
+<span class="c1"># 查询单列, 返回: tuple</span>
+<span class="n">select</span><span class="p">[</span><span class="s1">&#39;submit_file_path&#39;</span><span class="p">]</span>
+
+<span class="c1"># 查询多列, 返回: cgtwq.ResultSet 对象,</span>
+<span class="c1"># cgtwq.ResultSet 是 list 的子类,</span>
+<span class="c1"># 内部每个元素都是 list 和每个条目对应</span>
+<span class="c1"># 内部 list 值的顺序和输入顺序相同</span>
+<span class="c1"># 可使用 ResultSet.column(&#39;#id&#39;) 得到指定列的 tuple</span>
+<span class="n">select</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">,</span> <span class="s1">&#39;submit_file_path&#39;</span><span class="p">)</span>
+
+<span class="c1"># 设置单列</span>
+<span class="n">select</span><span class="p">[</span><span class="s1">&#39;shot.frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3333&#39;</span>
+
+<span class="c1"># 设置多列</span>
+<span class="n">select</span><span class="o">.</span><span class="n">set_fields</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;shot.frame&#39;</span><span class="p">:</span> <span class="s1">&#39;3333&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>对应官方 cgtw2 库:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t_id_list</span> <span class="o">=</span> <span class="n">t_tw</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span>
+    <span class="s1">&#39;proj_sdktest&#39;</span><span class="p">,</span><span class="s1">&#39;shot&#39;</span><span class="p">,</span>
+    <span class="p">[[</span><span class="s2">&quot;shot.shot&quot;</span><span class="p">,</span><span class="s2">&quot;=&quot;</span><span class="p">,</span><span class="s2">&quot;sc001&quot;</span><span class="p">],</span>
+    <span class="s1">&#39;and&#39;</span><span class="p">,[</span><span class="s1">&#39;shot.eps_name&#39;</span><span class="p">,</span><span class="s1">&#39;=&#39;</span><span class="p">,</span><span class="s1">&#39;ep01&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;and&#39;</span><span class="p">,[</span><span class="s1">&#39;task.task_name&#39;</span><span class="p">,</span><span class="s1">&#39;=&#39;</span><span class="p">,</span><span class="s1">&#39;Layout&#39;</span><span class="p">]])</span>
+
+<span class="c1"># 查询多列 返回: list[dict]</span>
+<span class="c1"># 字典的键为输入的字段加上&#39;id&#39;</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">,</span> <span class="s2">&quot;shot&quot;</span><span class="p">,</span><span class="n">t_id_list</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;task.submit_file_path&#39;</span><span class="p">])</span>
+
+<span class="c1"># 设置多列</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">,</span><span class="s2">&quot;shot&quot;</span><span class="p">,</span> <span class="n">t_id_list</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;shot.frame&#39;</span><span class="p">:</span><span class="s1">&#39;3333&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h2>管理任务状态<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">module</span> <span class="o">=</span> <span class="n">cgtwq</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="s1">&#39;shot&#39;</span><span class="p">,</span> <span class="n">module_type</span><span class="o">=</span><span class="s1">&#39;task&#39;</span><span class="p">)</span>
+<span class="n">select</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+    <span class="n">cgtwq</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;shot.shot&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;sc001&#39;</span><span class="p">),</span>
+    <span class="n">cgtwq</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;shot.eps_name&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;ep01&#39;</span><span class="p">),</span>
+    <span class="n">cgtwq</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;task_name&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;Layout&#39;</span><span class="p">),)</span>
+
+<span class="c1"># 提交</span>
+<span class="n">select</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">submit</span><span class="p">([</span><span class="s1">&#39;d:/1.jpg&#39;</span><span class="p">])</span>
+<span class="c1"># 通过</span>
+<span class="n">select</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">approve</span><span class="p">(</span><span class="s1">&#39;leader_status&#39;</span><span class="p">)</span>
+<span class="c1"># 返修</span>
+<span class="n">select</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">retake</span><span class="p">(</span><span class="s1">&#39;leader_status&#39;</span><span class="p">)</span>
+<span class="c1"># 关闭</span>
+<span class="n">select</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="s1">&#39;leader_status&#39;</span><span class="p">)</span>
+<span class="c1"># 其他状态</span>
+<span class="n">select</span><span class="o">.</span><span class="n">flow</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s1">&#39;leader_status&#39;</span><span class="p">,</span> <span class="s1">&#39;other&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>对应官方 cgtw2 库:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t_id_list</span> <span class="o">=</span> <span class="n">t_tw</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span>
+    <span class="s1">&#39;proj_sdktest&#39;</span><span class="p">,</span><span class="s1">&#39;shot&#39;</span><span class="p">,</span>
+    <span class="p">[[</span><span class="s2">&quot;shot.shot&quot;</span><span class="p">,</span><span class="s2">&quot;=&quot;</span><span class="p">,</span><span class="s2">&quot;sc001&quot;</span><span class="p">],</span>
+    <span class="s1">&#39;and&#39;</span><span class="p">,[</span><span class="s1">&#39;shot.eps_name&#39;</span><span class="p">,</span><span class="s1">&#39;=&#39;</span><span class="p">,</span><span class="s1">&#39;ep01&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;and&#39;</span><span class="p">,[</span><span class="s1">&#39;task.task_name&#39;</span><span class="p">,</span><span class="s1">&#39;=&#39;</span><span class="p">,</span><span class="s1">&#39;Layout&#39;</span><span class="p">]])</span>
+
+<span class="c1"># 提交</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">,</span><span class="s2">&quot;shot&quot;</span><span class="p">,</span> <span class="n">t_id_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;d:/1.jpg&#39;</span><span class="p">])</span>
+<span class="c1"># 通过</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">update_flow</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">,</span><span class="s2">&quot;shot&quot;</span><span class="p">,</span> <span class="n">t_id_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;task.leader_status&#39;</span><span class="p">,</span> <span class="s1">&#39;Approve&#39;</span><span class="p">)</span>
+<span class="c1"># 返修</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">update_flow</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">,</span><span class="s2">&quot;shot&quot;</span><span class="p">,</span> <span class="n">t_id_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;task.leader_status&#39;</span><span class="p">,</span> <span class="s1">&#39;Retake&#39;</span><span class="p">)</span>
+<span class="c1"># 关闭</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">update_flow</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">,</span><span class="s2">&quot;shot&quot;</span><span class="p">,</span> <span class="n">t_id_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;task.leader_status&#39;</span><span class="p">,</span> <span class="s1">&#39;Close&#39;</span><span class="p">)</span>
+<span class="c1"># 其他状态</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">task</span><span class="o">.</span><span class="n">update_flow</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">,</span><span class="s2">&quot;shot&quot;</span><span class="p">,</span> <span class="n">t_id_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;task.leader_status&#39;</span><span class="p">,</span> <span class="s1">&#39;other&#39;</span><span class="p">)</span>
+<span class="c1"># 以上函数都需要检查函数返回值为True, 不能用捕获异常的方式</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id8">
+<h2>获取当前客户端所选条目<a class="headerlink" href="#id8" title="永久链接至标题">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">cgtwq</span><span class="o">.</span><span class="n">DesktopClient</span><span class="p">()</span>
+<span class="n">select</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">selection</span><span class="p">()</span>
+<span class="c1"># select 为 cgtwq.Selection 对象</span>
+<span class="c1"># cgtwq.Selection 是 tuple 的子类</span>
+<span class="c1"># 可以直接在上面进行操作</span>
+</pre></div>
+</div>
+<p>对应官方 cgtw2 库:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t_tw</span> <span class="o">=</span> <span class="n">cgtw2</span><span class="o">.</span><span class="n">tw</span><span class="p">()</span>
+
+<span class="n">id_list</span> <span class="o">=</span> <span class="n">t_tw</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_id</span><span class="p">()</span>
+<span class="c1"># id_list 为 list</span>
+<span class="c1"># 作为其他函数的参数使用</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h2>存储数据<a class="headerlink" href="#id9" title="永久链接至标题">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">database</span> <span class="o">=</span> <span class="n">cgtwq</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s1">&#39;proj_sdktest&#39;</span><span class="p">)</span>
+<span class="c1"># 用户信息</span>
+<span class="n">database</span><span class="o">.</span><span class="n">userdata</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+<span class="n">database</span><span class="o">.</span><span class="n">userdata</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span>
+<span class="c1"># 数据库信息</span>
+<span class="n">database</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+<span class="n">database</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>对应官方 cgtw2 库:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 用户信息</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">api_data</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;proj_sdktest&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">api_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;proj_sdktest&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="c1"># 数据库信息</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">api_data</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;proj_sdktest&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">api_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;proj_sdktest&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id10">
+<h2>获取登录信息<a class="headerlink" href="#id10" title="永久链接至标题">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">account</span> <span class="o">=</span> <span class="n">cgtwq</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span><span class="s1">&#39;password&#39;</span><span class="p">)</span> <span class="c1"># type: namedtuple</span>
+<span class="n">account</span><span class="o">.</span><span class="n">token</span>
+<span class="n">account</span><span class="o">.</span><span class="n">account</span>
+<span class="n">account</span><span class="o">.</span><span class="n">account_id</span>
+<span class="n">account</span><span class="o">.</span><span class="n">remote_ip</span>
+<span class="n">account</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+</div>
+<p>对应官方 cgtw2 库:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">t_tw</span><span class="o">.</span><span class="n">login</span><span class="o">.</span><span class="n">token</span><span class="p">()</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">login</span><span class="o">.</span><span class="n">account</span><span class="p">()</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">login</span><span class="o">.</span><span class="n">account_id</span><span class="p">()</span>
+<span class="n">t_tw</span><span class="o">.</span><span class="n">login</span><span class="o">.</span><span class="n">http_server_ip</span><span class="p">()</span>
+<span class="c1"># 无法获取中文用户名</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">cgtwq</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+<p class="caption"><span class="caption-text">内容:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">快速入门</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">初始设置</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">处理字段数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">管理任务状态</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">获取当前客户端所选条目</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">存储数据</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id10">获取登录信息</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="env-vars.html">环境变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">编程参考</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="上一章">cgtwq 文档</a></li>
+      <li>Next: <a href="env-vars.html" title="下一章">环境变量</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="转向" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2019, 北京吾立方数码科技有限公司.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/quickstart.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

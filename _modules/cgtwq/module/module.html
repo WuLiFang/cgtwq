@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>cgtwq.module.module &#8212; cgtwq 3.0.0-alpha.8 文档</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/translations.js"></script>
+    <link rel="index" title="索引" href="../../../genindex.html" />
+    <link rel="search" title="搜索" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>cgtwq.module.module 源代码</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding=UTF-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Database module.  &quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span>
+                        <span class="n">unicode_literals</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">six</span>
+
+<span class="kn">from</span> <span class="nn">wlf.decorators</span> <span class="k">import</span> <span class="n">deprecated</span>
+
+<span class="kn">from</span> <span class="nn">..core</span> <span class="k">import</span> <span class="n">ControllerGetterMixin</span>
+<span class="kn">from</span> <span class="nn">..filter</span> <span class="k">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Filter</span><span class="p">,</span> <span class="n">FilterList</span>
+<span class="kn">from</span> <span class="nn">..model</span> <span class="k">import</span> <span class="n">FlowInfo</span>
+<span class="kn">from</span> <span class="nn">..selection</span> <span class="k">import</span> <span class="n">Selection</span>
+<span class="kn">from</span> <span class="nn">.field</span> <span class="k">import</span> <span class="n">ModuleField</span>
+<span class="kn">from</span> <span class="nn">.history</span> <span class="k">import</span> <span class="n">ModuleHistory</span>
+
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Module"><a class="viewcode-back" href="../../../reference.html#cgtwq.Module">[文档]</a><span class="nd">@six</span><span class="o">.</span><span class="n">python_2_unicode_compatible</span>
+<span class="k">class</span> <span class="nc">Module</span><span class="p">(</span><span class="n">ControllerGetterMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Module(Database table) in database.    &quot;&quot;&quot;</span>
+
+    <span class="n">default_field_namespace</span> <span class="o">=</span> <span class="s1">&#39;task&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="n">module_type</span><span class="o">=</span><span class="s1">&#39;task&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            name (text_type): Server defined module name.</span>
+<span class="sd">            database (Database): Parent database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="kn">from</span> <span class="nn">..database</span> <span class="k">import</span> <span class="n">Database</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">Database</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="n">database</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module_type</span> <span class="o">=</span> <span class="n">module_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Attachment.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">ModuleField</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="n">ModuleHistory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">Filter</span><span class="p">,</span> <span class="n">FilterList</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;Module&lt;database=</span><span class="si">{0.database.name}</span><span class="s1">, &#39;</span>
+                <span class="s1">&#39;name=</span><span class="si">{0.name}</span><span class="s1">, type=</span><span class="si">{0.module_type}</span><span class="s1">, &#39;</span>
+                <span class="s1">&#39;label=</span><span class="si">{0.label}</span><span class="s1">&gt;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;User token.   &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">token</span>
+
+    <span class="nd">@token</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_token</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Module.call"><a class="viewcode-back" href="../../../reference.html#cgtwq.Module.call">[文档]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Call on this module.   &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;token&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;module&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;module_type&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">module_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Module.select"><a class="viewcode-back" href="../../../reference.html#cgtwq.Module.select">[文档]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">id_list</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create selection on this module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            \*id_list (text_type): Id list to select.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Selection: Created selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">Selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">id_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Module.filter"><a class="viewcode-back" href="../../../reference.html#cgtwq.Module.filter">[文档]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">filters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create selection with filter on this module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            \*filters (FilterList, Filter): Filters for server.</span>
+<span class="sd">            \*\*kwargs:</span>
+
+<span class="sd">        \*\*kwargs:</span>
+<span class="sd">            namespace (str, optional): Default field namespace.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Selection: Created selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">namespace</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;namespace&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_field_namespace</span><span class="p">)</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">from_arbitrary_args</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">filters</span><span class="p">)</span><span class="o">.</span><span class="n">in_namespace</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;c_orm&#39;</span><span class="p">,</span> <span class="s1">&#39;get_with_filter&#39;</span><span class="p">,</span>
+                         <span class="n">sign_array</span><span class="o">=</span><span class="p">(</span><span class="n">Field</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">in_namespace</span><span class="p">(</span><span class="n">namespace</span><span class="p">),),</span>
+                         <span class="n">sign_filter_array</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="p">:</span>
+            <span class="n">id_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">id_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">Selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">id_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Module.distinct"><a class="viewcode-back" href="../../../reference.html#cgtwq.Module.distinct">[文档]</a>    <span class="k">def</span> <span class="nf">distinct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">filters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get distinct value in the module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            \*filters (FilterList, Filter): Filters for server.</span>
+<span class="sd">            \*\*kwargs:</span>
+
+<span class="sd">        \*\*kwargs:</span>
+<span class="sd">            key: Distinct key, defaults to field of first filter.</span>
+<span class="sd">            namespace (str, optional): Default field namespace.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">namespace</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;namespace&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_field_namespace</span><span class="p">)</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">from_arbitrary_args</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">filters</span><span class="p">)</span><span class="o">.</span><span class="n">in_namespace</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="n">filters</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">in_namespace</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+            <span class="s1">&#39;c_orm&#39;</span><span class="p">,</span> <span class="s1">&#39;get_distinct_with_filter&#39;</span><span class="p">,</span>
+            <span class="n">distinct_sign</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+            <span class="n">sign_filter_array</span><span class="o">=</span><span class="n">filters</span><span class="p">,</span>
+            <span class="n">order_sign_array</span><span class="o">=</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">),</span> <span class="s1">&#39;Unknown response&#39;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Module.create"><a class="viewcode-back" href="../../../reference.html#cgtwq.Module.create">[文档]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create entry from data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            kwargs (dict):</span>
+<span class="sd">            \*\*data[str, Any]: Data to create a entry.</span>
+
+<span class="sd">        \*\*data:</span>
+<span class="sd">            namespace (str, optional): Default field namespace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">namespace</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;namespace&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_field_namespace</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">Field</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">in_namespace</span><span class="p">(</span><span class="n">namespace</span><span class="p">):</span> <span class="n">v</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;c_orm&#39;</span><span class="p">,</span> <span class="s1">&#39;create&#39;</span><span class="p">,</span>
+                  <span class="n">sign_data_array</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Module.count"><a class="viewcode-back" href="../../../reference.html#cgtwq.Module.count">[文档]</a>    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">filters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Count matched entity in database.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            \\*filters (FilterList, Filter): Filters for server.</span>
+<span class="sd">            \*\*kwargs:</span>
+<span class="sd">                namespace (str, optional): Default field namespace.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Count value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">namespace</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;namespace&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_field_namespace</span><span class="p">)</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="n">FilterList</span><span class="o">.</span><span class="n">from_arbitrary_args</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">filters</span><span class="p">)</span><span class="o">.</span><span class="n">in_namespace</span><span class="p">(</span><span class="n">namespace</span><span class="p">)</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;c_orm&#39;</span><span class="p">,</span> <span class="s1">&#39;get_count_with_filter&#39;</span><span class="p">,</span>
+                         <span class="n">sign_filter_array</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Module.pipelines"><a class="viewcode-back" href="../../../reference.html#cgtwq.Module.pipelines">[文档]</a>    <span class="k">def</span> <span class="nf">pipelines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;All pipeline in this module.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[Pipeline]: namedtuple for (&#39;id&#39;, &#39;name&#39;, &#39;module&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Filter</span><span class="p">(</span><span class="s1">&#39;module&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Module.flow"><a class="viewcode-back" href="../../../reference.html#cgtwq.Module.flow">[文档]</a>    <span class="k">def</span> <span class="nf">flow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Workflow of the module.  &quot;&quot;&quot;</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="s1">&#39;c_flow&#39;</span><span class="p">,</span> <span class="s1">&#39;get_data&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">FlowInfo</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">)</span></div>
+
+    <span class="c1"># Deprecated methods.</span>
+
+    <span class="k">def</span> <span class="nf">_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get fields in this module.  &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">meta</span><span class="p">()</span>
+
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span><span class="n">_fields</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `Module.field.meta` insted.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_format_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Formatted field name for this module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (text_type): Short field name.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            text_type: Full field name, for server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">format_field</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">_format_field</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `Module.field.format` insted.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_create_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sign</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create new field in the module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sign (str): Field sign</span>
+<span class="sd">            type_ (str): Field type, see `core.FIELD_TYPES`.</span>
+<span class="sd">            name (str, optional): Defaults to None. Field english name.</span>
+<span class="sd">            label (str, optional): Defaults to None. Field chinese name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">sign</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+
+    <span class="n">create_field</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">_create_field</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `Module.field.create` insted.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_delete_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Delete field in the module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            id_ (str): Field id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">id_</span><span class="p">)</span>
+
+    <span class="n">delete_field</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">_delete_field</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `Module.field.delete` insted.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get history record from the module.</span>
+<span class="sd">            filters (Filter or FilterList): History filters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[HistoryInfo]: History records.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+
+    <span class="n">get_history</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">_get_history</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `Module.history.filter` insted.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_count_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Count history records in the module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filters (Filter or FilterList):</span>
+<span class="sd">                History filters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Records count.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+
+    <span class="n">count_history</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">_count_history</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `Module.history.count` insted.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_undo_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">history</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Undo a history.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            history (HistoryInfo): History information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">undo</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+
+    <span class="n">undo_history</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">_undo_history</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `Module.history.undo` insted.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_format_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Format field name in filters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filters (FilterList, Filter): Format target.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FilterList: Formatted filters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="p">(</span><span class="n">Filter</span><span class="p">,</span> <span class="n">FilterList</span><span class="p">)),</span> <span class="nb">type</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">FilterList</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ret</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Filter</span><span class="p">):</span>
+                <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_field</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="n">format_filters</span> <span class="o">=</span> <span class="n">deprecated</span><span class="p">(</span>
+        <span class="n">_format_filters</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s1">&#39;Use `FilterList.in_namespace` insted.&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">cgtwq</a></h1>
+
+
+
+
+
+
+
+
+<h3>导航</h3>
+<p class="caption"><span class="caption-text">内容:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">快速入门</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../env-vars.html">环境变量</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../reference.html">编程参考</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">模块代码</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">快速搜索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="转向" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018-2019, 北京吾立方数码科技有限公司.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
