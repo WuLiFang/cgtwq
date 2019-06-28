@@ -1,4 +1,5 @@
 # -*- coding=UTF-8 -*-
+# pylint: disable=invalid-name
 """Test module `cgtwq.database`."""
 
 from __future__ import (absolute_import, division, print_function,
@@ -14,6 +15,8 @@ import six
 import cgtwq
 from cgtwq import Filter, model
 from tests import util
+
+pytestmark = [util.skip_if_not_logged_in]
 
 
 class DataBaseTestCase(TestCase):
