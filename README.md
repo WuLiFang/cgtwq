@@ -11,7 +11,7 @@
 因为使用了 PEP508 URL 依赖, 需求 pip 版本高于 18.1
 
 ```shell
-pip install https://github.com/WuLiFang/cgtwq/archive/3.0.0-alpha.8.zip#egg=cgtwq
+pip install https://github.com/WuLiFang/cgtwq/archive/v3.0.0-beta.0.zip#egg=cgtwq
 ```
 
 ## 开发
