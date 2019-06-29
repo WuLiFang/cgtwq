@@ -1,6 +1,6 @@
 .PHONY: all test deploy-docs
 
-all: .venv/Lib/site-packages/.make_success
+all: .venv/.make_success
 
 ifeq ($(OS), Windows_NT)
 activate=.venv/Scripts/activate
@@ -8,14 +8,14 @@ else
 activate=.venv/bin/activate
 endif
 
-.venv/Lib/site-packages/.make_success: requirements.txt dev-requirements.txt .venv
+.venv/.make_success: requirements.txt dev-requirements.txt .venv
 	. $(activate) && pip install -r requirements.txt -r dev-requirements.txt
-	echo > .venv/Lib/site-packages/.make_success
+	echo > .venv/.make_success
 
 .venv:
 	virtualenv .venv
 
-test: .venv/Lib/site-packages/.make_success
+test: .venv/.make_success
 	coverage erase
 	. $(activate) && tox
 
