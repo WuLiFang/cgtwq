@@ -16,8 +16,7 @@ endif
 	virtualenv .venv
 
 test: .venv/.make_success
-	coverage erase
-	. $(activate) && tox
+	. $(activate) && coverage erase && tox
 
 docs: docs/* docs/_build/html/.git
 	. $(activate) && $(MAKE) -C docs html
