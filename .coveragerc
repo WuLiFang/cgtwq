@@ -1,5 +1,5 @@
 [run]
 include = ./cgtwq/*
-omit = 
+omit =
     */tests/*
     */site-packages/*

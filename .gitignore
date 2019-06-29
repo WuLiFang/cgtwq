@@ -6,3 +6,7 @@ dist/
 .pytest_cache
 *.egg-info
 .tox
+
+/.coverage
+/htmlcov
+/coverage.xml
