@@ -1,12 +1,13 @@
 language: python
-python:
-  - '2.7'
-  - '3.6'
-  - '3.7-dev'
-install:
-  - python -m pip install -U pip && pip --version
-  - pip install .
-  - pip install coverage pytest
+dist: xenial
+matrix:
+  include:
+    - python: '3.6'
+      env: TOXENV=py36
+    - python: '3.7'
+      env: TOXENV=py37
+    - python: '2.7'
+      env: TOXENV=py27
 cache:
   - pip
 before_script:
@@ -16,9 +17,8 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 script:
-  - coverage run -m pytest tests
+  - make test
 after_script:
-  - coverage xml && coverage report
   - ./cc-test-reporter format-coverage --output "coverage/codeclimate.$TRAVIS_JOB_NUMBER.json"
   - coscmd upload -r coverage /build-$TRAVIS_BUILD_NUMBER
   - coscmd download -r /build-$TRAVIS_BUILD_NUMBER coverage
