@@ -7,7 +7,7 @@
 
 支持 py2.7, py3.6, py3.7
 
-[查看文档](https://wulifang.github.io/cgtwq/)
+[文档](https://wulifang.github.io/cgtwq/)
 
 ## 安装
 
