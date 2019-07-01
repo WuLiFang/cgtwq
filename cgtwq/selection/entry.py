@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 from six import text_type
 
+from .. import exceptions
 from ..model import ImageInfo
 from .selection import Selection
 
@@ -24,11 +25,15 @@ class Entry(Selection):
     def get_fields(self, *fields, **kwargs):
         """Get multiple fields.
 
+        Raises:
+            exceptions.EmptySelection: When entry not existed on cgteamwork
         Returns:
             tuple: Result fields with exactly same order with `fields`.
         """
 
         ret = super(Entry, self).get_fields(*fields, **kwargs)
+        if not ret:
+            raise exceptions.EmptySelection
         assert len(ret) == 1, ret
         ret = ret[0]
         assert isinstance(ret, list), ret
