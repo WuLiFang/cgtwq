@@ -1,4 +1,4 @@
-.PHONY: all test deploy-docs
+.PHONY: all test deploy-docs build
 
 all: .venv/.make_success
 
@@ -26,3 +26,8 @@ deploy-docs:
 
 docs/_build/html/.git:
 	git worktree add -f --checkout docs/_build/html gh-pages
+
+build:
+	rm -rf build
+	. $(activate) && python setup.py sdist bdist_wheel
+
