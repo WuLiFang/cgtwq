@@ -176,6 +176,7 @@ class DesktopClient(CachedFunctionMixin):
         try:
             plugin_data = self.get_plugin_data()
         except IDError:
+            # TODO: should raise exception.EmptySelection.
             raise ValueError('Empty selection.')
         return Selection.from_data(**plugin_data._asdict())
 

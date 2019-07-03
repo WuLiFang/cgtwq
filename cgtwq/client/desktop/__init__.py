@@ -4,4 +4,9 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from .client import DesktopClient
+import sys
+
+if sys.platform == 'win32':
+    from .client import DesktopClient
+else:
+    from .dummy import DesktopClient
