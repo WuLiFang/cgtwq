@@ -18,6 +18,6 @@ setup(
         'websocket-client~=0.47',
         'wlf @ git+https://github.com/WuLiFang/wlf@0.5.3#egg=wlf-0.5.3',
         'Qt.py~=1.1',
-        'environs~=4.2.0',
+        'environs~=5.0.0',
     ],
 )
