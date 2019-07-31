@@ -22,7 +22,7 @@ name: python-3.6
 
 steps:
   - name: test
-    image: python:3.6
+    image: python:3.7
     environment:
       CGTWQ_TEST_ACCOUNT:
         from_secret: 'CGTWQ_TEST_ACCOUNT'
