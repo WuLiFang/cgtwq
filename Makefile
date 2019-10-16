@@ -9,7 +9,7 @@ activate=.venv/bin/activate
 endif
 
 .venv/.make_success: requirements.txt dev-requirements.txt .venv
-	. $(activate) && pip install -r requirements.txt -r dev-requirements.txt
+	. $(activate) && pip install -r requirements.txt -r dev-requirements.txt -c python2-constraint.txt
 	echo > .venv/.make_success
 
 .venv:
