@@ -79,8 +79,8 @@ class PrefixError(CGTeamWorkException):
 
 @six.add_metaclass(
     _template_meta(
-        'Can not found any prefix matched shots',
-        '无镜头匹配此前缀'))
+        'Empty selection.',
+        '空条目选择'))
 class EmptySelection(CGTeamWorkException, ValueError):
     """Indicate no entry match the criteria."""
 
