@@ -29,7 +29,7 @@ class CGTWQHelper(object):
         """Cached project data.  """
 
         if 'project_data' not in cls.cache:
-            cls.cache['project_data'] = cgtwq.PROJECT.all(
+            cls.cache['project_data'] = cgtwq.PROJECT.select_activated(
             ).get_fields('code', 'database')
         return cls.cache['project_data']
 
@@ -56,11 +56,19 @@ class CGTWQHelper(object):
             str: Database name.
         """
 
+        prefix_database_map = {}
         for i in cls.project_data():
             code, database = i
             prefix = cls.get_prefix(code)
-            if text_type(filename).startswith(prefix):
-                return database
+            prefix_database_map[prefix] = database
+
+        prefix = text_type(filename).split('_')[0]
+        if prefix in prefix_database_map:
+            return prefix_database_map[prefix]
+        for k in prefix_database_map:
+            if (text_type(filename)).startswith(k):
+                return prefix_database_map[k]
+
         raise DatabaseError(
             'Can not determinate database from filename.', filename)
 
