@@ -79,10 +79,13 @@ class PrefixError(CGTeamWorkException):
 
 @six.add_metaclass(
     _template_meta(
-        'Empty selection.',
+        'Empty selection',
         '空条目选择'))
 class EmptySelection(CGTeamWorkException, ValueError):
     """Indicate no entry match the criteria."""
+
+    def __init__(self):
+        super(EmptySelection, self).__init__('Empty selection.')
 
 
 @six.add_metaclass(_template_meta('Wrong password', '密码错误'))

@@ -25,3 +25,9 @@ def test_template_meta():
     for i in test_case:
         assert six.binary_type(i[0]) == i[1]
         assert six.text_type(i[0]) == i[2]
+
+
+def test_empty_selection_backward_compability():
+    ex = exceptions.EmptySelection()
+    assert isinstance(ex, ValueError)
+    assert ex.args[0] == 'Empty selection.'

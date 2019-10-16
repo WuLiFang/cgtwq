@@ -8,7 +8,10 @@ import pytest
 
 import cgtwq.helper.wlf
 
+from tests import util
 
+
+@util.skip_if_not_logged_in
 def test_get_database():
     assert cgtwq.helper.wlf.CGTWQHelper.get_database(
         'MT_example.jpg') == 'proj_mt'
