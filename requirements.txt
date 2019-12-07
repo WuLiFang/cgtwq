@@ -1,4 +1,4 @@
-environs==4.2.0
+environs==7.1.0
 git+https://github.com/WuLiFang/wlf.git@9a70cdde520f4d4e25c810e2cdacec1263f953b9#egg=wlf
 requests==2.22.0
 websocket-client==0.56.0
