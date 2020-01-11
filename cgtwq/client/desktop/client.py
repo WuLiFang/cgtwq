@@ -2,21 +2,19 @@
 """Get information from CGTeamWork GUI client.  """
 
 from __future__ import absolute_import, print_function, unicode_literals
-
+from functools import partial
 import logging
 import os
-import socket
-from functools import partial
 from subprocess import Popen
 
 from six import text_type
-
+import websocket as ws
 from wlf.decorators import deprecated
 
+from . import core
 from ...core import CONFIG, CachedFunctionMixin
 from ...exceptions import IDError
 from ...selection import Selection
-from . import core
 from .plugin import DesktopClientPlugin
 
 LOGGER = logging.getLogger(__name__)
@@ -54,9 +52,8 @@ class DesktopClient(CachedFunctionMixin):
 
         # Get client executable.
         try:
-            import cgtw
             executable = os.path.abspath(os.path.join(
-                cgtw.__file__, '../../cgtw/CgTeamWork.exe'))
+                __import__('cgtw').__file__, '../../cgtw/CgTeamWork.exe'))
         except ImportError:
             # Try use default when sys.path not been set correctly.
             executable = "C:/cgteamwork/bin/cgtw/CgTeamWork.exe"
@@ -84,7 +81,7 @@ class DesktopClient(CachedFunctionMixin):
         try:
             self.token(-1)
             return True
-        except (socket.error, socket.timeout):
+        except (IOError, ws.WebSocketException):
             pass
         return False
 
@@ -98,7 +95,7 @@ class DesktopClient(CachedFunctionMixin):
         try:
             if self.token(-1):
                 return True
-        except (socket.error, socket.timeout):
+        except (IOError, ws.WebSocketException):
             pass
         return False
 
