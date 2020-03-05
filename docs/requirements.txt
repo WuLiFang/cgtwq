@@ -1,2 +1,2 @@
-sphinx==2.2.1
+sphinx==2.4.4
 jieba==0.39
