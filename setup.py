@@ -19,6 +19,6 @@ setup(
         'wlf @ git+https://github.com/WuLiFang/wlf@0.5.3#egg=wlf-0.5.3',
         'Qt.py~=1.1',
         'environs~=4.2.0',
-        'marshmallow<3.0.0; python_version >= "2" and python_version < "3.4"',
+        'marshmallow<3.6.0; python_version >= "2" and python_version < "3.4"',
     ],
 )
