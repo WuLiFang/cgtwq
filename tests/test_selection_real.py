@@ -104,6 +104,7 @@ def _select():
 logging.basicConfig(level=10)
 
 
+@util.skip_if_ci
 def test_flow(select):
     for i in ('leader_status', 'director_status', 'client_status'):
         try:
@@ -117,18 +118,21 @@ def test_flow(select):
             continue
 
 
+@util.skip_if_ci
 def test_flow_submit(select):
     select.flow.submit(message='test submit')
     # TODO:Remove below test at next major version.
     select.submit(note='test submit old')
 
 
+@util.skip_if_ci
 def test_flow_assign(select):
     accounts = [cgtwq.account.get_account_id(
         cgtwq.core.CONFIG['DEFAULT_TOKEN'])]
     select.flow.assign(accounts)
 
 
+@util.skip_if_ci
 def test_history(select):
 
     # Count
@@ -147,6 +151,7 @@ def test_history(select):
     assert select['leader_status'][0] == 'Close'
 
 
+@util.skip_if_ci
 def test_note(select):
     assert isinstance(select, cgtwq.Selection)
     note_message = 'TEST-{}'.format(uuid.uuid4().hex)

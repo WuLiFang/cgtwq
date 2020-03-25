@@ -13,6 +13,8 @@ skip_if_not_logged_in = pytest.mark.skipif(not (os.getenv('CGTWQ_TEST_ACCOUNT') 
                                                 and os.getenv('CGTWQ_TEST_PASSWORD'))
                                            and not DesktopClient().is_logged_in(),
                                            reason='CGTeamWork is not logged in.')
+skip_if_ci = pytest.mark.skipif(os.getenv('CI'),  # pylint: disable=invalid-name
+                                reason='Not run with ci.')
 
 
 skip_if_desktop_client_not_running = pytest.mark.skipif(  # pylint: disable=invalid-name
