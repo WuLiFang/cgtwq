@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import json
 import logging
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 
 import requests
 
@@ -18,6 +18,8 @@ SESSION = requests.Session()
 def _json_default(self, obj):
     if isinstance(obj, OrderedDict):
         return dict(obj)
+    if isinstance(obj, namedtuple):
+        return obj._asdict()
     return json.JSONEncoder.default(self, obj)
 
 
