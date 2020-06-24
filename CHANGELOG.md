@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.1](///compare/v3.0.0-beta.0...v3.0.0-beta.1) (2020-06-24)
+
+
+### Features
+
+* add helper.wlf.get_entry_by_file 687ff42
+* export dummy client when is not on windows 9b13ac2
+* raise `EmptySelection` 434455a
+
+
+### Bug Fixes
+
+* correct EmptySelection message b354efe
+* EmptySelection backward compability ed028e8
+* plugin argument payload serialization 9b9c50c
+* WebSocketTimeoutException when no client installed af9fc01
+* **helper.wlf:** filename match should use exact match first 79a0717
+
 ## 3.0.0-beta.0 (2019-06-28)
 
 ### Features
