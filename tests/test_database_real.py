@@ -34,18 +34,6 @@ class DataBaseTestCase(TestCase):
             cgtwq.Filter('entity_name', '合成'))
         self.assertIsInstance(result[0], cgtwq.model.PipelineInfo)
 
-    def test_data(self):
-        dummy_data = six.text_type(uuid.uuid4())
-        key = '_test_temp'
-        self.database.userdata[key] = dummy_data
-        result = self.database.userdata[key]
-        self.assertEqual(result, dummy_data)
-        result = self.database.metadata[key]
-        self.assertNotEqual(result, dummy_data)
-        self.database.metadata[key] = dummy_data
-        result = self.database.metadata[key]
-        self.assertEqual(result, dummy_data)
-
 
 class ModuleTestCase(TestCase):
     def setUp(self):
