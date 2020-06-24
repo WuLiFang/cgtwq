@@ -807,14 +807,14 @@ description = ""
 name = "wlf"
 optional = false
 python-versions = "*"
-version = "0.5.3"
+version = "0.6.0"
 
 [package.dependencies]
 psutil = ">=5.4.3,<5.5.0"
 "qt.py" = ">=1.1.0,<1.2.0"
 
 [package.source]
-reference = "9a70cdde520f4d4e25c810e2cdacec1263f953b9"
+reference = "d19d9f31b0c8321cc83a6c091065adf42674db91"
 type = "git"
 url = "https://github.com/WuLiFang/wlf"
 [[package]]
@@ -858,7 +858,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "dbfc26d0d2fe6045cf0367e813561d44bc7fd2e953ef32ef4b89b8403dd97a8f"
+content-hash = "309fb2c9ef1c014bd8b96292259d88fdf452ef8267758ad4d514811875a2f364"
 python-versions = "^2.7 || ^3.6"
 
 [metadata.files]

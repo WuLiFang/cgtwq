@@ -6,7 +6,7 @@ authors = ["NateScarlet <NateScarlet@Gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^2.7 || ^3.6"
-wlf = { git = "https://github.com/WuLiFang/wlf", tag = "0.5.3" }
+wlf = { git = "https://github.com/WuLiFang/wlf", tag = "v0.6.0" }
 requests = "~=2.19"
 websocket-client = "~=0.47"
 "Qt.py" = "~=1.1"

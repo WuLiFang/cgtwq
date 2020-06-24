@@ -70,9 +70,9 @@ class SelectionTestCase(TestCase):
             try:
                 path = i.image.get_one().path
                 i.image.set(path)
-            except (IndexError, OSError):
+            except (IndexError, OSError, IOError):
                 path = util.path('resource', 'gray.png')
-            i.image.set(path)
+                i.image.set(path)
 
     def test_get_notes(self):
         result = self.select.notify.get()
