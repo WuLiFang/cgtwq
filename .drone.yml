@@ -10,11 +10,11 @@ steps:
         from_secret: "CGTWQ_TEST_ACCOUNT"
       CGTWQ_TEST_PASSWORD:
         from_secret: "CGTWQ_TEST_PASSWORD"
-      PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
+      # PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
       TOXENV: py37
     commands:
-      - pip install -U pip virtualenv
-      - sed -i "s@https://github\.com/@https://git.wlf.com/@g" ./requirements.txt ./setup.py
+      - pip install -U pip
+      - pip install poetry
       - make test
 ---
 kind: pipeline
@@ -28,11 +28,11 @@ steps:
         from_secret: "CGTWQ_TEST_ACCOUNT"
       CGTWQ_TEST_PASSWORD:
         from_secret: "CGTWQ_TEST_PASSWORD"
-      PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
+      # PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
       TOXENV: py36
     commands:
-      - pip install -U pip virtualenv
-      - sed -i "s@https://github\.com/@https://git.wlf.com/@g" ./requirements.txt ./setup.py
+      - pip install -U pip
+      - pip install poetry
       - make test
 ---
 kind: pipeline
@@ -46,11 +46,11 @@ steps:
         from_secret: "CGTWQ_TEST_ACCOUNT"
       CGTWQ_TEST_PASSWORD:
         from_secret: "CGTWQ_TEST_PASSWORD"
-      PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
+      # PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
       TOXENV: py27
     commands:
-      - pip install -U pip virtualenv
-      - sed -i "s@https://github\.com/@https://git.wlf.com/@g" ./requirements.txt ./setup.py
+      - pip install -U pip
+      - pip install poetry
       - make test
 ---
 kind: pipeline
