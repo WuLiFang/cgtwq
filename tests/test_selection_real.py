@@ -5,7 +5,6 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import logging
 import uuid
 from unittest import TestCase, main
 
@@ -99,9 +98,6 @@ class SelectionTestCase(TestCase):
 def _select():
     return cgtwq.Database('proj_sdktest').module('shot').select(
         'D84AF30B-89FD-D06D-349A-F01F5D99744C')
-
-
-logging.basicConfig(level=10)
 
 
 @util.skip_if_ci
