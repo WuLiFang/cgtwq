@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "cgtwq"
-version = "3.0.0-beta.3"
+version = "3.0.0-beta.4"
 description = "CGTeamWork python client for humans."
 authors = ["NateScarlet <NateScarlet@Gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^2.7 || ^3.6"
-wlf = { url = "https://github.com/WuLiFang/wlf/archive/v0.6.0.tar.gz" }
+wlf = { git = "https://github.com/WuLiFang/wlf", tag = "v0.6.0" }
 requests = "~=2.19"
 websocket-client = "~=0.47"
 "Qt.py" = "~=1.1"
