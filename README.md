@@ -1,8 +1,5 @@
 # CGTeamWork Python 客户端
 
-[![Build Status](https://travis-ci.org/WuLiFang/cgtwq.svg?branch=master)](https://travis-ci.org/WuLiFang/cgtwq)
-[![Maintainability](https://api.codeclimate.com/v1/badges/9cacab42a3141cd9f247/maintainability)](https://codeclimate.com/github/WuLiFang/cgtwq/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/9cacab42a3141cd9f247/test_coverage)](https://codeclimate.com/github/WuLiFang/cgtwq/test_coverage)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
 
 ![支持 py2.7, py3.6, py3.7](https://img.shields.io/badge/python-2.7%20%7C%203.6%20%7C%203.7-blue.svg)
