@@ -13,7 +13,7 @@ steps:
       # PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
       TOXENV: py37
     commands:
-      - pip install -U pip
+      - pip install -U pip virtualenv
       - make test
 ---
 kind: pipeline
@@ -30,7 +30,7 @@ steps:
       # PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
       TOXENV: py36
     commands:
-      - pip install -U pip
+      - pip install -U pip virtualenv
       - make test
 ---
 kind: pipeline
@@ -47,7 +47,7 @@ steps:
       # PIP_INDEX_URL: https://mirrors.aliyun.com/pypi/simple/
       TOXENV: py27
     commands:
-      - pip install -U pip
+      - pip install -U pip virtualenv
       - make test
 ---
 kind: pipeline
