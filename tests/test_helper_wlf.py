@@ -12,10 +12,10 @@ from tests import util
 
 @util.skip_if_not_logged_in
 def test_get_database():
-    assert cgtwq.helper.wlf.get_database_by_file(
-        'MT_example.jpg') == 'proj_mt'
-    assert cgtwq.helper.wlf.get_database_by_file(
-        'MT2_example.jpg') == 'proj_mt2'
+    # assert cgtwq.helper.wlf.get_database_by_file(
+    #     'MT_example.jpg') == 'proj_mt'
+    # assert cgtwq.helper.wlf.get_database_by_file(
+    #     'MT2_example.jpg') == 'proj_mt2'
     assert cgtwq.helper.wlf.get_database_by_file(
         'JSL_example.jpg') == 'proj_slj'
 

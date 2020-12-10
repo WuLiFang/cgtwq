@@ -72,7 +72,7 @@ def get_database_by_file(filename):
             'database',
             'last_update_time',
         )
-        select.sort(key=lambda x: x[2])
+        select.sort(key=lambda x: -x[2])
         for i in select:
             database = cgtwq.Database(i[1])
             data[i[0].lower() + "_"] = database.name
