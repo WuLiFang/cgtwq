@@ -14,7 +14,6 @@ steps:
       TOXENV: py37
     commands:
       - pip install -U pip
-      - pip install poetry
       - make test
 ---
 kind: pipeline
@@ -32,7 +31,6 @@ steps:
       TOXENV: py36
     commands:
       - pip install -U pip
-      - pip install poetry
       - make test
 ---
 kind: pipeline
@@ -50,7 +48,6 @@ steps:
       TOXENV: py27
     commands:
       - pip install -U pip
-      - pip install poetry
       - make test
 ---
 kind: pipeline
