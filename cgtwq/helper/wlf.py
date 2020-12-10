@@ -72,8 +72,8 @@ def get_database_by_file(filename):
             'database',
             'last_update_time',
         )
-        select.sort(key=lambda x: -x[2])
-        for i in select:
+        select.sort(key=lambda x: x[2])
+        for i in reversed(select):
             database = cgtwq.Database(i[1])
             data[i[0].lower() + "_"] = database.name
             for j in text_type(database.metadata["filename_prefix"] or "").lower().split(","):
