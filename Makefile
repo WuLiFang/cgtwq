@@ -7,7 +7,12 @@ default: .venv build
 .venv:
 	virtualenv .venv
 
-test: .venv/lib/site-packages/.make.sentinel
+.venv/.make.sentinel: .venv dev-requirements.txt
+	. ./scripts/activate-venv.sh &&\
+		python -m pip install -U -r dev-requirements.txt
+	touch .venv/.make.sentinel
+
+test: .venv/.make.sentinel
 	. ./scripts/activate-venv.sh &&\
 		coverage erase &&\
 		tox
@@ -21,12 +26,7 @@ deploy-docs:
 docs/_build/html/.git:
 	git worktree add -f --checkout docs/_build/html gh-pages
 
-.venv/lib/site-packages/.make.sentinel: .venv dev-requirements.txt
-	. ./scripts/activate-venv.sh &&\
-		python -m pip install -U -r dev-requirements.txt
-	touch .venv/lib/site-packages/.make.sentinel
-
-build: .venv/lib/site-packages/.make.sentinel
+build: .venv/.make.sentinel
 	. ./scripts/activate-venv.sh &&\
 		python ./setup.py build bdist_wheel
 	# https://github.com/pypa/setuptools/issues/1871
