@@ -31,7 +31,8 @@ class SelectionFilebox(SelectionAttachment):
                            filebox_id=id_,
                            os=_OS)
         if not resp:
-            raise ValueError('No matched filebox.')
+            raise ValueError(
+                'SelectionFilebox.from_id: no matched filebox', id_)
         return FileBoxInfo(**resp)
 
     def from_sign(self, sign):
@@ -53,7 +54,8 @@ class SelectionFilebox(SelectionAttachment):
                            sign=sign,
                            os=_OS)
         if not resp:
-            raise ValueError('No matched filebox.')
+            raise ValueError(
+                'SelectionFilebox.from_sign: no matched filebox', sign)
         return FileBoxInfo(**resp)
 
     def get_submit(self):
