@@ -11,7 +11,7 @@ import requests
 
 from .. import core, exceptions
 
-LOGGER = logging.getLogger(__file__)
+LOGGER = logging.getLogger(__name__)
 SESSION = requests.Session()
 
 
