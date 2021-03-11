@@ -1,0 +1,5 @@
+include CHANGELOG.md
+include VERSION
+recursive-include cast_unknown *.pyi
+graft tests
+global-exclude *.pyc

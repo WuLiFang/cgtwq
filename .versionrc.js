@@ -16,5 +16,15 @@ module.exports = {
   commitUrlFormat: `${URL}/commit/{{hash}}`,
   compareUrlFormat: `${URL}/compare/{{previousTag}}...{{currentTag}}`,
   issueUrlFormat: `${URL}/issues/{{id}}`,
+  bumpFiles: [
+    {
+      filename: "cgtwq/__version__.py",
+      updater: "scripts/python-version-updater.js",
+    },
+    {
+      filename: "VERSION",
+      type: "plain-text",
+    },
+  ],
   userUrlFormat: `https://github.com//{{user}}`,
 };
