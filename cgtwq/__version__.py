@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.0.1'
-RELEASE_DATE = datetime.fromtimestamp(1615460266)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.0.0-1-g63884c6'
-LAST_GIT_COMMIT_HASH = '63884c660ada9d1824ebc37f7b54ee4d8ba5296a'
+VERSION = '3.0.2'
+RELEASE_DATE = datetime.fromtimestamp(1615460690)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.0.1-1-gcfce99b'
+LAST_GIT_COMMIT_HASH = 'cfce99bdb1ff108b0cfbcc5791ebaad084830a8a'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1615460255)
-LAST_GIT_COMMIT_SUBJECT = 'fix: wrong requires version specifier'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1615460684)
+LAST_GIT_COMMIT_SUBJECT = 'fix: wrong handling for desktop client True result'
 LAST_GIT_COMMIT_BODY = ''
