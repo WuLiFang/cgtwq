@@ -29,10 +29,10 @@ setup(
     ],
     url='https://github.com/WuLiFang/cgtwq',
     install_requires=[
-        'Qt.py~=1.1.0',
-        'environs~=4.2.0', 
-        'requests~=2.19.0', 
-        'websocket-client~=0.47.0',
+        'Qt.py>=1.1,<2.0',
+        'environs>=4.2.0,<4.3.0', 
+        'requests>=2.19,<3.0', 
+        'websocket-client>=0.47.<1.0',
         'wlf @ git+https://github.com/WuLiFang/wlf@v0.6.0'
     ],
     include_package_data=True,
