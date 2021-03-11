@@ -66,9 +66,14 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
                 msg += ': {}'.format(process_id)
             msg += '.'
             raise IDError(msg)
+        if data is True:
+            data = {}
         assert isinstance(data, dict), type(data)
         for i in PluginData._fields:
-            data.setdefault(i, None)
+            if i in ("id_list", "file_path_list", "retake_pipeline_id_list"):
+                data.setdefault(i, [])
+            else:
+                data.setdefault(i, None)
         return PluginData(**data)
 
     def send_result(self, result, process_id=None):

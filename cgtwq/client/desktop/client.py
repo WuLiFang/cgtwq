@@ -152,16 +152,25 @@ class DesktopClient(CachedFunctionMixin):
     def _server_ip(self):
         """Server ip current using by client.  """
 
-        return _get_typed_data(
+        ret = _get_typed_data(
             self.call_main_widget("get_server_ip"),
             text_type)
+        if ret is True:
+            return ''
+        return _get_typed_data(
+            ret,
+            text_type,
+        )
 
     def server_http(self):
         """Server http current using by client.  """
 
-        return _get_typed_data(
+        ret = _get_typed_data(
             self.call_main_widget("get_server_http"),
             text_type)
+        if ret is True:
+            ret = ''
+        return ret
 
     def selection(self):
         """Get current selection from client.
