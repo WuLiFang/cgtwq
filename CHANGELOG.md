@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/WuLiFang/cgtwq/compare/v3.0.0-beta.4...v3.0.0) (2021-03-11)
+
+
+### Features
+
+* use better error message 2540a03
+
+
+### Bug Fixes
+
+* correct logger name for server.http 4da2d7b
+* handle desktop client returns True when not logged in a9ae762
+* wrong order when get filename_prefix map e4cdfaf
+* wrong reverse sort a2c1a70
+
 ## [3.0.0-beta.4](https://github.com/WuLiFang/cgtwq/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2020-11-13)
 
 ## [3.0.0-beta.3](https://github.com/WuLiFang/cgtwq/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2020-11-13)
