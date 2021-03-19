@@ -2,36 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [3.0.3](https://github.com/WuLiFang/cgtwq/compare/v3.0.2...v3.0.3) (2021-03-19)
+## [3.0.3](https://github.com/WuLiFang/cgtwq/compare/v3.0.2...v3.0.3) (2021-03-19)
 
-### [3.0.2](https://github.com/WuLiFang/cgtwq/compare/v3.0.1...v3.0.2) (2021-03-11)
+- replace package `wlf`
 
+  with `pathlib2-unicode` + `deprecated` + `cast-unknown` fc2d5ed
 
-### Bug Fixes
-
-* wrong handling for desktop client True result cfce99b
-
-### [3.0.1](https://github.com/WuLiFang/cgtwq/compare/v3.0.0...v3.0.1) (2021-03-11)
-
+## [3.0.2](https://github.com/WuLiFang/cgtwq/compare/v3.0.1...v3.0.2) (2021-03-11)
 
 ### Bug Fixes
 
-* wrong requires version specifier 63884c6
+- wrong handling for desktop client True result cfce99b
+
+## [3.0.1](https://github.com/WuLiFang/cgtwq/compare/v3.0.0...v3.0.1) (2021-03-11)
+
+### Bug Fixes
+
+- wrong requires version specifier 63884c6
 
 ## [3.0.0](https://github.com/WuLiFang/cgtwq/compare/v3.0.0-beta.4...v3.0.0) (2021-03-11)
 
-
 ### Features
 
-* use better error message 2540a03
-
+- use better error message 2540a03
 
 ### Bug Fixes
 
-* correct logger name for server.http 4da2d7b
-* handle desktop client returns True when not logged in a9ae762
-* wrong order when get filename_prefix map e4cdfaf
-* wrong reverse sort a2c1a70
+- correct logger name for server.http 4da2d7b
+- handle desktop client returns True when not logged in a9ae762
+- wrong order when get filename_prefix map e4cdfaf
+- wrong reverse sort a2c1a70
 
 ## [3.0.0-beta.4](https://github.com/WuLiFang/cgtwq/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2020-11-13)
 
