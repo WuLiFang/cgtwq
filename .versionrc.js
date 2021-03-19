@@ -1,7 +1,9 @@
-// https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.1.0/README.md#compareurlformat-string
-
 const URL = "https://github.com/WuLiFang/cgtwq";
 
+/**
+ * @type {import("standard-version").Options}
+ * @link https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.1.0/README.md#compareurlformat-string
+ */
 module.exports = {
   types: [
     { type: "feat", section: "Features" },
@@ -27,4 +29,7 @@ module.exports = {
     },
   ],
   userUrlFormat: `https://github.com//{{user}}`,
+  scripts: {
+    postchangelog: "bash scripts/postchangelog.sh",
+  },
 };
