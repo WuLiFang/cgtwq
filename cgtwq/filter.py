@@ -6,7 +6,13 @@ from __future__ import (absolute_import, division, print_function,
 
 import six
 from six.moves import reduce
-from six.moves.collections_abc import Iterable
+
+# six.moves.collections_abc is not added at six<1.13.0
+# https://github.com/benjaminp/six/blob/42636b15dd1a5b85de56eac98e47954d4c776576/CHANGES#L35
+if six.PY3:
+    from collections.abc import Iterable
+else:
+    from collections import Iterable
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:

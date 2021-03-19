@@ -11,5 +11,5 @@ setuptools
 tox==3.20.1
 virtualenv==20.2.2
 Qt.py==1.3.3
-six==1.15.0
+six==1.11.0
 wheel
