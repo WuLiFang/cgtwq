@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.1.0'
-RELEASE_DATE = datetime.fromtimestamp(1616147377)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.0.3-5-g1007dd7'
-LAST_GIT_COMMIT_HASH = '1007dd7bc1610c12f8575d3b5948a6e19d8a8e83'
+VERSION = '3.1.1'
+RELEASE_DATE = datetime.fromtimestamp(1616148884)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.1.0-1-g4fdf320'
+LAST_GIT_COMMIT_HASH = '4fdf320cf0be47f9054a58e8e59e422bd439387f'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1616147266)
-LAST_GIT_COMMIT_SUBJECT = 'feat: add type hints'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1616148743)
+LAST_GIT_COMMIT_SUBJECT = 'fix; support six==1.11.0'
 LAST_GIT_COMMIT_BODY = ''
