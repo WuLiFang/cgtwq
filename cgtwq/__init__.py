@@ -4,7 +4,6 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from wlf.decorators import renamed
 
 from . import server
 from .account import get_account, get_account_id, login
@@ -22,16 +21,22 @@ from .public_module import ACCOUNT, PROJECT
 from .resultset import ResultSet
 from .selection import Entry, Selection
 from .util import current_account, current_account_id, update_setting
+from deprecated import deprecated
+from . import __version__
 
-# Depreacted names.
-# TODO: Remove at next major version.
-renamed('get_all_status')(server.meta.get_status)
+__all__ = [
+    'login', 'get_account',
+    'get_account_id', 'DesktopClient', 'Database',
+    'server', 'Field', 'Filter', 'FilterList',
+    'Message', 'Module', 'PluginMeta',
+    'ACCOUNT', 'PROJECT', 'ResultSet', 'Entry',
+    'Selection', 'AccountError', 'AccountNotFoundError',
+    'CGTeamWorkException', 'IDError', 'LoginError', 'PasswordError',
+    'PermissionError', 'PrefixError', 'SignError', 'EmptySelection',
+    'current_account', 'current_account_id', 'update_setting',
+]
 
-__all__ = ['login', 'get_account',
-           'get_account_id', 'DesktopClient', 'Database',
-           'server', 'Field', 'Filter', 'FilterList',
-           'Message', 'Module', 'PluginMeta',
-           'ACCOUNT', 'PROJECT', 'ResultSet', 'Entry',
-           'Selection', 'AccountError', 'AccountNotFoundError',
-           'CGTeamWorkException', 'IDError', 'LoginError', 'PasswordError',
-           'PermissionError', 'PrefixError', 'SignError','EmptySelection']
+get_all_status = deprecated(
+    version='3.0.0',
+    reason="Use server.meta.get_status instead"
+)(server.meta.get_status)

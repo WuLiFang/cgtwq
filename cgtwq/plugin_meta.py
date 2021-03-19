@@ -53,7 +53,7 @@ class PluginMeta(object):
         """Fetch plugin data from server.  """
 
         if (self.last_fetch_time
-                and (self.last_fetch_time - time.time() > core.CONFIG['MIN_FETCH_INTERVAL'])):
+                and (self.last_fetch_time - time.time() > core.CONFIG['MIN_FETCH_INTERVAL'])):  # type: ignore
             return
 
         token = token or core.CONFIG['DEFAULT_TOKEN']

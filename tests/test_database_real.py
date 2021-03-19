@@ -6,13 +6,13 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import random
-import uuid
 from unittest import TestCase, main
 
 import pytest
 import six
 
 import cgtwq
+import cgtwq.model
 from cgtwq import Filter, model
 from tests import util
 

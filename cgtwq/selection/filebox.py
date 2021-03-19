@@ -3,7 +3,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from wlf.decorators import deprecated
+from deprecated import deprecated
 
 from ..model import FileBoxInfo
 from .core import _OS, SelectionAttachment
@@ -72,10 +72,11 @@ class SelectionFilebox(SelectionAttachment):
         assert isinstance(resp, dict), resp
         return FileBoxInfo(**resp)
 
-    # Deprecated methods.
-    # TODO: Remove at next major version.
-
-    def _get(self, sign=None, id_=None):
+    @deprecated(
+        version='3.0.0',
+reason='Use `from_sign` or `from_id` instead.'
+    )
+    def get(self, sign=None, id_=None):
         """Get one filebox with sign or id_.
 
         Args:
@@ -99,5 +100,3 @@ class SelectionFilebox(SelectionAttachment):
         else:
             raise ValueError(
                 'Need at least one of (sign, id_) to get filebox.')
-
-    get = deprecated(_get, reason='Use `from_sign` or `from_id` instead.')

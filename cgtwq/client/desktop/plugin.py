@@ -9,7 +9,7 @@ from uuid import UUID
 
 import six
 
-from wlf.decorators import deprecated
+from deprecated import deprecated
 
 from . import core
 from ...exceptions import IDError
@@ -108,7 +108,9 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
 
         return PluginMeta(self.data().plugin_id)
 
-    # Deprecated methods.
-    # TODO: Remove at next major version.
-
-    uuid = deprecated(process_id, reason='Renamed to `process_id`')
+    @deprecated(
+        version='3.0.0',
+        reason='Renamed to `process_id`',
+    )
+    def uuid(self):
+        return self.process_id()

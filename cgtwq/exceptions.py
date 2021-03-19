@@ -24,11 +24,11 @@ def _as_suffix(list_):
 def _template_meta(__bytes__, __str__):
 
     class _TemplateMetaClass(type):
-        def __new__(mcs, name, bases, dict_):
+        def __new__(cls, name, bases, dict_):
             dict_[_BYTES_KEY] = lambda self: (
                 __bytes__ + _as_suffix(self.args)).encode('utf-8')
             dict_[_STR_KEY] = lambda self: __str__ + _as_suffix(self.args)
-            return type.__new__(mcs, name, bases, dict_)
+            return type.__new__(cls, name, bases, dict_)
 
     return _TemplateMetaClass
 

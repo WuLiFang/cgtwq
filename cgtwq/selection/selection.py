@@ -4,8 +4,7 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import six
-
-from wlf.decorators import deprecated
+from deprecated import deprecated
 
 from ..exceptions import EmptySelection
 from ..filter import Field
@@ -243,10 +242,11 @@ class Selection(tuple):
             kwargs['module'], module_type=kwargs['module_type']
         ).select(*kwargs['id_list'])
 
-    # Deprecated methods.
-    # TODO: Remove at next major version.
-
-    def _submit(self, pathnames=(), filenames=(), note=""):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Selection.flow.submit` insted.'
+    )
+    def submit(self, pathnames=(), filenames=(), note=""):
         """Submit file to task, then change status to `Check`.
 
         Args:
@@ -257,9 +257,11 @@ class Selection(tuple):
 
         self.flow.submit(pathnames + filenames, message=note)
 
-    submit = deprecated(_submit, 'Use `Selection.flow.submit` insted.')
-
-    def _set_image(self, path, field='image'):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Selection.image.set` insted.'
+    )
+    def set_image(self, path, field='image'):
         """Set image for the field.
 
         Args:
@@ -271,9 +273,11 @@ class Selection(tuple):
         """
         return self.image.set(path, field)
 
-    set_image = deprecated(_set_image, 'Use `Selection.image.set` insted.')
-
-    def _get_image(self, field='image'):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Selection.image.get` insted.',
+    )
+    def get_image(self, field='image'):
         """Get imageinfo used on the field.
 
         Args:
@@ -285,9 +289,11 @@ class Selection(tuple):
 
         return self.image.get(field)
 
-    get_image = deprecated(_get_image, 'Use `Selection.image.get` insted.')
-
-    def _has_permission_on_status(self, field):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Selection.flow.has_field_permission` Instead',
+    )
+    def has_permission_on_status(self, field):
         """Return if user has permission to edit field.
 
         Args:
@@ -298,7 +304,3 @@ class Selection(tuple):
         """
 
         return self.flow.has_field_permission(field)
-
-    has_permission_on_status = deprecated(
-        _has_permission_on_status,
-        reason='Use `Selection.flow.has_field_permission` Instead')

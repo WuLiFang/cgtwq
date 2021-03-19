@@ -4,24 +4,53 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import logging
-import typing
+import re
 
-from six import text_type
-
+import cast_unknown as cast
 import cgtwq
-from wlf.path import PurePath
+from deprecated import deprecated
+from pathlib2_unicode import PurePath
+from six import text_type
 
 from .exceptions import DatabaseError
 
-LOGGER = logging.getLogger(__name__)
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Dict, Optional, Text
 
-if typing.TYPE_CHECKING:
-    pass
+
+LOGGER = logging.getLogger(__name__)
 
 
 CACHE = {}
 
 CACHE_KEY_PREFIX_DATABASE_MAP = "prefix_database_map"
+
+
+def _get_shot(path, version_pattern=r'(.+)v(\d+)'):
+    # type: (Text, Text) -> Text
+    """The related shot for this footage.
+
+    >>> _get_shot('sc_001_v20.nk')
+    u'sc_001'
+    >>> _get_shot('hello world')
+    u'hello world'
+    >>> _get_shot('sc_001_v-1.nk')
+    u'sc_001_v-1'
+    >>> _get_shot('sc001V1.jpg')
+    u'sc001'
+    >>> _get_shot('sc001V1_no_bg.jpg')
+    u'sc001'
+    >>> _get_shot('suv2005_v2_m.jpg')
+    u'suv2005'
+    """
+
+    p = PurePath(cast.text(path))
+    match = re.match(version_pattern, cast.text(p.name), flags=re.I)
+    if not match:
+        return cast.text(p.stem)
+    shot = match.group(1)
+    return shot.strip('_')
 
 
 def guess_entry(select):
@@ -66,7 +95,7 @@ def get_database_by_file(filename):
     """
 
     if CACHE_KEY_PREFIX_DATABASE_MAP not in CACHE:
-        data = {}  # type: typing.Dict[text_type, text_type]
+        data = {}  # type: Dict[text_type, text_type]
         select = cgtwq.PROJECT.select_activated().get_fields(
             'code',
             'database',
@@ -93,7 +122,7 @@ def get_database_by_file(filename):
 
 
 def get_entry_by_file(filename, pipeline, module='shot'):
-    # type: (text_type, text_type, typing.Optional[text_type]) -> cgtwq.Entry
+    # type: (Text, Text, Optional[Text]) -> cgtwq.Entry
     """Get entry from filename and pipeline
 
     Args:
@@ -105,7 +134,7 @@ def get_entry_by_file(filename, pipeline, module='shot'):
         cgtwq.Entry: Entry
     """
 
-    shot = PurePath(filename).shot
+    shot = _get_shot(filename)
     database = cgtwq.Database(get_database_by_file(filename))
     select = database.module(module).filter(
         (cgtwq.Field('pipeline') == pipeline)
@@ -119,6 +148,10 @@ def get_entry_by_file(filename, pipeline, module='shot'):
     return entry
 
 
+@deprecated(
+    version="3.0.0",
+    reason="Use other functions instead."
+)
 class CGTWQHelper(object):  # TODO: remove this at next major version.
     """DEPRECATED: Helper class for cgtwq query.
 
@@ -193,7 +226,7 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
         if key in cls.cache:
             return cls.cache[key]
 
-        shot = PurePath(filename).shot
+        shot = _get_shot(filename)
         database = cgtwq.Database(cls.get_database(filename))
         select = database.module(module).filter(
             (cgtwq.Field('pipeline') == pipeline)

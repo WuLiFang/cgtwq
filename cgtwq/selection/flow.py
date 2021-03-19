@@ -8,7 +8,7 @@ import uuid
 
 import six
 
-from wlf.codectools import get_encoded as e
+import cast_unknown as cast
 
 from .. import account, exceptions
 from ..filter import Field
@@ -58,7 +58,7 @@ class SelectionFlow(SelectionAttachment):
         # Create path data.
         path_data = {'path': [], 'file_path': []}
         for i in filenames:
-            path_data['path' if os.path.isdir(e(i)) else 'file_path'].append(i)
+            path_data['path' if os.path.isdir(cast.text(i)) else 'file_path'].append(i)
 
         select.call(
             "c_work_flow", "submit",

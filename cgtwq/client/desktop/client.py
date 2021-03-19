@@ -9,7 +9,7 @@ from subprocess import Popen
 
 from six import text_type
 import websocket as ws
-from wlf.decorators import deprecated
+from deprecated import deprecated
 
 from . import core
 from ...core import CONFIG, CachedFunctionMixin
@@ -202,17 +202,20 @@ class DesktopClient(CachedFunctionMixin):
     # Deprecated methods.
 
     current_select = deprecated(
-        selection, reason='Use `Desktop.selection` instead.')
+        version='3.0.0',
+reason='Use `Desktop.selection` instead.',
+    )(selection)
 
     get_plugin_data = deprecated(
-        lambda self, uuid='': self.plugin.data(uuid),
-        reason='Use `DesktopClient.plugin.data` instead.')
+        version='3.0.0',
+reason='Use `DesktopClient.plugin.data` instead.',
+    )(lambda self, uuid='': self.plugin.data(uuid))
 
     send_plugin_result = deprecated(
-        (lambda self, uuid, result=False:
-         self.plugin.send_result(process_id=uuid, result=result)),
-        reason='Use `DesktopClient.plugin.send_result` instead.'
-    )
+        version='3.0.0',
+reason='Use `DesktopClient.plugin.send_result` instead.'
+    )(lambda self, uuid, result=False:
+      self.plugin.send_result(process_id=uuid, result=result))
 
 
 def _get_typed_data(data, type_):

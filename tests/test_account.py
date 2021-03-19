@@ -7,9 +7,10 @@ from __future__ import (absolute_import, division, print_function,
 import os
 import uuid
 
+import cgtwq
+import cgtwq.account
 import pytest
 
-import cgtwq.account
 from tests import util
 
 
@@ -17,8 +18,8 @@ from tests import util
 @pytest.mark.skipif(not (os.getenv('CGTWQ_TEST_ACCOUNT') and os.getenv('CGTWQ_TEST_PASSWORD')),
                     reason='Need a test account')
 def test_login():
-    cgtwq.account.login(os.getenv('CGTWQ_TEST_ACCOUNT'),
-                        os.getenv('CGTWQ_TEST_PASSWORD'))
+    cgtwq.account.login(os.getenv('CGTWQ_TEST_ACCOUNT') or '',
+                        os.getenv('CGTWQ_TEST_PASSWORD') or '')
 
 
 @util.skip_if_not_logged_in

@@ -3,12 +3,22 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from Qt.QtWidgets import (QDialog, QLabel, QLineEdit, QMessageBox, QPushButton,
-                          QVBoxLayout)
-from six import text_type
+import sys
 
 import cgtwq
-from wlf.uitools import application
+from Qt.QtWidgets import (QApplication, QDialog, QLabel,  # type: ignore
+                          QLineEdit, QMessageBox, QPushButton, QVBoxLayout)
+from six import text_type
+
+
+def application():
+    """Get QApplication instance, create one if needed.  """
+
+    app = QApplication.instance()
+
+    if not app:
+        app = QApplication(sys.argv)
+    return app
 
 
 def ask_login(parent=None):

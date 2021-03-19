@@ -9,28 +9,25 @@ import logging
 
 import six
 
-from . import server
+from .server.web import upload_image
 from .model import ImageInfo
 
 LOGGER = logging.getLogger(__name__)
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import List, Union, Text
 
 
 class Message(six.text_type):
     """CGTeamWork style message, support image.  """
 
+    images = []  # type: List[Union[ImageInfo, Text]]
+
     def __new__(cls, obj):
         ret = super(Message, cls).__new__(cls, obj)
         ret.images = []
         return ret
-
-    def __getitem__(self, index):
-        # TODO: remove at next major version.
-        if index in self._fields:
-            LOGGER.warning('Use Message.%s to get value from namedtuple, '
-                           'this compatibility support will '
-                           'deprecate at next major version.', index)
-            return getattr(self, index)
-        return super(Message, self).__getitem__(index)
 
     def _check_images(self):
         if any(not isinstance(i, ImageInfo) for i in self.images):
@@ -41,7 +38,11 @@ class Message(six.text_type):
         """Dump data to string in server defined format.  """
 
         self._check_images()
-        return json.dumps({'data': self, 'image': [i._asdict() for i in self.images]})
+
+        return json.dumps({
+            'data': self,
+            'image': [i._asdict() for i in self.images]},  # type: ignore
+        )
 
     def upload_images(self, folder, token):
         """Upload contianed images to server. will replace items in `self.image`.  """
@@ -88,4 +89,4 @@ def _upload_image(image, folder, token):
     if not isinstance(image, (six.text_type, six.binary_type)):
         raise TypeError('Not support such data type.', type(image))
 
-    return server.web.upload_image(image, folder, token)
+    return upload_image(image, folder, token)

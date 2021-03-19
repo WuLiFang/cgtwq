@@ -6,7 +6,9 @@ from __future__ import (absolute_import, division, print_function,
 
 import pytest
 
-import cgtwq
+import cgtwq.model
+import cgtwq.core
+import cgtwq.message
 from tests import util
 
 Message = cgtwq.message.Message
@@ -44,5 +46,5 @@ def test_message_upload():
     item.upload_images('_temp', cgtwq.core.CONFIG['DEFAULT_TOKEN'])
     assert len(item.images) == 1
     assert all(isinstance(i, cgtwq.model.ImageInfo) for i in item.images)
-    assert item.images[0].path == filename
+    assert item.images[0].path == filename # type: ignore
     item.dumps()

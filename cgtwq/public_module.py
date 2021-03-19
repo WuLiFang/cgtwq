@@ -3,7 +3,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from wlf.decorators import deprecated
+from deprecated import deprecated
 
 from .database import Database
 from .filter import Field, Filter
@@ -46,10 +46,10 @@ class PublicModule(Module):
 
         return self.select_activated()[self.name_field]
 
-    # Deprecated methods
     all = deprecated(
-        select_activated,
-        reason='Use `PublicModule.select_activated` insted.')
+        version='3.0.0',
+        reason='Use `PublicModule.select_activated` insted.',
+    )(select_activated)
 
 
 PROJECT = PublicModule('project', Filter('status', 'Active'), 'full_name')

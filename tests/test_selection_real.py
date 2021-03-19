@@ -14,6 +14,7 @@ import six
 import cgtwq
 import cgtwq.database
 import cgtwq.model
+import cgtwq.core
 from tests import util
 
 database = cgtwq.database

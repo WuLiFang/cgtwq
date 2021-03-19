@@ -9,6 +9,7 @@ import os
 import pytest
 
 import cgtwq
+import cgtwq.core
 
 
 @pytest.fixture(autouse=True, scope='session')

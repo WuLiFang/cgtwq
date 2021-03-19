@@ -7,7 +7,7 @@ import time
 
 from environs import Env
 
-from wlf.decorators import deprecated
+from deprecated import deprecated
 
 from .filter import FilterList
 
@@ -42,16 +42,16 @@ class ControllerGetterMixin(object):
 
         assert isinstance(filters, FilterList), type(filters)
         fields = getattr(model, 'fields', model._fields)
-        resp = self.call(
+        resp = self.call(  # type: ignore
             controller, method,
             field_array=fields,
             filter_array=filters)
         return tuple(model(*i) for i in resp)
 
-    # Deprecated methods.
-    # TODO: Rename at next major version.
-
-    _get_model = deprecated(_filter_model, 'Renamed to _filter_model')
+    filter_model = deprecated(
+        version='3.0.0',
+        reason='Renamed to _filter_model',
+    )(_filter_model)
 
 
 class CachedFunctionMixin(object):

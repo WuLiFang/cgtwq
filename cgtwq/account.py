@@ -8,6 +8,10 @@ from . import core, server
 from .exceptions import AccountNotFoundError, PasswordError
 from .model import AccountInfo
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text
+
 
 def get_account(token=None):
     """Get account from token.
@@ -38,7 +42,7 @@ def get_account_id(token=None):
 
 
 def login(account, password):
-    # type: (str, str) -> AccountInfo
+    # type: (Text, Text) -> AccountInfo
     """Login on server.
 
     Args:

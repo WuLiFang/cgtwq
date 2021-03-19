@@ -24,7 +24,8 @@
         "skipif",
         "strptime",
         "toctree",
-        "uitools"
+        "uitools",
+        "venv"
     ],
     "flagWords": []
 }

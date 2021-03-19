@@ -8,6 +8,10 @@ import six
 
 from cgtwq import exceptions
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import List, Tuple, Text
+
 
 def test_template_meta():
 
@@ -16,14 +20,15 @@ def test_template_meta():
         pass
 
     print(dir(Test))
-    test_case = [(Test('1'), b'test: 1', '测试: 1')]
+    test_case = [(Test('1'), b'test: 1', '测试: 1'),
+    ]  # type: List[Tuple[Test, bytes, Text]]
     if six.PY2:
         test_case.append((Test('2', 2), b"test: (u'2', 2)", "测试: (u'2', 2)"))
     else:
         test_case.append((Test('2', 2), b"test: ('2', 2)", "测试: ('2', 2)"))
 
     for i in test_case:
-        assert six.binary_type(i[0]) == i[1]
+        assert six.binary_type(i[0]) == i[1] # type: ignore
         assert six.text_type(i[0]) == i[2]
 
 

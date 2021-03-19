@@ -6,9 +6,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import mimetypes
 import os
-
-from wlf.codectools import get_encoded as e
-from wlf.codectools import get_unicode as u
+import cast_unknown as cast
 
 from ..model import ImageInfo
 from .http import post
@@ -26,7 +24,7 @@ def upload_image(filename, folder, token):
         ImageInfo: Uploaded image information.
     """
 
-    filename = u(filename)
+    filename = cast.text(filename)
     basename = os.path.basename(filename)
     data = post('web_upload_file',
                 {'folder': folder,
@@ -35,7 +33,7 @@ def upload_image(filename, folder, token):
                  'filename': basename},
                 token=token,
                 files={'file':
-                       (basename, open(e(filename), 'rb'),
+                       (basename, open(filename, 'rb'),
                         mimetypes.guess_type(basename)[0])})
     assert isinstance(data, dict), type(data)
     data['path'] = filename

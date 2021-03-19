@@ -7,6 +7,7 @@ from __future__ import (absolute_import, division, print_function,
 from unittest import TestCase, main
 
 import cgtwq
+import cgtwq.model
 from tests import util
 
 pytestmark = [util.skip_if_desktop_client_not_running]

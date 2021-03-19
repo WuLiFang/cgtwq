@@ -10,3 +10,5 @@ if sys.platform == 'win32':
     from .client import DesktopClient
 else:
     from .dummy import DesktopClient
+
+__all__ = ['DesktopClient']

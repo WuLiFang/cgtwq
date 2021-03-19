@@ -1,0 +1,8 @@
+{
+    "typeCheckingMode": "basic",
+    "reportUnusedImport": "error",
+    "reportMissingModuleSource": "information",
+    "extraPaths": [
+        ".venv/lib/site-packages"
+    ]
+}

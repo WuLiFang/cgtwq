@@ -3,7 +3,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-from wlf.decorators import deprecated
+from deprecated import deprecated
 
 from ..model import FieldMeta
 from .core import ModuleAttachment
@@ -57,10 +57,11 @@ class ModuleField(ModuleAttachment):
             field_id=id_,
         )
 
-    # Deprecated methods.
-    # TODO: remove at next major version.
-
-    def _format(self, name):
+    @deprecated(
+        version='3.0.0',
+        reason='Use `Field.in_namespace` instead.',
+    )
+    def format(self, name):
         """Formatted field name for this module.
 
         Args:
@@ -75,5 +76,3 @@ class ModuleField(ModuleAttachment):
                 or '#' in name):
             return name
         return '{}.{}'.format(module.default_field_namespace, name)
-
-    format = deprecated(_format, 'Use `Field.in_namespace` instead.')

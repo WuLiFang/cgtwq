@@ -5,7 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
-from wlf.decorators import deprecated
+from deprecated import deprecated
 
 from .. import core, server
 from ..filter import Field, FilterList
@@ -86,10 +86,11 @@ class Database(core.ControllerGetterMixin):
         ret.label = info.label
         return ret
 
-    # Deprecated methods.
-    # TODO: Remove at next major version.
-
-    def _set_data(self, key, value, is_user=True):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.metadata` or `Database.userdata` instead.',
+    )
+    def set_data(self, key, value, is_user=True):
         """Set additional data in this database.
 
         Args:
@@ -102,11 +103,11 @@ class Database(core.ControllerGetterMixin):
         accessor = self.userdata if is_user else self.metadata
         accessor[key] = value
 
-    set_data = deprecated(
-        _set_data,
-        reason='Use `Database.metadata` or `Database.userdata` instead.')
-
-    def _get_data(self, key, is_user=True):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.metadata` or `Database.userdata` instead.',
+    )
+    def get_data(self, key, is_user=True):
         """Get additional data set in this database.
 
         Args:
@@ -121,11 +122,11 @@ class Database(core.ControllerGetterMixin):
         accessor = self.userdata if is_user else self.metadata
         return accessor[key]
 
-    get_data = deprecated(
-        _get_data,
-        reason='Use `Database.metadata` or `Database.userdata` instead.')
-
-    def _get_fileboxes(self, filters=None, id_=None):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.filebox.filter` or `Database.filebox.get` instead.',
+    )
+    def get_fileboxes(self, filters=None, id_=None):
         r"""Get fileboxes in this database.
 
         Args:
@@ -151,11 +152,10 @@ class Database(core.ControllerGetterMixin):
 
         return ret
 
-    get_fileboxes = deprecated(
-        _get_fileboxes,
-        reason='Use `Database.filebox.filter` or `Database.filebox.get` instead.')
-
-    def _get_fields(self, filters=None):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.field.filter` instead.')
+    def get_fields(self, filters=None):
         """Get fields in the database.
             filters (Filter or FilterList, optional): Defaults to None. Filter.
 
@@ -167,11 +167,10 @@ class Database(core.ControllerGetterMixin):
         filters = FilterList(filters)
         return self.field.filter(*filters)
 
-    get_fields = deprecated(
-        _get_fields,
-        reason='Use `Database.field.filter` instead.')
-
-    def _get_field(self, filters):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.field.filter_one` instead.')
+    def get_field(self, filters):
         """Get one field in the database.
             filters (Filter or FilterList): Filter.
 
@@ -182,11 +181,11 @@ class Database(core.ControllerGetterMixin):
         filters = FilterList(filters)
         return self.field.filter_one(*filters)
 
-    get_field = deprecated(
-        _get_field,
-        reason='Use `Database.field.filter_one` instead.')
-
-    def _create_field(self, sign, type_, name=None, label=None):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.field.create` instead.'
+    )
+    def create_field(self, sign, type_, name=None, label=None):
         """Create new field in the module.
 
         Args:
@@ -198,11 +197,10 @@ class Database(core.ControllerGetterMixin):
 
         self.field.create(sign, type_, name, label)
 
-    create_field = deprecated(
-        _create_field,
-        reason='Use `Database.field.create` instead.')
-
-    def _delete_field(self, field_id):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.field.delete` instead.')
+    def delete_field(self, field_id):
         """Delete field in the module.
 
         Args:
@@ -210,15 +208,15 @@ class Database(core.ControllerGetterMixin):
         """
         self.field.delete(field_id)
 
-    delete_field = deprecated(
-        _delete_field,
-        reason='Use `Database.field.delete` instead.')
-
-    def _get_pipelines(self, *filters):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.pipeline.filter` instead.',
+    )
+    def get_pipelines(self, *filters):
         """Get piplines from database.
 
         Args:
-            \*filters (FilterList): Filter to get pipeline.
+            *filters (FilterList): Filter to get pipeline.
 
         Returns:
             tuple[PipelineInfo]: namedtuple for ('id', 'name', 'module')
@@ -226,11 +224,11 @@ class Database(core.ControllerGetterMixin):
 
         return self.pipeline.filter(*filters)
 
-    get_pipelines = deprecated(
-        _get_pipelines,
-        reason='Use `Database.pipeline.filter` instead.')
-
-    def _modules(self):
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.filter` with empty args instead.`'
+    )
+    def modules(self):
         """All modules in this database.
 
         Returns:
@@ -239,12 +237,11 @@ class Database(core.ControllerGetterMixin):
 
         return self.filter()
 
-    modules = deprecated(
-        _modules,
-        reason='Use `Database.filter` with empty args instead.`'
+    @deprecated(
+        version='3.0.0',
+reason='Use `Database.software.get_path` instead.'
     )
-
-    def _get_software(self, name):
+    def get_software(self, name):
         """Get software path for this database.
 
         Args:
@@ -255,8 +252,3 @@ class Database(core.ControllerGetterMixin):
         """
 
         return self.software.get_path(name)
-
-    get_software = deprecated(
-        _get_software,
-        reason='Use `Database.software.get_path` instead.'
-    )

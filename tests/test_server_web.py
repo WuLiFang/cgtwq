@@ -4,8 +4,10 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
-import cgtwq
+import cgtwq.core
+import cgtwq.model
 import cgtwq.server.web
+
 from tests import util
 
 

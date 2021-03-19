@@ -5,9 +5,8 @@ from __future__ import (absolute_import, division, print_function,
 
 import logging
 
+from deprecated import deprecated
 import six
-
-from wlf.decorators import deprecated
 
 from ..core import ControllerGetterMixin
 from ..filter import Field, Filter, FilterList
@@ -17,6 +16,10 @@ from .field import ModuleField
 from .history import ModuleHistory
 
 LOGGER = logging.getLogger(__name__)
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any
 
 
 @six.python_2_unicode_compatible
@@ -65,6 +68,7 @@ class Module(ControllerGetterMixin):
         self._token = value
 
     def call(self, *args, **kwargs):
+        # type: (...) -> Any
         """Call on this module.   """
 
         kwargs.setdefault('token', self.token)
@@ -195,16 +199,20 @@ class Module(ControllerGetterMixin):
         resp = self.call('c_flow', 'get_data')
         return tuple(FlowInfo(*i) for i in resp)
 
-    # Deprecated methods.
-
-    def _fields(self):
+    @deprecated(
+        version='3.0.0',
+        reason='Use `Module.field.meta` insted.',
+    )
+    def fields(self):
         """Get fields in this module.  """
 
         return self.field.meta()
 
-    fields = deprecated(_fields, reason='Use `Module.field.meta` insted.')
-
-    def _format_field(self, name):
+    @deprecated(
+        version='3.0.0',
+        reason='Use `Module.field.format` insted.',
+    )
+    def format_field(self, name):
         """Formatted field name for this module.
 
         Args:
@@ -216,10 +224,11 @@ class Module(ControllerGetterMixin):
 
         return self.field.format(name)
 
-    format_field = deprecated(
-        _format_field, reason='Use `Module.field.format` insted.')
-
-    def _create_field(self, sign, type_, name=None, label=None):
+    @deprecated(
+        version='3.0.0',
+        reason='Use `Module.field.create` insted.',
+    )
+    def create_field(self, sign, type_, name=None, label=None):
         r"""Create new field in the module.
 
         Args:
@@ -230,10 +239,11 @@ class Module(ControllerGetterMixin):
         """
         return self.field.create(sign, type_, name, label)
 
-    create_field = deprecated(
-        _create_field, reason='Use `Module.field.create` insted.')
-
-    def _delete_field(self, id_):
+    @deprecated(
+        version='3.0.0',
+        reason='Use `Module.field.delete` insted.',
+    )
+    def delete_field(self, id_):
         r"""Delete field in the module.
 
         Args:
@@ -242,10 +252,11 @@ class Module(ControllerGetterMixin):
 
         self.field.delete(id_)
 
-    delete_field = deprecated(
-        _delete_field, reason='Use `Module.field.delete` insted.')
-
-    def _get_history(self, filters):
+    @deprecated(
+        version='3.0.0',
+        reason='Use `Module.history.filter` insted.',
+    )
+    def get_history(self, filters):
         """Get history record from the module.
             filters (Filter or FilterList): History filters.
 
@@ -255,10 +266,11 @@ class Module(ControllerGetterMixin):
 
         return self.history.filter(filters)
 
-    get_history = deprecated(
-        _get_history, reason='Use `Module.history.filter` insted.')
-
-    def _count_history(self, filters):
+    @deprecated(
+        version='3.0.0',
+        reason='Use `Module.history.count` insted.',
+    )
+    def count_history(self, filters):
         """Count history records in the module.
 
         Args:
@@ -271,10 +283,11 @@ class Module(ControllerGetterMixin):
 
         return self.history.count(filters)
 
-    count_history = deprecated(
-        _count_history, reason='Use `Module.history.count` insted.')
-
-    def _undo_history(self, history):
+    @deprecated(
+        version='3.0.0',
+        reason='Use `Module.history.undo` insted.',
+    )
+    def undo_history(self, history):
         """Undo a history.
 
         Args:
@@ -283,10 +296,11 @@ class Module(ControllerGetterMixin):
 
         self.history.undo(history)
 
-    undo_history = deprecated(
-        _undo_history, reason='Use `Module.history.undo` insted.')
-
-    def _format_filters(self, filters):
+    @deprecated(
+        version='3.0.0',
+        reason='Use `FilterList.in_namespace` insted.',
+    )
+    def format_filters(self, filters):
         """Format field name in filters.
 
         Args:
@@ -302,6 +316,3 @@ class Module(ControllerGetterMixin):
             if isinstance(i, Filter):
                 i[0] = self.format_field(i[0])
         return ret
-
-    format_filters = deprecated(
-        _format_filters, reason='Use `FilterList.in_namespace` insted.')
