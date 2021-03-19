@@ -1,6 +1,10 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file.
+See [standard-version](https://github.com/conventional-changelog/standard-version)
+for commit guidelines.
+
+<!-- markdownlint-disable MD013 -->
 
 ## [3.0.3](https://github.com/WuLiFang/cgtwq/compare/v3.0.2...v3.0.3) (2021-03-19)
 
@@ -50,7 +54,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 - correct EmptySelection message b354efe
-- EmptySelection backward compability ed028e8
+- EmptySelection backward compatibility ed028e8
 - plugin argument payload serialization 9b9c50c
 - WebSocketTimeoutException when no client installed af9fc01
 - **helper.wlf:** filename match should use exact match first 79a0717
