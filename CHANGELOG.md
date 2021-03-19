@@ -1,10 +1,12 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-See [standard-version](https://github.com/conventional-changelog/standard-version)
-for commit guidelines.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-<!-- markdownlint-disable MD013 -->
+## [3.1.0](https://github.com/WuLiFang/cgtwq/compare/v3.0.3...v3.1.0) (2021-03-19)
+
+### Features
+
+- add type hints 1007dd7
 
 ## [3.0.3](https://github.com/WuLiFang/cgtwq/compare/v3.0.2...v3.0.3) (2021-03-19)
 
