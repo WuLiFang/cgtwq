@@ -11,8 +11,13 @@ import cast_unknown as cast
 from ..model import ImageInfo
 from .http import post
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text
+
 
 def upload_image(filename, folder, token):
+    # type: (Text, Text, Text) -> ImageInfo
     """Upload image to server.
 
     Args:

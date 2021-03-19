@@ -17,7 +17,13 @@ from ...model import PluginData
 from ...plugin_meta import PluginMeta
 
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text
+
+
 def _is_uuid(text):
+    # type: (Text) -> bool
     text = six.text_type(text)
     try:
         return text.lower() == six.text_type(UUID(text))
@@ -46,6 +52,7 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
         return ''
 
     def data(self, process_id=None):
+        # type: (Text) -> PluginData
         """Get plugin data with process_id.
 
         Args:
@@ -77,6 +84,7 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
         return PluginData(**data)
 
     def send_result(self, result, process_id=None):
+        # type: (bool, Text) -> None
         """
         Tell client plugin execution result.
         if result is `False`, following operation will been abort.

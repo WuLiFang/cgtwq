@@ -10,8 +10,14 @@ from Qt.QtWidgets import (QApplication, QDialog, QLabel,  # type: ignore
                           QLineEdit, QMessageBox, QPushButton, QVBoxLayout)
 from six import text_type
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any
+    from ..model import AccountInfo
+
 
 def application():
+    # type: () -> QApplication
     """Get QApplication instance, create one if needed.  """
 
     app = QApplication.instance()
@@ -22,6 +28,7 @@ def application():
 
 
 def ask_login(parent=None):
+    # type: (Any) -> AccountInfo
     """Ask login with a dialog.
         parent (QWidget, optional): Defaults to None. Parent widget.
 
@@ -48,6 +55,7 @@ def ask_login(parent=None):
 
 
 def _setup_login_dialog(dialog, account_input, password_input):
+    # type: (Any, Any, Any) -> None
     dialog.setWindowTitle('登录CGTeamWork')
     account_input.setPlaceholderText('CGTeamwork账号名')
     password_input.setPlaceholderText('密码')

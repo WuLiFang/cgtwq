@@ -8,6 +8,9 @@ from deprecated import deprecated
 from ..model import FieldMeta
 from .core import ModuleAttachment
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text
 
 class ModuleField(ModuleAttachment):
     """Field feature for module.  """
@@ -27,6 +30,7 @@ class ModuleField(ModuleAttachment):
         return tuple(FieldMeta(*i) for i in resp)
 
     def create(self, sign, type_, name=None, label=None):
+        # type: (Text, Text, Text, Text) -> None
         """Create new field in the module.
 
         Args:
@@ -44,6 +48,7 @@ class ModuleField(ModuleAttachment):
             sign=sign, type_=type_, name=name, label=label)
 
     def delete(self, id_):
+        # type: (Text) -> None
         r"""Delete field in the module.
 
         Args:
@@ -62,6 +67,7 @@ class ModuleField(ModuleAttachment):
         reason='Use `Field.in_namespace` instead.',
     )
     def format(self, name):
+        # type: (Text) -> Text
         """Formatted field name for this module.
 
         Args:

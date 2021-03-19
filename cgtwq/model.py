@@ -8,6 +8,10 @@ import json
 import logging
 from collections import namedtuple
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Text, Union, Dict, Optional
+
 
 class PipelineInfo(namedtuple('PipelineInfo',
                               ('id', 'name', 'module',
@@ -27,6 +31,7 @@ class NoteInfo(namedtuple('NoteInfo',
               'module')
 
     def __new__(cls, *args, **kwargs):
+        # type: (Any, *Any) -> Any
         from .message import Message
         raw = super(NoteInfo, cls).__new__(cls, *args, **kwargs)
         data = raw._asdict()
@@ -48,6 +53,7 @@ class HistoryInfo(
               'text', 'create_by', 'time')
 
     def __new__(cls, *args, **kwargs):
+        # type: (Any, *Any) -> Any
         from .message import Message
         raw = super(HistoryInfo, cls).__new__(cls, *args, **kwargs)
         data = raw._asdict()
@@ -83,6 +89,7 @@ class FileBoxInfo(namedtuple(
               'is_msg_to_first_qc')
 
     def __new__(cls, *args, **kwargs):
+        # type: (Any, *Any) -> Any
         kwargs['id'] = kwargs.pop('#id')
         return super(FileBoxInfo, cls).__new__(cls, *args, **kwargs)
 
@@ -91,17 +98,19 @@ class ImageInfo(namedtuple('ImageInfo', ('max', 'min', 'path'))):
     """Image information.  """
 
     def __new__(cls, max, min, path=None):
+        # type: (int, int, Text) -> Any
         # pylint: disable=redefined-builtin
         return super(ImageInfo, cls).__new__(cls, max, min, path)
 
     def __getitem__(self, index):
+        # type: (Union[Text, int]) -> Any
         # TODO: remove at next major version.
         if index in self._fields:
             LOGGER.warning('Use ImageInfo.%s to get value from namedtuple, '
                            'this compatibility support will '
                            'deprecate at next major version.', index)
-            return getattr(self, index)
-        return super(ImageInfo, self).__getitem__(index)
+            return getattr(self, index)  # type: ignore
+        return super(ImageInfo, self).__getitem__(index)  # type: ignore
 
 
 LOGGER = logging.getLogger(__name__)
@@ -125,6 +134,7 @@ class FieldMeta(
               'sort_id')
 
     def __new__(cls, *args, **kwargs):
+        # type: (Any, *Any) -> Any
         raw = super(FieldMeta, cls).__new__(cls, *args, **kwargs)
         new_kwargs = raw._asdict()
         _format_yn_str_in_dict(new_kwargs)
@@ -132,12 +142,14 @@ class FieldMeta(
 
 
 def _format_yn_str_in_dict(dict_):
+    # type: (Dict[Text, Any]) -> None
     for k, v in dict_.items():
         if k.startswith('is_'):
             dict_[k] = _format_yn_str(v)
 
 
 def _format_yn_str(text):
+    # type: (Text) -> Optional[bool]
     try:
         return {'Y': True,
                 'N': False,
@@ -148,6 +160,7 @@ def _format_yn_str(text):
 
 
 def _try_parse_json(text):
+    # type: (Text) -> Any
     try:
         return json.loads(text)
     except (TypeError, ValueError):
@@ -193,6 +206,7 @@ class PluginInfo(namedtuple('PluginInfo', ('id', 'name', 'type', 'arguments'))):
     fields = ('#id', 'name', 'type', 'argv')
 
     def __new__(cls, *args, **kwargs):
+        # type: (Any, *Any) -> Any
         raw = super(PluginInfo, cls).__new__(cls, *args, **kwargs)
 
         arguments = _try_parse_json(raw.arguments) or {}

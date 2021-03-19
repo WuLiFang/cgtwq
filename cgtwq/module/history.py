@@ -7,12 +7,17 @@ from ..core import ControllerGetterMixin
 from ..filter import FilterList
 from ..model import HistoryInfo
 from .core import ModuleAttachment
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Tuple, Union
+    import cgtwq
 
 
 class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
     """History feature for module.  """
 
-    def filter(self, *filters):
+    def filter(self, *args):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Tuple[HistoryInfo, ...]
         """Filter history record from the module.
             filters (Filter or FilterList): History filters.
 
@@ -20,13 +25,14 @@ class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
             tuple[HistoryInfo]: History records.
         """
 
-        filters = FilterList.from_arbitrary_args(*filters)
+        filters = FilterList.from_arbitrary_args(*args)
         return self._filter_model(
             "c_history", "get_with_filter",
             HistoryInfo, filters
         )
 
-    def count(self, *filters):
+    def count(self, *args):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> int
         """Count history records in the module.
 
         Args:
@@ -37,13 +43,14 @@ class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
             int: Records count.
         """
 
-        filters = FilterList.from_arbitrary_args(*filters)
+        filters = FilterList.from_arbitrary_args(*args)
         resp = self.call(
             "c_history", "count_with_filter",
             filter_array=FilterList(filters))
         return int(resp)
 
     def undo(self, history):
+        # type: (HistoryInfo) -> None
         """Undo a history.
 
         Args:

@@ -8,11 +8,18 @@ from ..filter import Field, FilterList
 from ..model import FileBoxMeta
 from . import core
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text, Tuple, Union
+    import cgtwq
+    import cgtwq.model
+
 
 class DatabaseFilebox(core.DatabaseAttachment, ControllerGetterMixin):
     """Filebox feature for database.  """
 
-    def filter(self, *filters):
+    def filter(self, *args):
+        # type: (Union[FilterList, cgtwq.Filter]) -> Tuple[cgtwq.model.FileBoxMeta, ...]
         r"""Filter fileboxes metadata in the database.
 
         Args:
@@ -22,13 +29,14 @@ class DatabaseFilebox(core.DatabaseAttachment, ControllerGetterMixin):
             tuple[FileBoxMeta]: namedtuple for ('id', 'pipeline_id', 'title')
         """
 
-        filters = (FilterList.from_arbitrary_args(*filters)
+        filters = (FilterList.from_arbitrary_args(*args)
                    or FilterList(Field('#id').has('%')))
         return self._filter_model("c_file", "get_with_filter",
                                   FileBoxMeta,
                                   filters=filters,)
 
     def get(self, id_):
+        # type: (Text) -> cgtwq.model.FileBoxMeta
         r"""Get filebox metadata from the database.
 
         Args:

@@ -16,7 +16,7 @@ from .exceptions import DatabaseError
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Dict, Optional, Text
+    from typing import Dict, Text, Any, Callable, List
 
 
 LOGGER = logging.getLogger(__name__)
@@ -54,6 +54,7 @@ def _get_shot(path, version_pattern=r'(.+)v(\d+)'):
 
 
 def guess_entry(select):
+    # type: (cgtwq.Selection) -> cgtwq.Entry
     """Get best matched entry from select.
 
     Args:
@@ -69,6 +70,7 @@ def guess_entry(select):
     entries = select.to_entries()
 
     def _by_artist(entry):
+        # type: (cgtwq.Entry) -> int
         task_account_id = data[entry[0]]
         if not task_account_id:
             return 2
@@ -82,6 +84,7 @@ def guess_entry(select):
 
 
 def get_database_by_file(filename):
+    # type: (Text) -> Text
     """Get database name from filename.
 
     Args:
@@ -122,7 +125,7 @@ def get_database_by_file(filename):
 
 
 def get_entry_by_file(filename, pipeline, module='shot'):
-    # type: (Text, Text, Optional[Text]) -> cgtwq.Entry
+    # type: (Text, Text, Text) -> cgtwq.Entry
     """Get entry from filename and pipeline
 
     Args:
@@ -159,10 +162,11 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
         prefix_filters: Function list that filter project code to prefix.
     """
     cache = {}
-    prefix_filters = []
+    prefix_filters = []  # type: List[Callable[[Text], Text]]
 
     @classmethod
     def project_data(cls):
+        # type: () -> Any
         """Cached project data.  """
 
         if 'project_data' not in cls.cache:
@@ -172,6 +176,7 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
 
     @classmethod
     def get_prefix(cls, code):
+        # type: (Text) -> Text
         """Use filters to get prefix from project code.  """
 
         ret = code
@@ -181,6 +186,7 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
 
     @classmethod
     def get_database(cls, filename):
+        # type: (Text) -> Text
         """Get database name from filename.
 
         Args:
@@ -211,6 +217,7 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
 
     @classmethod
     def get_entry(cls, filename, pipeline, module='shot'):
+        # type: (Text, Text, Text) -> cgtwq.Entry
         """Get entry from filename and pipeline
 
         Args:
@@ -243,6 +250,7 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
 
     @staticmethod
     def guess_entry(select):
+        # type: (cgtwq.Selection) -> cgtwq.Entry
         """DEPRECATED: use top level `guess_entry` instead.
         Get best matched entry from select.
 

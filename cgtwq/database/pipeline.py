@@ -8,12 +8,19 @@ from ..filter import Field, FilterList
 from ..model import PipelineInfo
 from . import core
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Tuple, Union
+
+    import cgtwq
+
 
 class DatabasePipeline(core.DatabaseAttachment, ControllerGetterMixin):
     """Pipeline feature for database.  """
     # pylint: disable=too-few-public-methods
 
-    def filter(self, *filters):
+    def filter(self, *args):
+        # type: (Union[FilterList, cgtwq.Filter]) -> Tuple[PipelineInfo, ...]
         r"""Filter pipeline in the database.
 
         Args:
@@ -23,7 +30,7 @@ class DatabasePipeline(core.DatabaseAttachment, ControllerGetterMixin):
             tuple[PipelineInfo]
         """
 
-        filters = (FilterList.from_arbitrary_args(*filters)
+        filters = (FilterList.from_arbitrary_args(*args)
                    or FilterList(Field('entity_name').has('%')))
 
         return self._filter_model(

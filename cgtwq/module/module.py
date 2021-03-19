@@ -19,7 +19,9 @@ LOGGER = logging.getLogger(__name__)
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Any
+    from typing import Any, Text, Union, Tuple, Dict
+    import cgtwq
+    import cgtwq.model
 
 
 @six.python_2_unicode_compatible
@@ -29,6 +31,7 @@ class Module(ControllerGetterMixin):
     default_field_namespace = 'task'
 
     def __init__(self, name, database, module_type='task'):
+        # type: (Text, cgtwq.Database, Text) -> None
         """
         Args:
             name (text_type): Server defined module name.
@@ -49,6 +52,7 @@ class Module(ControllerGetterMixin):
         self.history = ModuleHistory(self)
 
     def __getitem__(self, name):
+        # type: (Text) -> Selection
         if isinstance(name, (Filter, FilterList)):
             return self.filter(name)
         return self.select(name)
@@ -60,15 +64,17 @@ class Module(ControllerGetterMixin):
 
     @property
     def token(self):
+        # type: () -> Text
         """User token.   """
         return self._token or self.database.token
 
     @token.setter
     def token(self, value):
+        # type: (Text) -> None
         self._token = value
 
     def call(self, *args, **kwargs):
-        # type: (...) -> Any
+        # type: (Any, *Any) -> Any
         """Call on this module.   """
 
         kwargs.setdefault('token', self.token)
@@ -77,6 +83,7 @@ class Module(ControllerGetterMixin):
         return self.database.call(*args, **kwargs)
 
     def select(self, *id_list):
+        # type: (Text) -> Selection
         r"""Create selection on this module.
 
         Args:
@@ -88,7 +95,8 @@ class Module(ControllerGetterMixin):
 
         return Selection(self, *id_list)
 
-    def filter(self, *filters, **kwargs):
+    def filter(self, *args, **kwargs):
+        # type: (Union[FilterList, Filter], *Any) -> Selection
         r"""Create selection with filter on this module.
 
         Args:
@@ -104,7 +112,7 @@ class Module(ControllerGetterMixin):
 
         namespace = kwargs.pop('namespace', self.default_field_namespace)
         filters = FilterList.from_arbitrary_args(
-            *filters).in_namespace(namespace)
+            *args).in_namespace(namespace)
 
         resp = self.call('c_orm', 'get_with_filter',
                          sign_array=(Field('id').in_namespace(namespace),),
@@ -115,7 +123,8 @@ class Module(ControllerGetterMixin):
             id_list = []
         return Selection(self, *id_list)
 
-    def distinct(self, *filters, **kwargs):
+    def distinct(self, *args, **kwargs):
+        # type: (Union[cgtwq.FilterList, cgtwq.Filter], *Any) -> Tuple[Any, ...]
         r"""Get distinct value in the module.
 
         Args:
@@ -132,7 +141,7 @@ class Module(ControllerGetterMixin):
 
         namespace = kwargs.pop('namespace', self.default_field_namespace)
         filters = FilterList.from_arbitrary_args(
-            *filters).in_namespace(namespace)
+            *args).in_namespace(namespace)
         key = Field(kwargs.pop('key', filters[0][0])).in_namespace(namespace)
 
         resp = self.call(
@@ -145,6 +154,7 @@ class Module(ControllerGetterMixin):
         return tuple(i[0] for i in resp)
 
     def create(self, kwargs=None, **data):
+        # type: (Dict[Text, Any], *Any) -> None
         r"""Create entry from data.
 
         Args:
@@ -164,7 +174,8 @@ class Module(ControllerGetterMixin):
         self.call('c_orm', 'create',
                   sign_data_array=data)
 
-    def count(self, *filters, **kwargs):
+    def count(self, *args, **kwargs):
+        # type: (Union[cgtwq.FilterList, cgtwq.Filter], *Any) -> int
         r"""Count matched entity in database.
 
         Args:
@@ -178,7 +189,7 @@ class Module(ControllerGetterMixin):
 
         namespace = kwargs.pop('namespace', self.default_field_namespace)
         filters = FilterList.from_arbitrary_args(
-            *filters).in_namespace(namespace)
+            *args).in_namespace(namespace)
 
         resp = self.call('c_orm', 'get_count_with_filter',
                          sign_filter_array=filters)
@@ -213,6 +224,7 @@ class Module(ControllerGetterMixin):
         reason='Use `Module.field.format` insted.',
     )
     def format_field(self, name):
+        # type: (Text) -> Text
         """Formatted field name for this module.
 
         Args:
@@ -229,6 +241,7 @@ class Module(ControllerGetterMixin):
         reason='Use `Module.field.create` insted.',
     )
     def create_field(self, sign, type_, name=None, label=None):
+        # type: (Text, Text, Text, Text) -> None
         r"""Create new field in the module.
 
         Args:
@@ -244,6 +257,7 @@ class Module(ControllerGetterMixin):
         reason='Use `Module.field.delete` insted.',
     )
     def delete_field(self, id_):
+        # type: (Text) -> None
         r"""Delete field in the module.
 
         Args:
@@ -257,6 +271,7 @@ class Module(ControllerGetterMixin):
         reason='Use `Module.history.filter` insted.',
     )
     def get_history(self, filters):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Tuple[cgtwq.model.HistoryInfo, ...]
         """Get history record from the module.
             filters (Filter or FilterList): History filters.
 
@@ -271,6 +286,7 @@ class Module(ControllerGetterMixin):
         reason='Use `Module.history.count` insted.',
     )
     def count_history(self, filters):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> int
         """Count history records in the module.
 
         Args:
@@ -288,6 +304,7 @@ class Module(ControllerGetterMixin):
         reason='Use `Module.history.undo` insted.',
     )
     def undo_history(self, history):
+        # type: (cgtwq.model.HistoryInfo) -> None
         """Undo a history.
 
         Args:
@@ -301,6 +318,7 @@ class Module(ControllerGetterMixin):
         reason='Use `FilterList.in_namespace` insted.',
     )
     def format_filters(self, filters):
+        # type: (Union[FilterList, Filter]) -> FilterList
         """Format field name in filters.
 
         Args:

@@ -1,5 +1,6 @@
 include CHANGELOG.md
 include VERSION
-recursive-include cast_unknown *.pyi
+recursive-include cgtwq *.pyi
+global-include py.typed
 graft tests
 global-exclude *.pyc

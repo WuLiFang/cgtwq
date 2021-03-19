@@ -8,11 +8,17 @@ from ..filter import Field, FilterList
 from ..model import FieldMeta
 from . import core
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text, Union, Tuple
+    import cgtwq
+
 
 class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
     """Field feature for database.  """
 
-    def filter(self, *filters):
+    def filter(self, *args):
+        # type: (Union[FilterList, cgtwq.Filter]) -> Tuple[FieldMeta, ...]
         r"""Get field metadata in the database.
 
         Args:
@@ -22,13 +28,14 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             tuple[FieldMeta]: Field information.
         """
 
-        filters = (FilterList.from_arbitrary_args(*filters)
+        filters = (FilterList.from_arbitrary_args(*args)
                    or FilterList(Field('sign').has('%')))
         return self._filter_model(
             'c_field', 'get_with_filter', FieldMeta,
             filters=filters)
 
-    def filter_one(self, *filters):
+    def filter_one(self, *args):
+        # type: (Union[FilterList, cgtwq.Filter]) -> FieldMeta
         """Get one field in the database.
             filters (Filter or FilterList): Filter.
 
@@ -36,7 +43,7 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             FieldMeta: Field information.
         """
 
-        filters = FilterList.from_arbitrary_args(*filters)
+        filters = FilterList.from_arbitrary_args(*args)
         resp = self.call(
             'c_field', 'get_one_with_filter',
             field_array=FieldMeta.fields,
@@ -45,6 +52,7 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
         return FieldMeta(*resp)
 
     def create(self, sign, type_, name=None, label=None):
+        # type: (Text, Text, Text, Text) -> None
         """Create new field in the module.
 
         Args:
@@ -73,6 +81,7 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
         )
 
     def delete(self, id_):
+        # type: (Text) -> None
         r"""Delete field in the module.
 
         Args:

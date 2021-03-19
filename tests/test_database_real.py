@@ -1,5 +1,6 @@
 # -*- coding=UTF-8 -*-
 # pylint: disable=invalid-name
+# pyright: reportUnknownParameterType=none
 """Test module `cgtwq.database`."""
 
 from __future__ import (absolute_import, division, print_function,
@@ -41,7 +42,7 @@ class ModuleTestCase(TestCase):
 
     def test_pipeline(self):
         result = self.module.pipelines()
-        assert result
+        assert len(result) > 0
         for i in result:
             self.assertIsInstance(i, cgtwq.model.PipelineInfo)
 

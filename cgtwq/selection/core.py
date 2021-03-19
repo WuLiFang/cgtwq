@@ -11,12 +11,17 @@ from __future__ import (absolute_import, division, print_function,
 # brings unexpected result in production.
 _OS = 'win'
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    import cgtwq
+
 
 class SelectionAttachment(object):
     """Attachment feature for selection.  """
     # pylint: disable=too-few-public-methods
 
     def __init__(self, selection):
+        # type: (cgtwq.Selection) -> None
         from .selection import Selection
         assert isinstance(selection, Selection)
         self.select = selection

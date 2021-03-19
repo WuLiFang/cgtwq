@@ -9,20 +9,28 @@ from .. import exceptions
 from ..model import ImageInfo
 from .selection import Selection
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Text, Union, Tuple
+    import cgtwq
+
 
 class Entry(Selection):
     """A selection that only has one item.  """
 
     def __init__(self, module, id_):
+        # type: (cgtwq.Module, Text) -> None
         assert isinstance(id_, text_type), type(id_)
         super(Entry, self).__init__(module, id_)
 
     def __getitem__(self, name):
+        # type: (Union[int, Text]) -> Any
         if isinstance(name, int):
             return super(Entry, self).__getitem__(name)
         return self.get_fields(name)[0]
 
     def get_fields(self, *fields, **kwargs):
+        # type: (Text, *Any) -> Tuple[Any, ...]
         """Get multiple fields.
 
         Raises:
@@ -40,6 +48,7 @@ class Entry(Selection):
         return tuple(ret)
 
     def related(self, *filters):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Selection
         r"""Select related entries.
 
         Args:
@@ -59,6 +68,7 @@ class Entry(Selection):
     # TODO: Remove at next major version.
 
     def _get_image(self, field='image'):
+        # type: (Text) -> ImageInfo
         """Get imageinfo used on the field.
 
         Args:

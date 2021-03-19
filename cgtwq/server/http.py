@@ -11,11 +11,17 @@ import requests
 
 from .. import core, exceptions
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Text, Dict
+
+
 LOGGER = logging.getLogger(__name__)
 SESSION = requests.Session()
 
 
 def _json_default(self, obj):
+    # type: (Any, Any) -> Any
     if isinstance(obj, OrderedDict):
         return dict(obj)
     _asdict = getattr(obj, "_asdict", None)
@@ -25,6 +31,7 @@ def _json_default(self, obj):
 
 
 def _raise_error(result):
+    # type: (Any) -> None
     if not isinstance(result, dict):
         return
 
@@ -42,10 +49,12 @@ def _raise_error(result):
 
 
 def _cgteamwork_url(pathname):
+    # type: (Text) -> Text
     return '{}/{}'.format(core.CONFIG['URL'], pathname.lstrip('\\/'))
 
 
 def call(controller, method, token, **data):
+    # type: (Text, Text, Text, *Any) -> Any
     """Call method on server controller.
 
     Args:
@@ -64,6 +73,7 @@ def call(controller, method, token, **data):
 
 
 def post(pathname, data, token, **kwargs):
+    # type: (Text, Dict[Text, Any], Text, *Any) -> Any
     r"""`POST` data to CGTeamWork server.
 
     Args:
@@ -97,6 +107,7 @@ def post(pathname, data, token, **kwargs):
 
 
 def get(pathname, token, **kwargs):
+    # type: (Text, Text, *Any) -> Any
     r"""`GET` request to CGTeamWork server.
 
     Args:

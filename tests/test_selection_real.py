@@ -1,5 +1,4 @@
 # -*- coding=UTF-8 -*-
-# pylint: disable=invalid-name
 """Test module `cgtwq.selection`."""
 
 from __future__ import (absolute_import, division, print_function,

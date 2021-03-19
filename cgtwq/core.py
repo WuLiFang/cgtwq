@@ -11,6 +11,11 @@ from deprecated import deprecated
 
 from .filter import FilterList
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Text, Tuple, Callable
+
+
 ENV = Env()
 CONFIG = {
     'URL': ENV('CGTEAMWORK_URL', 'http://192.168.55.11'),
@@ -27,6 +32,7 @@ class ControllerGetterMixin(object):
     # pylint: disable=too-few-public-methods
 
     def _filter_model(self, controller, method, model, filters):
+        # type: (Text, Text, Any, FilterList) -> Tuple[Any]
         """Get infomation from controller with data model.
 
         Args:
@@ -63,6 +69,7 @@ class CachedFunctionMixin(object):
         self.__cache = {}
 
     def _cached(self, key, func, max_age):
+        # type: (Text, Callable[[], Any], int) -> Any
         now = time.time()
         if (key not in self.__cache
                 or self.__cache[key][1] + max_age < now):

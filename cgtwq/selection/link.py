@@ -6,10 +6,16 @@ from __future__ import (absolute_import, division, print_function,
 from .core import SelectionAttachment
 
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text, Set
+
+
 class SelectionLink(SelectionAttachment):
     """Link feature for selection.  """
 
     def link(self, *id_list):
+        # type: (Text) -> None
         """Link the selection to other items. """
 
         select = self.select
@@ -18,6 +24,7 @@ class SelectionLink(SelectionAttachment):
             id_array=self, link_id_array=id_list)
 
     def unlink(self, *id_list):
+        # type: (Text) -> None
         """Unlink the selection with other items.  """
 
         select = self.select
@@ -27,6 +34,7 @@ class SelectionLink(SelectionAttachment):
                 id=id_, link_id_array=id_list)
 
     def get(self):
+        # type: () -> Set[Text]
         """Get linked items for the selections.
 
         Returns:

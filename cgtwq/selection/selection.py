@@ -19,6 +19,13 @@ from .link import SelectionLink
 from .notify import SelectionNotify
 from .pipeline import SelectionPipeline
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Dict, Text, Tuple, Union, overload
+
+    import cgtwq
+    import cgtwq.model
+
 
 class Selection(tuple):
     """Selection with all feature.  
@@ -30,6 +37,7 @@ class Selection(tuple):
     _token = None
 
     def __new__(cls, module, *id_list):
+        # type: (cgtwq.Module, Text) -> Selection
         # pylint: disable=unused-argument
         if not id_list:
             raise EmptySelection()
@@ -37,6 +45,7 @@ class Selection(tuple):
         return super(Selection, cls).__new__(cls, id_list)
 
     def __init__(self, module, *id_list):
+        # type: (cgtwq.Module, Text) -> None
         """
         Args:
             module (Module): Related module.
@@ -59,26 +68,42 @@ class Selection(tuple):
         self.pipeline = SelectionPipeline(self)
         self.folder = SelectionFolder(self)
 
+    if TYPE_CHECKING:
+        @overload
+        def __getitem__(self, name):
+            # type: (int) -> Text
+            raise NotImplementedError()
+
+        @overload
+        def __getitem__(self, name):
+            # type: (Text) -> Tuple[Any, ...]
+            raise NotImplementedError()
+
     def __getitem__(self, name):
+        # type: (Union[Text, int]) -> Union[Tuple[Any, ...], Text]
         if isinstance(name, int):
             return super(Selection, self).__getitem__(name)
         return self.get_fields(name).column(name)
 
     def __setitem__(self, name, value):
+        # type: (Text, Any) -> None
         assert isinstance(name, (six.text_type, str))
         self.set_fields(**{name: value})
 
     @property
     def token(self):
+        # type: () -> Text
         """User token.   """
 
         return self._token or self.module.token
 
     @token.setter
     def token(self, value):
+        # type: (Text) -> None
         self._token = value
 
     def call(self, *args, **kwargs):
+        # type: (Any, *Any) -> Any
         """Call on this selection.   """
 
         kwargs.setdefault('token', self.token)
@@ -87,6 +112,7 @@ class Selection(tuple):
         return self.module.call(*args, **kwargs)
 
     def filter(self, *filters):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Selection
         r"""Filter selection again.
 
         Args:
@@ -99,6 +125,7 @@ class Selection(tuple):
         return self.module.filter(Field('id').in_(self), *filters)
 
     def count(self, *filters):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> int
         r"""Count matched entity in the selection.
 
         Args:
@@ -111,6 +138,7 @@ class Selection(tuple):
         return self.module.count(Field('id').in_(self), *filters)
 
     def distinct(self, *filters, **kwargs):
+        # type: (Union[cgtwq.Filter,cgtwq.FilterList], *Any) -> Tuple[Any, ...]
         r"""Get distinct value in the selection.
 
         Args:
@@ -127,6 +155,7 @@ class Selection(tuple):
         return self.module.distinct(Field('id').in_(self), *filters, **kwargs)
 
     def get_fields(self, *fields, **kwargs):
+        # type: (Text, *Any) -> ResultSet
         r"""Get field information for the selection.
 
         Args:
@@ -150,6 +179,7 @@ class Selection(tuple):
         return ResultSet(server_fields, resp, self.module)
 
     def set_fields(self, kwargs=None, **data):
+        # type: (Dict[Text, Any], *Any) -> None
         r"""Set field data for the selection.
 
         Args:
@@ -176,6 +206,7 @@ class Selection(tuple):
         self.call("c_orm", "del_in_id")
 
     def get_folder(self, *sign_list):
+        # type: (Text) -> Dict[Text, Text]
         """Get signed folder path.
 
         Args:
@@ -198,6 +229,7 @@ class Selection(tuple):
         return resp
 
     def to_entry(self):
+        # type: () -> cgtwq.Entry
         """Convert selection to one entry.
 
         Raises:
@@ -225,6 +257,7 @@ class Selection(tuple):
 
     @classmethod
     def from_data(cls, **kwargs):
+        # type: (*Any) -> cgtwq.Selection
         r"""Get selection from dictionary-like data.
 
         Arguments:
@@ -244,9 +277,10 @@ class Selection(tuple):
 
     @deprecated(
         version='3.0.0',
-reason='Use `Selection.flow.submit` insted.'
+        reason='Use `Selection.flow.submit` insted.'
     )
     def submit(self, pathnames=(), filenames=(), note=""):
+        # type: (Tuple[Text, ...], Tuple[Text, ...], Text) -> None
         """Submit file to task, then change status to `Check`.
 
         Args:
@@ -259,9 +293,10 @@ reason='Use `Selection.flow.submit` insted.'
 
     @deprecated(
         version='3.0.0',
-reason='Use `Selection.image.set` insted.'
+        reason='Use `Selection.image.set` insted.'
     )
     def set_image(self, path, field='image'):
+        # type: (Text, Text) -> cgtwq.model.ImageInfo
         """Set image for the field.
 
         Args:
@@ -275,9 +310,10 @@ reason='Use `Selection.image.set` insted.'
 
     @deprecated(
         version='3.0.0',
-reason='Use `Selection.image.get` insted.',
+        reason='Use `Selection.image.get` insted.',
     )
     def get_image(self, field='image'):
+        # type: (Text) -> Tuple[cgtwq.model.ImageInfo, ...]
         """Get imageinfo used on the field.
 
         Args:
@@ -291,9 +327,10 @@ reason='Use `Selection.image.get` insted.',
 
     @deprecated(
         version='3.0.0',
-reason='Use `Selection.flow.has_field_permission` Instead',
+        reason='Use `Selection.flow.has_field_permission` Instead',
     )
     def has_permission_on_status(self, field):
+        # type: (Text) -> bool
         """Return if user has permission to edit field.
 
         Args:

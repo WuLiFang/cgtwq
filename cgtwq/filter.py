@@ -6,28 +6,32 @@ from __future__ import (absolute_import, division, print_function,
 
 import six
 from six.moves import reduce
+from six.moves.collections_abc import Iterable
 
-if six.PY3:
-    from collections.abc import Iterable  # pylint: disable=no-name-in-module,import-error
-else:
-    from collections import Iterable  # pylint: disable=no-name-in-module
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, List, Text, Union
 
 
 class Filter(list):
     """CGTeamWork style filter.  """
 
     def __init__(self, key, value, operator=None):
+        # type: (Text, Any, Text) -> None
         if operator is None:
             operator = 'in' if isinstance(value, (list, tuple)) else '='
         super(Filter, self).__init__((key, operator, value))
 
     def __and__(self, other):
+        # type: (Union[Filter, FilterList]) -> FilterList
         return FilterList(self) & FilterList(other)
 
     def __or__(self, other):
+        # type: (Union[Filter, FilterList]) -> FilterList
         return FilterList(self) | FilterList(other)
 
     def in_namespace(self, namespace):
+        # type: (Text) -> Filter
         """Get a new `Filter` instance in the namespace.
 
         Args:
@@ -43,6 +47,7 @@ class Filter(list):
 
     @classmethod
     def from_list(cls, obj):
+        # type: (List[Any]) -> Filter
         """Create filter instance from a list.
 
         Args:
@@ -64,6 +69,7 @@ class FilterList(list):
     """CGTeamWork style filter list.  """
 
     def __init__(self, list_):
+        # type: (Union[Filter, Iterable[Any]]) -> None
         if isinstance(list_, Filter):
             list_ = [list_]
         elif isinstance(list_, Iterable):
@@ -73,18 +79,22 @@ class FilterList(list):
         super(FilterList, self).__init__(list_)
 
     def _combine(self, other, operator):
+        # type: (Union[FilterList, Filter], Text) -> FilterList
         ret = FilterList(self)
         ret.append(operator)
         ret += FilterList(other)
         return ret
 
     def __and__(self, other):
+        # type: (Union[FilterList, Filter]) -> FilterList
         return self._combine(other, 'and')
 
     def __or__(self, other):
+        # type: (Union[FilterList, Filter]) -> FilterList
         return self._combine(other, 'or')
 
     def in_namespace(self, namespace):
+        # type: (Text) -> FilterList
         """Create new `FilterList` instance in the namespace.
 
         Args:
@@ -100,6 +110,7 @@ class FilterList(list):
 
     @classmethod
     def from_arbitrary_args(cls, *filters):
+        # type: (Union[Filter, FilterList]) -> FilterList
         """Create filterlist from arbitrary arguments.
 
         Returns:
@@ -109,7 +120,7 @@ class FilterList(list):
         ret = [i if isinstance(i, (Filter, FilterList)) else Filter.from_list(i)
                for i in filters]
         if ret:
-            ret = reduce(lambda a, b: a & b, ret)
+            ret = reduce(lambda a, b: a & b, ret)  # type: ignore
         return cls(ret)
 
 
@@ -120,35 +131,44 @@ class Field(six.text_type):
         return six.text_type(self).__hash__()
 
     def __or__(self, value):
+        # type: (Any) -> Filter
         return self.in_(value)
 
     def __and__(self, value):
+        # type: (Any) -> Filter
         return self.has(value)
 
     def __eq__(self, value):
+        # type: (Any) -> Filter
         return Filter(self, value, '=')
 
     def __gt__(self, value):
+        # type: (Any) -> Filter
         return Filter(self, value, '>')
 
     def __lt__(self, value):
+        # type: (Any) -> Filter
         return Filter(self, value, '<')
 
     def in_(self, value):
+        # type: (Any) -> Filter
         """Represents matched data in value list.  """
         if isinstance(value, (str, six.text_type)):
             value = [value]
         return Filter(self, value, 'in')
 
     def has(self, value):
+        # type: (Any) -> Filter
         """Represents data has value in it.  """
         return Filter(self, value, 'has')
 
     def contains(self, value):
+        # type: (Any) -> Filter
         """Represents value in data item list.  """
         return Filter(self, value, 'concat')
 
     def in_namespace(self, namespace):
+        # type: (Text) -> Field
         """Get a new `Field` instance in the namespace.
 
         Args:

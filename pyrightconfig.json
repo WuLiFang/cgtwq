@@ -2,7 +2,16 @@
     "typeCheckingMode": "basic",
     "reportUnusedImport": "error",
     "reportMissingModuleSource": "information",
-    "extraPaths": [
-        ".venv/lib/site-packages"
+    "reportUnknownParameterType": "error",
+    "executionEnvironments": [
+        {
+            "root": ".",
+            "extraPaths": [
+                ".venv/lib/site-packages"
+            ]
+        }
+    ],
+    "include": [
+        "cgtwq"
     ]
 }

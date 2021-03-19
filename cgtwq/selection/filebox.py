@@ -8,11 +8,16 @@ from deprecated import deprecated
 from ..model import FileBoxInfo
 from .core import _OS, SelectionAttachment
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text
+
 
 class SelectionFilebox(SelectionAttachment):
     """File operation on selection.  """
 
     def from_id(self, id_):
+        # type: (Text) -> FileBoxInfo
         r"""Get filebox information from id.
 
         Args:
@@ -36,6 +41,7 @@ class SelectionFilebox(SelectionAttachment):
         return FileBoxInfo(**resp)
 
     def from_sign(self, sign):
+        # type: (Text) -> FileBoxInfo
         """Get filebox information from sign.
 
         Args:
@@ -74,9 +80,10 @@ class SelectionFilebox(SelectionAttachment):
 
     @deprecated(
         version='3.0.0',
-reason='Use `from_sign` or `from_id` instead.'
+        reason='Use `from_sign` or `from_id` instead.'
     )
     def get(self, sign=None, id_=None):
+        # type: (Text, Text) -> FileBoxInfo
         """Get one filebox with sign or id_.
 
         Args:

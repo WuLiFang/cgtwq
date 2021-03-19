@@ -14,6 +14,10 @@ from websocket import create_connection
 from ...core import CONFIG
 
 LOGGER = logging.getLogger(__name__)
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Text
+    import cgtwq
 
 
 class DesktopClientAttachment(object):
@@ -21,12 +25,14 @@ class DesktopClientAttachment(object):
     # pylint: disable=too-few-public-methods
 
     def __init__(self, client):
+        # type: (cgtwq.DesktopClient) -> None
         from .client import DesktopClient
         assert isinstance(client, DesktopClient)
         self.client = client
 
 
 def call(socket_url, controller, method, **kwargs):
+    # type: (Text, Text, Text, *Any) -> Any
     r"""Call method on the cgteamwork client.
 
     Args:
@@ -63,6 +69,7 @@ def call(socket_url, controller, method, **kwargs):
 
 
 def _handle_error_10042(exception):
+    # type: (Any) -> None
     if (isinstance(exception, OSError)
             and exception.errno == 10042):
         print("""

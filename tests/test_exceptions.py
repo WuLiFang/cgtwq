@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 def test_template_meta():
 
-    @six.add_metaclass(exceptions._template_meta('test', '测试'))  # pylint: disable=protected-access
+    @six.add_metaclass(exceptions._template_meta(b'test', '测试'))  # pylint: disable=protected-access
     class Test(Exception):
         pass
 

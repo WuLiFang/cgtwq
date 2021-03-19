@@ -5,11 +5,16 @@ from __future__ import (absolute_import, division, print_function,
 
 from .core import _OS, SelectionAttachment
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Text, List, Dict
+
 
 class SelectionFolder(SelectionAttachment):
     """Folder feature for selection.  """
 
     def from_sign(self, *sign_list):
+        # type: (Text) -> Dict[Text,List[Any]]
         """Get folder path from sign.
 
         Returns:

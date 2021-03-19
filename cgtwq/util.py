@@ -11,6 +11,9 @@ from . import account
 from .client import DesktopClient
 
 LOGGER = logging.getLogger(__name__)
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text
 
 
 @deprecated(
@@ -18,6 +21,7 @@ LOGGER = logging.getLogger(__name__)
     reason='Use `DesktopClient.connect` instead.',
 )
 def update_setting():
+    # type: () -> None
     """Update setting from client.   """
 
     DesktopClient().connect()
@@ -28,6 +32,7 @@ def update_setting():
     reason='Use `account.get_account_id` instead.',
 )
 def current_account_id():
+    # type: () -> Text
     """Get account id from desktop client.  """
 
     return account.get_account_id()
@@ -38,6 +43,7 @@ def current_account_id():
     reason='Use `account.get_account` instead.',
 )
 def current_account():
+    # type: () -> Text
     """Get account from desktop client.  """
 
     return account.get_account()

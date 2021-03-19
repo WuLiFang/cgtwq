@@ -8,6 +8,7 @@ import json
 import logging
 
 import six
+import cast_unknown as cast
 
 from .server.web import upload_image
 from .model import ImageInfo
@@ -16,7 +17,7 @@ LOGGER = logging.getLogger(__name__)
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import List, Union, Text
+    from typing import List, Union, Text, Any
 
 
 class Message(six.text_type):
@@ -25,6 +26,7 @@ class Message(six.text_type):
     images = []  # type: List[Union[ImageInfo, Text]]
 
     def __new__(cls, obj):
+        # type: (Any) -> Message
         ret = super(Message, cls).__new__(cls, obj)
         ret.images = []
         return ret
@@ -45,6 +47,7 @@ class Message(six.text_type):
         )
 
     def upload_images(self, folder, token):
+        # type: (Text, Text) -> None
         """Upload contianed images to server. will replace items in `self.image`.  """
 
         for index, img in enumerate(self.images):
@@ -52,6 +55,7 @@ class Message(six.text_type):
 
     @classmethod
     def load(cls, data):
+        # type: (Any) -> Message
         """Create message from data.  """
 
         if isinstance(data, cls):
@@ -75,6 +79,7 @@ class Message(six.text_type):
 
 
 def _upload_image(image, folder, token):
+    # type: (Any, Text, Text) -> ImageInfo
     if isinstance(image, ImageInfo):
         return image
     elif isinstance(image, dict):
@@ -89,4 +94,4 @@ def _upload_image(image, folder, token):
     if not isinstance(image, (six.text_type, six.binary_type)):
         raise TypeError('Not support such data type.', type(image))
 
-    return upload_image(image, folder, token)
+    return upload_image(cast.text(image), folder, token)

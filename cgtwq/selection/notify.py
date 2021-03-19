@@ -8,6 +8,10 @@ from ..message import Message
 from ..model import NoteInfo
 from .core import SelectionAttachment
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text, Tuple, Union, Any
+    import cgtwq.model
 
 class SelectionNotify(SelectionAttachment):
     """Note or message on the Selection.  """
@@ -26,6 +30,7 @@ class SelectionNotify(SelectionAttachment):
         return tuple(NoteInfo(*i) for i in resp)
 
     def add(self, text, account=None, images=()):
+        # type: (Text, Text, Tuple[Union[cgtwq.model.ImageInfo, Text,], ...]) -> ...
         """Add note to selected items.
 
         Args:
@@ -52,6 +57,7 @@ class SelectionNotify(SelectionAttachment):
                         "#from_account_id": account})
 
     def send(self, title, content, *to, **kwargs):
+        # type: (Text, Text, Text, *Any) -> None
         r"""Send message to users.
 
         Args:
@@ -76,6 +82,7 @@ class SelectionNotify(SelectionAttachment):
         )
 
     def delete(self, *note_id_list):
+        # type: (Text) -> None
         """Delete note on selection.  """
 
         self.call(

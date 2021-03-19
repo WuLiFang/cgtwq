@@ -4,6 +4,7 @@
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
+import cast_unknown as cast
 import six
 
 if six.PY2:
@@ -13,8 +14,13 @@ else:
     _BYTES_KEY = '__bytes__'
     _STR_KEY = '__str__'
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, List, Text, Tuple
+
 
 def _as_suffix(list_):
+    # type: (List[Text]) -> Text
     if not list_:
         return '.'
     msg = list_[0] if len(list_) == 1 else list_
@@ -22,11 +28,13 @@ def _as_suffix(list_):
 
 
 def _template_meta(__bytes__, __str__):
+    # type: (bytes, Text) -> type
 
     class _TemplateMetaClass(type):
         def __new__(cls, name, bases, dict_):
+            # type: (Text, Tuple[Any, ...], Any) -> type
             dict_[_BYTES_KEY] = lambda self: (
-                __bytes__ + _as_suffix(self.args)).encode('utf-8')
+                cast.text(__bytes__) + _as_suffix(self.args)).encode('utf-8')
             dict_[_STR_KEY] = lambda self: __str__ + _as_suffix(self.args)
             return type.__new__(cls, name, bases, dict_)
 
@@ -39,7 +47,7 @@ class CGTeamWorkException(Exception):
 
 @six.add_metaclass(
     _template_meta(
-        'Can not found item with matched id',
+        b'Can not found item with matched id',
         '找不到数据库对象'))
 class IDError(CGTeamWorkException):
     """Indicate can't specify shot id on cgtw."""
@@ -47,7 +55,7 @@ class IDError(CGTeamWorkException):
 
 @six.add_metaclass(
     _template_meta(
-        'Can not found matched sign',
+        b'Can not found matched sign',
         '缺少数据库标志'))
 class SignError(CGTeamWorkException):
     """Indicate can't found matched sign."""
@@ -55,7 +63,7 @@ class SignError(CGTeamWorkException):
 
 @six.add_metaclass(
     _template_meta(
-        'No such folder on server',
+        b'No such folder on server',
         '不存在服务器文件夹'))
 class FolderError(CGTeamWorkException):
     """Indicate can't found destination folder.  """
@@ -63,7 +71,7 @@ class FolderError(CGTeamWorkException):
 
 @six.add_metaclass(
     _template_meta(
-        'Not loged in',
+        b'Not logged in',
         '未登录或登录失效'))
 class LoginError(CGTeamWorkException):
     """Indicate not logged in.  """
@@ -71,7 +79,7 @@ class LoginError(CGTeamWorkException):
 
 @six.add_metaclass(
     _template_meta(
-        'Can not found any prefix matched shots',
+        b'Can not found any prefix matched shots',
         '无镜头匹配此前缀'))
 class PrefixError(CGTeamWorkException):
     """Indicate no shot match the prefix."""
@@ -79,7 +87,7 @@ class PrefixError(CGTeamWorkException):
 
 @six.add_metaclass(
     _template_meta(
-        'Empty selection',
+        b'Empty selection',
         '空条目选择'))
 class EmptySelection(CGTeamWorkException, ValueError):
     """Indicate no entry match the criteria."""
@@ -88,12 +96,12 @@ class EmptySelection(CGTeamWorkException, ValueError):
         super(EmptySelection, self).__init__('Empty selection.')
 
 
-@six.add_metaclass(_template_meta('Wrong password', '密码错误'))
+@six.add_metaclass(_template_meta(b'Wrong password', '密码错误'))
 class PasswordError(CGTeamWorkException):
     """Indicate password not correct.  """
 
 
-@six.add_metaclass(_template_meta('Account not found', '无此帐号'))
+@six.add_metaclass(_template_meta(b'Account not found', '无此帐号'))
 class AccountNotFoundError(CGTeamWorkException):
     """Indicate account not found.  """
 
@@ -102,6 +110,7 @@ class AccountError(CGTeamWorkException):
     """Indicate account not match."""
 
     def __init__(self, owner='', current=''):
+        # type: (Text, Text) -> None
         CGTeamWorkException.__init__(self)
         self.owner = owner
         self.current = current
@@ -115,7 +124,7 @@ class AccountError(CGTeamWorkException):
 
 @six.add_metaclass(  # pylint: disable=redefined-builtin
     _template_meta(
-        'Sufficient permission',
+        b'Sufficient permission',
         '权限不足'))
 class PermissionError(CGTeamWorkException):
     """Indicate sufficient permission.  """

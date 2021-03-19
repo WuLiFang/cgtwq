@@ -15,11 +15,17 @@ from ..filter import Field
 from ..message import Message
 from .core import SelectionAttachment
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text, Union, Tuple, List, Iterable
+    from ..model import ImageInfo
+
 
 class SelectionFlow(SelectionAttachment):
     """Flow operation on selection.  """
 
     def update(self, field, status, message='', images=()):
+        # type: (Text, Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
         """Update flow status.  """
         # TODO: refactor arguments at next major version.
 
@@ -43,6 +49,7 @@ class SelectionFlow(SelectionAttachment):
             raise
 
     def submit(self, filenames=(), message="", account_id=None):
+        # type: (Tuple[Text, ...], Union[Message, Text], Text) -> None
         """Submit file to task, then change status to `Check`.
 
         Args:
@@ -58,8 +65,8 @@ class SelectionFlow(SelectionAttachment):
         # Create path data.
         path_data = {'path': [], 'file_path': []}
         for i in filenames:
-            path_data['path' if os.path.isdir(cast.text(i)) else 'file_path'].append(i)
-
+            path_data['path' if os.path.isdir(
+                cast.text(i)) else 'file_path'].append(i)
         select.call(
             "c_work_flow", "submit",
             task_id=select[0],
@@ -69,6 +76,7 @@ class SelectionFlow(SelectionAttachment):
             text=message.dumps())
 
     def create_version(self, filenames, sign='Api Submit', version_id=None):
+        # type: (Iterable[Text], Text , Text) -> Text
         """Create new task version.
 
         Args:
@@ -100,6 +108,7 @@ class SelectionFlow(SelectionAttachment):
         return version_id
 
     def assign(self, accounts, start='', end=''):
+        # type: (List[Text], Text, Text) -> None
         """Assgin tasks.
 
         Args:
@@ -118,6 +127,7 @@ class SelectionFlow(SelectionAttachment):
                     task_id_array=select)
 
     def has_field_permission(self, field):
+        # type: (Text) -> bool
         """Return if current user has permission to edit the field.  """
 
         field = Field(field).in_namespace(
@@ -130,16 +140,19 @@ class SelectionFlow(SelectionAttachment):
         return resp
 
     def close(self, field, message='', images=()):
+        # type: (Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
         """Shorthand method to set take status to `Close`.  """
 
         return self.update(field, 'Close', message, images)
 
     def approve(self, field, message='', images=()):
+        # type: (Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
         """Shorthand method to set take status to `Approve`.  """
 
         return self.update(field, 'Approve', message, images)
 
     def retake(self, field, message='', images=()):
+        # type: (Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
         """Shorthand method to set take status to `Retake`.  """
 
         return self.update(field, 'Retake', message, images)

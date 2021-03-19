@@ -1,4 +1,5 @@
 # -*- coding=UTF-8 -*-
+# pyright: reportUnknownParameterType=none
 """Dummy desktop client for non win32 platform.  """
 
 from __future__ import (absolute_import, division, print_function,
@@ -20,7 +21,7 @@ class DesktopClient(object):
         return None
 
     def start(self):
-        pass
+        return None
 
     def is_running(self):
         return False

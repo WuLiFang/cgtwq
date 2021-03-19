@@ -8,20 +8,31 @@ import json
 import time
 from functools import partial
 
+import cast_unknown as cast
 import six
 
 from . import core, server
 from .filter import Field, FilterList
 from .model import PluginArgumentInfo, PluginInfo
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Dict, List, Text, Union
+
+    import cgtwq
+
 
 def _accessor(field):
+    # type: (Text) -> Any
     # pylint:disable=protected-access
-    def _get(self):
+    def _get(self): 
+        # type: (Any) -> Any
+        
         self.fetch()
         return getattr(self._cached_info, field)
 
     def _set(self, value):
+        # type: (Any, Any) -> Any
         self.set_fields(**{
             _get_server_field(PluginInfo, field):
             value})
@@ -37,6 +48,7 @@ class PluginMeta(object):
     type = _accessor('type')
 
     def __init__(self, uuid):
+        # type: (Text) -> None
         super(PluginMeta, self).__init__()
         self.uuid = uuid
         self.last_fetch_time = None
@@ -50,13 +62,14 @@ class PluginMeta(object):
         return 'Plugin<uuid={0.uuid}, name={0.name}, type={0.type}>'.format(self)
 
     def fetch(self, token=None):
+        # type: (Text) -> None
         """Fetch plugin data from server.  """
 
         if (self.last_fetch_time
                 and (self.last_fetch_time - time.time() > core.CONFIG['MIN_FETCH_INTERVAL'])):  # type: ignore
             return
 
-        token = token or core.CONFIG['DEFAULT_TOKEN']
+        token = token or cast.text(core.CONFIG['DEFAULT_TOKEN'])
         resp = server.call(
             'c_plugin', 'get_one_with_id',
             token=token,
@@ -68,6 +81,7 @@ class PluginMeta(object):
         self.last_fetch_time = time.time()
 
     def set_fields(self, token=None, **data):
+        # type: (Text, *Any) -> None
         r"""Set field data for the plug-in.
 
         Args:
@@ -75,7 +89,7 @@ class PluginMeta(object):
             \*\*data: Field name as key, Value as value.
         """
 
-        token = token or core.CONFIG['DEFAULT_TOKEN']
+        token = token or cast.text(core.CONFIG['DEFAULT_TOKEN'])
 
         self.call('set_one_with_id',
                   token=token,
@@ -85,6 +99,7 @@ class PluginMeta(object):
         self.last_fetch_time = None
 
     def get_argument(self, key, token=None):
+        # type: (Text, Text) -> PluginArgumentInfo
         """Get argument information.
 
         Args:
@@ -101,6 +116,7 @@ class PluginMeta(object):
         return ret
 
     def set_argument(self, key, value=None, description=None, token=None):
+        # type: (Text, Text, Text, Text) -> None
         """Set argument data.
 
         Args:
@@ -139,6 +155,7 @@ class PluginMeta(object):
 
     @classmethod
     def filter(cls, filters=None, token=None):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList], Text) -> List[PluginMeta]
         """Filter plugins from server.
 
         Args:
@@ -150,7 +167,7 @@ class PluginMeta(object):
         """
 
         filters = filters or Field('#id').has('%')
-        token = token or core.CONFIG['DEFAULT_TOKEN']
+        token = token or cast.text(core.CONFIG['DEFAULT_TOKEN'])
 
         filters = FilterList(filters)
         resp = server.call(
@@ -163,6 +180,7 @@ class PluginMeta(object):
 
     @classmethod
     def from_info(cls, info):
+        # type: (PluginInfo) -> PluginMeta
         """Initialize Plugin object from info.
 
         Args:
@@ -179,6 +197,7 @@ class PluginMeta(object):
 
 
 def _get_server_field(model, field):
+    # type: (Any, Text) -> Text
     return model.fields[model._fields.index(field)]
 
 
@@ -187,6 +206,7 @@ class PluginMetaArguments(object):
     # pylint:disable=protected-access
 
     def __init__(self, plugin, field):
+        # type: (PluginMeta, Text) -> None
         assert isinstance(plugin, PluginMeta), type(plugin)
         self.plugin = plugin
         self.field = field
@@ -194,6 +214,7 @@ class PluginMetaArguments(object):
 
     @property
     def data(self):
+        # type: () -> Dict[Text, Any]
         """Corresponse information data.
 
         Returns:
@@ -206,12 +227,15 @@ class PluginMetaArguments(object):
         return dict(ret)
 
     def __getitem__(self, key):
+        # type: (Text) -> Text
         return self.plugin.get_argument(key).value
 
     def __setitem__(self, key, value):
+        # type: (Text, Any) -> None
         self.plugin.set_argument(key, value)
 
     def __delitem__(self, key):
+        # type: (Text) -> None
         data = self.data
         del data[key]
         self.plugin.set_fields(**{self.server_field: data})

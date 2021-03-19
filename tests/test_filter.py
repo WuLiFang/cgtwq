@@ -1,4 +1,5 @@
 # -*- coding=UTF-8 -*-
+# pyright: reportUnknownParameterType=none
 """Test module `cgtwq.filter`.   """
 
 from __future__ import (absolute_import, division, print_function,

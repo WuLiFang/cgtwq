@@ -11,11 +11,16 @@ from ..model import ImageInfo
 from ..server.web import upload_image
 from .core import SelectionAttachment
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text, Tuple
+
 
 class SelectionImage(SelectionAttachment):
     """Image feature for selection.  """
 
     def set(self, path, field='image'):
+        # type: (Text, Text) -> ImageInfo
         """Set image for the field.
 
         Args:
@@ -34,13 +39,14 @@ class SelectionImage(SelectionAttachment):
         return image
 
     def get(self, field='image'):
+        # type: (Text) -> Tuple[ImageInfo, ...]
         """Get imageinfo used on the field.
 
         Args:
             field (six.text_type): Defaults to 'image', Server defined field name,
 
         Returns:
-            set[ImageInfo]: Image information.
+            tuple[ImageInfo]: Image information.
         """
 
         select = self.select

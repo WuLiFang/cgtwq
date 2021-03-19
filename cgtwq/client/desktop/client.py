@@ -2,22 +2,29 @@
 """Get information from CGTeamWork GUI client.  """
 
 from __future__ import absolute_import, print_function, unicode_literals
-from functools import partial
+
 import logging
 import os
+from functools import partial
 from subprocess import Popen
 
-from six import text_type
+import cast_unknown as cast
 import websocket as ws
 from deprecated import deprecated
+from six import text_type
 
-from . import core
 from ...core import CONFIG, CachedFunctionMixin
 from ...exceptions import IDError
 from ...selection import Selection
+from . import core
 from .plugin import DesktopClientPlugin
 
 LOGGER = logging.getLogger(__name__)
+
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Any, Text, Type, TypeVar
+    T = TypeVar("T")
 
 
 class DesktopClient(CachedFunctionMixin):
@@ -25,7 +32,7 @@ class DesktopClient(CachedFunctionMixin):
 
     def __init__(self, socket_url=None):
         super(DesktopClient, self).__init__()
-        self.socket_url = socket_url or CONFIG['DESKTOP_WEBSOCKET_URL']
+        self.socket_url = socket_url or cast.text(CONFIG['DESKTOP_WEBSOCKET_URL'])
 
         # Attachment.
         self.plugin = DesktopClientPlugin(self)
@@ -100,6 +107,7 @@ class DesktopClient(CachedFunctionMixin):
         return False
 
     def _refresh(self, database, module, is_selected_only):
+        # type: (Text, Text, bool) -> None
         self.call('view_control',
                   'refresh_select' if is_selected_only else 'refresh',
                   module=module,
@@ -107,6 +115,7 @@ class DesktopClient(CachedFunctionMixin):
                   type='send')
 
     def refresh(self, database, module):
+        # type: (Text, Text) -> None
         """
         Refresh specified view in client
         if matched view is opened.
@@ -119,6 +128,7 @@ class DesktopClient(CachedFunctionMixin):
         self._refresh(database, module, False)
 
     def refresh_selected(self, database, module):
+        # type: (Text, Text) -> None
         """
         Refresh selected part of specified view in client
         if matched view is opened.
@@ -131,6 +141,7 @@ class DesktopClient(CachedFunctionMixin):
         self._refresh(database, module, True)
 
     def token(self, max_age=2):
+        # type: (int) -> None
         """Cached client token.  """
 
         return self._cached('token', self._token, max_age)
@@ -145,6 +156,7 @@ class DesktopClient(CachedFunctionMixin):
         return text_type(ret)
 
     def server_ip(self, max_age=5):
+        # type: (int) -> None
         """Cached server ip.  """
 
         return self._cached('server_ip', self._server_ip, max_age)
@@ -186,6 +198,7 @@ class DesktopClient(CachedFunctionMixin):
         return Selection.from_data(**plugin_data._asdict())
 
     def call(self, controller, method, **kwargs):
+        # type: (Text, Text, *Any) -> Any
         r"""Call method on the cgteamwork client.
 
         Args:
@@ -203,21 +216,22 @@ class DesktopClient(CachedFunctionMixin):
 
     current_select = deprecated(
         version='3.0.0',
-reason='Use `Desktop.selection` instead.',
+        reason='Use `Desktop.selection` instead.',
     )(selection)
 
     get_plugin_data = deprecated(
         version='3.0.0',
-reason='Use `DesktopClient.plugin.data` instead.',
+        reason='Use `DesktopClient.plugin.data` instead.',
     )(lambda self, uuid='': self.plugin.data(uuid))
 
     send_plugin_result = deprecated(
         version='3.0.0',
-reason='Use `DesktopClient.plugin.send_result` instead.'
+        reason='Use `DesktopClient.plugin.send_result` instead.'
     )(lambda self, uuid, result=False:
       self.plugin.send_result(process_id=uuid, result=result))
 
 
 def _get_typed_data(data, type_):
+    # type: (Any, Type[T]) -> T
     assert isinstance(data, type_), type(data)
-    return type_(data)
+    return type_(data) # type: ignore
