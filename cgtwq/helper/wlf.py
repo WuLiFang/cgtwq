@@ -99,19 +99,22 @@ def get_database_by_file(filename):
 
     if CACHE_KEY_PREFIX_DATABASE_MAP not in CACHE:
         data = {}  # type: Dict[text_type, text_type]
-        select = cgtwq.PROJECT.select_activated().get_fields(
+        result_set = cgtwq.PROJECT.select_activated().get_fields(
             'code',
             'database',
-            'last_update_time',
+            'filename_prefix',
         )
-        select.sort(key=lambda x: x[2])
-        for i in reversed(select):
-            database = cgtwq.Database(i[1])
-            data[i[0].lower() + "_"] = database.name
-            for j in text_type(database.metadata["filename_prefix"] or "").lower().split(","):
+        # default to database code
+        for i in result_set:
+            data[i[0].lower() + "_"] = i[1]
+
+        # read settings from `filename_prefix` field
+        # not use database metadata because it will be duplicated when clone project settings.
+        for i in result_set:
+            for j in text_type(i[2] or "").lower().split("\n"):
                 if not j:
                     continue
-                data[j] = database.name
+                data[j] = i[1]
         CACHE[CACHE_KEY_PREFIX_DATABASE_MAP] = data
     prefix_database_map = CACHE[CACHE_KEY_PREFIX_DATABASE_MAP]
 

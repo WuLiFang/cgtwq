@@ -10,12 +10,13 @@ from .core import ModuleAttachment
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Text
+    from typing import Text, Tuple
 
 class ModuleField(ModuleAttachment):
     """Field feature for module.  """
 
     def meta(self):
+        # type: () -> Tuple[FieldMeta, ...]
         """Get fields metadata in this module.
 
         Returns:
