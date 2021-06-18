@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.2.0'
-RELEASE_DATE = datetime.fromtimestamp(1617334743)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.1.1-1-gaab02d1'
-LAST_GIT_COMMIT_HASH = 'aab02d109bc4bb272a5c6292e750cb8ae119f37e'
+VERSION = '3.2.1'
+RELEASE_DATE = datetime.fromtimestamp(1624010474)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.2.0-3-g7afb5c6'
+LAST_GIT_COMMIT_HASH = '7afb5c6be983fc5a6c90141444bf7da8a0fac20b'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1617334714)
-LAST_GIT_COMMIT_SUBJECT = 'feat: read filename prefix from field'
-LAST_GIT_COMMIT_BODY = 'instead of metadata to void duplicated value caused by project clone'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1624010119)
+LAST_GIT_COMMIT_SUBJECT = 'fix: wrong link data'
+LAST_GIT_COMMIT_BODY = ''
