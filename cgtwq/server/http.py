@@ -8,6 +8,7 @@ import logging
 from collections import OrderedDict
 
 import requests
+import cast_unknown as cast
 
 from .. import core, exceptions
 
@@ -29,7 +30,6 @@ def _json_default(self, obj):
         return _asdict()
     return json.JSONEncoder.default(self, obj)
 
-
 def _raise_error(result):
     # type: (Any) -> None
     if not isinstance(result, dict):
@@ -45,8 +45,7 @@ def _raise_error(result):
         return
     elif (code, type_, data) == ('2', 'msg', 'please login!!!'):
         raise exceptions.LoginError
-    raise ValueError(data)
-
+    raise ValueError(cast.binary(data))
 
 def _cgteamwork_url(pathname):
     # type: (Text) -> Text
