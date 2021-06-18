@@ -21,7 +21,7 @@ class SelectionLink(SelectionAttachment):
         select = self.select
         select.call(
             "c_link", "set_link_id",
-            id_array=self, link_id_array=id_list)
+            id_array=select, link_id_array=id_list)
 
     def unlink(self, *id_list):
         # type: (Text) -> None
