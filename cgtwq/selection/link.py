@@ -1,49 +1,68 @@
 # -*- coding=UTF-8 -*-
 """Database module selection.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from .core import SelectionAttachment
 
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Text, Set
+    from typing import Text, Set, Any
 
 
 class SelectionLink(SelectionAttachment):
-    """Link feature for selection.  """
+    """Link feature for selection."""
 
-    def link(self, *id_list):
-        # type: (Text) -> None
-        """Link the selection to other items. """
+    def link(self, *id_list, **kwargs):
+        # type: (Text, Any) -> None
+        """Link the selection to other items."""
+        to_module = kwargs.get("to_module", "asset")
 
         select = self.select
         select.call(
-            "c_link", "set_link_id",
-            id_array=select, link_id_array=id_list)
+            "c_many2many",
+            "add_link",
+            module_tab_id_array=select,
+            link_module_tab_id_array=id_list,
+            link_module=to_module,
+            is_main="Y",
+        )
 
-    def unlink(self, *id_list):
-        # type: (Text) -> None
-        """Unlink the selection with other items.  """
+    def unlink(self, *id_list, **kwargs):
+        # type: (Text, Any) -> None
+        """Unlink the selection with other items."""
+        to_module = kwargs.get("to_module", "asset")
 
         select = self.select
         for id_ in select:
             select.call(
-                "c_link", "remove_link_id",
-                id=id_, link_id_array=id_list)
+                "c_many2many",
+                "remove_link",
+                id=id_,
+                module_tab_id_array=select,
+                link_module_tab_id_array=id_list,
+                link_module=to_module,
+                is_main="Y",
+            )
 
-    def get(self):
-        # type: () -> Set[Text]
+    def get(self, **kwargs):
+        # type: (Any) -> Set[Text]
         """Get linked items for the selections.
 
         Returns:
             set: All linked item id.
         """
+        to_module = kwargs.get("to_module", "asset")
 
         select = self.select
         ret = set()
         for id_ in select:
-            resp = select.call("c_link", "get_link_id", id=id_)
-            ret.add(resp)
+            resp = select.call(
+                "c_many2many",
+                "get_link",
+                module_tab_id=id_,
+                link_module=to_module,
+                is_main="Y",
+            )
+            ret.update(resp)
         return ret
