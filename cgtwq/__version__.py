@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.2.1'
-RELEASE_DATE = datetime.fromtimestamp(1624010474)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.2.0-3-g7afb5c6'
-LAST_GIT_COMMIT_HASH = '7afb5c6be983fc5a6c90141444bf7da8a0fac20b'
+VERSION = '3.2.2'
+RELEASE_DATE = datetime.fromtimestamp(1624427503)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.2.1-1-g66fef10'
+LAST_GIT_COMMIT_HASH = '66fef10e70988e8396c2b8b54dfe92d85a8c8778'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1624010119)
-LAST_GIT_COMMIT_SUBJECT = 'fix: wrong link data'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1624427471)
+LAST_GIT_COMMIT_SUBJECT = 'fix: follow link api change'
 LAST_GIT_COMMIT_BODY = ''
