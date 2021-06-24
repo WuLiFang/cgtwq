@@ -115,7 +115,11 @@ class Module(ControllerGetterMixin):
             *args).in_namespace(namespace)
 
         resp = self.call('c_orm', 'get_with_filter',
-                         sign_array=(Field('id').in_namespace(self.name),),
+                         sign_array=(Field('id').in_namespace(
+                             self.name
+                             if self.module_type == "info"
+                             else self.module_type
+                         ),),
                          sign_filter_array=filters)
         if resp:
             id_list = [i[0] for i in resp]
