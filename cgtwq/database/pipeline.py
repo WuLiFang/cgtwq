@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database on cgtw server.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from ..core import ControllerGetterMixin
 from ..filter import Field, FilterList
@@ -16,7 +15,8 @@ if TYPE_CHECKING:
 
 
 class DatabasePipeline(core.DatabaseAttachment, ControllerGetterMixin):
-    """Pipeline feature for database.  """
+    """Pipeline feature for database."""
+
     # pylint: disable=too-few-public-methods
 
     def filter(self, *args):
@@ -30,9 +30,10 @@ class DatabasePipeline(core.DatabaseAttachment, ControllerGetterMixin):
             tuple[PipelineInfo]
         """
 
-        filters = (FilterList.from_arbitrary_args(*args)
-                   or FilterList(Field('entity_name').has('%')))
+        filters = FilterList.from_arbitrary_args(*args) or FilterList(
+            Field("entity_name").has("%")
+        )
 
         return self._filter_model(
-            "c_pipeline", "get_with_filter",
-            PipelineInfo, filters)
+            "c_pipeline", "get_with_filter", PipelineInfo, filters
+        )

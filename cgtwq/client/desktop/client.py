@@ -24,30 +24,30 @@ LOGGER = logging.getLogger(__name__)
 TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Any, Text, Type, TypeVar
+
     T = TypeVar("T")
 
 
 class DesktopClient(CachedFunctionMixin):
-    """Communicate with a CGTeamWork official GUI clients.  """
+    """Communicate with a CGTeamWork official GUI clients."""
 
     def __init__(self, socket_url=None):
         super(DesktopClient, self).__init__()
-        self.socket_url = socket_url or cast.text(CONFIG['DESKTOP_WEBSOCKET_URL'])
+        self.socket_url = socket_url or cast.text(CONFIG["DESKTOP_WEBSOCKET_URL"])
 
         # Attachment.
         self.plugin = DesktopClientPlugin(self)
 
         # Shorthand method.
         self.call_main_widget = partial(
-            self.call, "main_widget",
-            module="main_widget",
-            database="main_widget")
+            self.call, "main_widget", module="main_widget", database="main_widget"
+        )
 
     def connect(self):
-        """Update module config from desktop client.  """
+        """Update module config from desktop client."""
 
-        CONFIG['URL'] = 'http://{}'.format(self.server_ip())
-        CONFIG['DEFAULT_TOKEN'] = self.token()
+        CONFIG["URL"] = "http://{}".format(self.server_ip())
+        CONFIG["DEFAULT_TOKEN"] = self.token()
 
     @staticmethod
     def executable():
@@ -59,8 +59,9 @@ class DesktopClient(CachedFunctionMixin):
 
         # Get client executable.
         try:
-            executable = os.path.abspath(os.path.join(
-                __import__('cgtw').__file__, '../../cgtw/CgTeamWork.exe'))
+            executable = os.path.abspath(
+                os.path.join(__import__("cgtw").__file__, "../../cgtw/CgTeamWork.exe")
+            )
         except ImportError:
             # Try use default when sys.path not been set correctly.
             executable = "C:/cgteamwork/bin/cgtw/CgTeamWork.exe"
@@ -70,13 +71,11 @@ class DesktopClient(CachedFunctionMixin):
         return executable
 
     def start(self):
-        """Start client if not running.  """
+        """Start client if not running."""
 
         executable = self.executable()
         if executable and not self.is_running():
-            Popen(executable,
-                  cwd=os.path.dirname(executable),
-                  close_fds=True)
+            Popen(executable, cwd=os.path.dirname(executable), close_fds=True)
 
     def is_running(self):
         """Check if client is running.
@@ -108,11 +107,13 @@ class DesktopClient(CachedFunctionMixin):
 
     def _refresh(self, database, module, is_selected_only):
         # type: (Text, Text, bool) -> None
-        self.call('view_control',
-                  'refresh_select' if is_selected_only else 'refresh',
-                  module=module,
-                  database=database,
-                  type='send')
+        self.call(
+            "view_control",
+            "refresh_select" if is_selected_only else "refresh",
+            module=module,
+            database=database,
+            type="send",
+        )
 
     def refresh(self, database, module):
         # type: (Text, Text) -> None
@@ -142,42 +143,42 @@ class DesktopClient(CachedFunctionMixin):
 
     def token(self, max_age=2):
         # type: (int) -> None
-        """Cached client token.  """
+        """Cached client token."""
 
-        return self._cached('token', self._token, max_age)
+        return self._cached("token", self._token, max_age)
 
     def _token(self):
-        """Client token.  """
+        """Client token."""
 
         ret = self.call_main_widget("get_token")
         if ret is True:
-            return ''
+            return ""
         assert isinstance(ret, text_type), type(ret)
         return text_type(ret)
 
     def server_ip(self, max_age=5):
         # type: (int) -> None
-        """Cached server ip.  """
+        """Cached server ip."""
 
-        return self._cached('server_ip', self._server_ip, max_age)
+        return self._cached("server_ip", self._server_ip, max_age)
 
     def _server_ip(self):
-        """Server ip current using by client.  """
+        """Server ip current using by client."""
 
         ret = self.call_main_widget("get_server_ip")
         if ret is True:
-            return ''
+            return ""
         return _get_typed_data(
             ret,
             text_type,
         )
 
     def server_http(self):
-        """Server http current using by client.  """
+        """Server http current using by client."""
 
         ret = self.call_main_widget("get_server_http")
         if ret is True:
-            ret = ''
+            ret = ""
         return _get_typed_data(
             ret,
             text_type,
@@ -194,7 +195,7 @@ class DesktopClient(CachedFunctionMixin):
             plugin_data = self.get_plugin_data()
         except IDError:
             # TODO: should raise exception.EmptySelection.
-            raise ValueError('Empty selection.')
+            raise ValueError("Empty selection.")
         return Selection.from_data(**plugin_data._asdict())
 
     def call(self, controller, method, **kwargs):
@@ -215,23 +216,25 @@ class DesktopClient(CachedFunctionMixin):
     # Deprecated methods.
 
     current_select = deprecated(
-        version='3.0.0',
-        reason='Use `Desktop.selection` instead.',
+        version="3.0.0",
+        reason="Use `Desktop.selection` instead.",
     )(selection)
 
     get_plugin_data = deprecated(
-        version='3.0.0',
-        reason='Use `DesktopClient.plugin.data` instead.',
-    )(lambda self, uuid='': self.plugin.data(uuid))
+        version="3.0.0",
+        reason="Use `DesktopClient.plugin.data` instead.",
+    )(lambda self, uuid="": self.plugin.data(uuid))
 
     send_plugin_result = deprecated(
-        version='3.0.0',
-        reason='Use `DesktopClient.plugin.send_result` instead.'
-    )(lambda self, uuid, result=False:
-      self.plugin.send_result(process_id=uuid, result=result))
+        version="3.0.0", reason="Use `DesktopClient.plugin.send_result` instead."
+    )(
+        lambda self, uuid, result=False: self.plugin.send_result(
+            process_id=uuid, result=result
+        )
+    )
 
 
 def _get_typed_data(data, type_):
     # type: (Any, Type[T]) -> T
     assert isinstance(data, type_), type(data)
-    return type_(data) # type: ignore
+    return type_(data)  # type: ignore

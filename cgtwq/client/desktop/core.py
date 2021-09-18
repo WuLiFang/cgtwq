@@ -1,8 +1,7 @@
 # -*- coding=UTF-8 -*-
 """Desktop client.  """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import json
 import logging
@@ -21,12 +20,14 @@ if TYPE_CHECKING:
 
 
 class DesktopClientAttachment(object):
-    """Attachment feature for desktop client.  """
+    """Attachment feature for desktop client."""
+
     # pylint: disable=too-few-public-methods
 
     def __init__(self, client):
         # type: (cgtwq.DesktopClient) -> None
         from .client import DesktopClient
+
         assert isinstance(client, DesktopClient)
         self.client = client
 
@@ -47,16 +48,16 @@ def call(socket_url, controller, method, **kwargs):
     """
 
     payload = dict(sign=controller, method=method, **kwargs)
-    payload.setdefault('type', 'get')
+    payload.setdefault("type", "get")
 
-    conn = create_connection(socket_url, CONFIG['CONNECTION_TIMEOUT'])
+    conn = create_connection(socket_url, CONFIG["CONNECTION_TIMEOUT"])
 
     try:
         conn.send(json.dumps(payload))
-        LOGGER.debug('SEND: %s', six.text_type(payload))
+        LOGGER.debug("SEND: %s", six.text_type(payload))
         recv = json.loads(conn.recv())
-        LOGGER.debug('RECV: %s', six.text_type(recv))
-        ret = recv['data']
+        LOGGER.debug("RECV: %s", six.text_type(recv))
+        ret = recv["data"]
         try:
             ret = json.loads(ret)
         except (TypeError, ValueError):
@@ -70,10 +71,11 @@ def call(socket_url, controller, method, **kwargs):
 
 def _handle_error_10042(exception):
     # type: (Any) -> None
-    if (isinstance(exception, OSError)
-            and exception.errno == 10042):
-        print("""
+    if isinstance(exception, OSError) and exception.errno == 10042:
+        print(
+            """
 This is a bug of websocket-client 0.47.0 with python 3.6.4,
 see: https://github.com/websocket-client/websocket-client/issues/404
-""")
+"""
+        )
         raise exception

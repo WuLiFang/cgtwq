@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database on cgtw server.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 
@@ -29,7 +28,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Database(core.ControllerGetterMixin):
-    """Database on server.    """
+    """Database on server."""
+
     # pylint: disable=too-many-instance-attributes
 
     _token = None
@@ -53,25 +53,25 @@ class Database(core.ControllerGetterMixin):
     @property
     def token(self):
         # type: () -> Text
-        """User token.   """
-        return self._token or cast.text(core.CONFIG['DEFAULT_TOKEN'])
+        """User token."""
+        return self._token or cast.text(core.CONFIG["DEFAULT_TOKEN"])
 
     @token.setter
     def token(self, value):
         # type: (Text) -> None
         self._token = value
 
-    def module(self, name, module_type='task'):
+    def module(self, name, module_type="task"):
         # type: (Text, Text) -> Module
-        """Get module in the database.  """
+        """Get module in the database."""
 
         return Module(name=name, database=self, module_type=module_type)
 
     def call(self, *args, **kwargs):
         # type: (Any, *Any) -> Any
-        """Call on this database.   """
+        """Call on this database."""
 
-        kwargs.setdefault('token', self.token)
+        kwargs.setdefault("token", self.token)
         return server.call(*args, db=self.name, **kwargs)
 
     def filter(self, *args):
@@ -85,13 +85,15 @@ class Database(core.ControllerGetterMixin):
             tuple[Module]: Modules
         """
 
-        filters = (FilterList.from_arbitrary_args(*args)
-                   or FilterList(Field('module').has('%')))
+        filters = FilterList.from_arbitrary_args(*args) or FilterList(
+            Field("module").has("%")
+        )
 
         resp = self.call(
-            'c_module', 'get_with_filter',
+            "c_module",
+            "get_with_filter",
             filter_array=filters,
-            field_array=ModuleInfo.fields
+            field_array=ModuleInfo.fields,
         )
         return tuple(self._get_module(ModuleInfo(*i)) for i in resp)
 
@@ -103,8 +105,8 @@ class Database(core.ControllerGetterMixin):
         return ret
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Database.metadata` or `Database.userdata` instead.',
+        version="3.0.0",
+        reason="Use `Database.metadata` or `Database.userdata` instead.",
     )
     def set_data(self, key, value, is_user=True):
         # type: (Text, Text, bool) -> None
@@ -121,8 +123,8 @@ class Database(core.ControllerGetterMixin):
         accessor[key] = value
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Database.metadata` or `Database.userdata` instead.',
+        version="3.0.0",
+        reason="Use `Database.metadata` or `Database.userdata` instead.",
     )
     def get_data(self, key, is_user=True):
         # type: (Text, bool) -> Text
@@ -141,8 +143,8 @@ class Database(core.ControllerGetterMixin):
         return accessor[key]
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Database.filebox.filter` or `Database.filebox.get` instead.',
+        version="3.0.0",
+        reason="Use `Database.filebox.filter` or `Database.filebox.get` instead.",
     )
     def get_fileboxes(self, filters=None, id_=None):
         # type: (FilterList, Text) -> Tuple[cgtwq.model.FileBoxMeta, ...]
@@ -166,14 +168,11 @@ class Database(core.ControllerGetterMixin):
             filters = FilterList(filters)
             ret = self.filebox.filter(*filters)
         else:
-            raise ValueError(
-                'Need at least one of (id_, filters) to get filebox.')
+            raise ValueError("Need at least one of (id_, filters) to get filebox.")
 
         return ret
 
-    @deprecated(
-        version='3.0.0',
-        reason='Use `Database.field.filter` instead.')
+    @deprecated(version="3.0.0", reason="Use `Database.field.filter` instead.")
     def get_fields(self, filters=None):
         # type: (Union[cgtwq.Filter, FilterList]) -> Tuple[cgtwq.model.FieldMeta, ...]
         """Get fields in the database.
@@ -186,9 +185,7 @@ class Database(core.ControllerGetterMixin):
         filters = FilterList(filters or [])
         return self.field.filter(*filters)
 
-    @deprecated(
-        version='3.0.0',
-        reason='Use `Database.field.filter_one` instead.')
+    @deprecated(version="3.0.0", reason="Use `Database.field.filter_one` instead.")
     def get_field(self, filters):
         # type: (Union[cgtwq.Filter, FilterList]) -> cgtwq.model.FieldMeta
         """Get one field in the database.
@@ -201,10 +198,7 @@ class Database(core.ControllerGetterMixin):
         filters = FilterList(filters)
         return self.field.filter_one(*filters)
 
-    @deprecated(
-        version='3.0.0',
-        reason='Use `Database.field.create` instead.'
-    )
+    @deprecated(version="3.0.0", reason="Use `Database.field.create` instead.")
     def create_field(self, sign, type_, name=None, label=None):
         # type: (Text, Text, Text, Text) -> None
         """Create new field in the module.
@@ -218,9 +212,7 @@ class Database(core.ControllerGetterMixin):
 
         self.field.create(sign, type_, name, label)
 
-    @deprecated(
-        version='3.0.0',
-        reason='Use `Database.field.delete` instead.')
+    @deprecated(version="3.0.0", reason="Use `Database.field.delete` instead.")
     def delete_field(self, field_id):
         # type: (Text) -> None
         """Delete field in the module.
@@ -231,8 +223,8 @@ class Database(core.ControllerGetterMixin):
         self.field.delete(field_id)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Database.pipeline.filter` instead.',
+        version="3.0.0",
+        reason="Use `Database.pipeline.filter` instead.",
     )
     def get_pipelines(self, *filters):
         # type: (FilterList) -> Tuple[cgtwq.model.PipelineInfo, ...]
@@ -248,8 +240,7 @@ class Database(core.ControllerGetterMixin):
         return self.pipeline.filter(*filters)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Database.filter` with empty args instead.`'
+        version="3.0.0", reason="Use `Database.filter` with empty args instead.`"
     )
     def modules(self):
         """All modules in this database.
@@ -260,10 +251,7 @@ class Database(core.ControllerGetterMixin):
 
         return self.filter()
 
-    @deprecated(
-        version='3.0.0',
-        reason='Use `Database.software.get_path` instead.'
-    )
+    @deprecated(version="3.0.0", reason="Use `Database.software.get_path` instead.")
     def get_software(self, name):
         # type: (Text) -> Text
         """Get software path for this database.

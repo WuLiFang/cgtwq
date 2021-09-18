@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database module selection.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
 import uuid
@@ -22,29 +21,31 @@ if TYPE_CHECKING:
 
 
 class SelectionFlow(SelectionAttachment):
-    """Flow operation on selection.  """
+    """Flow operation on selection."""
 
-    def update(self, field, status, message='', images=()):
+    def update(self, field, status, message="", images=()):
         # type: (Text, Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
-        """Update flow status.  """
+        """Update flow status."""
         # TODO: refactor arguments at next major version.
 
         select = self.select
         message = Message.load(message)
         message.images += images
-        field = Field(field).in_namespace(
-            self.select.module.default_field_namespace)
+        field = Field(field).in_namespace(self.select.module.default_field_namespace)
 
         try:
-            self.call('c_work_flow', 'python_update_flow',
-                      field_sign=field,
-                      status=status,
-                      text=message.dumps(),
-                      task_id=select[0])
+            self.call(
+                "c_work_flow",
+                "python_update_flow",
+                field_sign=field,
+                status=status,
+                text=message.dumps(),
+                task_id=select[0],
+            )
         except ValueError as ex:
-            if (ex.args
-                    and ex.args[0] == ('work_flow::python_update_flow, '
-                                       'no permission to qc')):
+            if ex.args and ex.args[0] == (
+                "work_flow::python_update_flow, " "no permission to qc"
+            ):
                 raise exceptions.PermissionError
             raise
 
@@ -63,19 +64,20 @@ class SelectionFlow(SelectionAttachment):
         account_id = account_id or account.get_account_id(select.token)
 
         # Create path data.
-        path_data = {'path': [], 'file_path': []}
+        path_data = {"path": [], "file_path": []}
         for i in filenames:
-            path_data['path' if os.path.isdir(
-                cast.text(i)) else 'file_path'].append(i)
+            path_data["path" if os.path.isdir(cast.text(i)) else "file_path"].append(i)
         select.call(
-            "c_work_flow", "submit",
+            "c_work_flow",
+            "submit",
             task_id=select[0],
             account_id=account_id,
             version_id=self.create_version(filenames),
             submit_file_path_array=path_data,
-            text=message.dumps())
+            text=message.dumps(),
+        )
 
-    def create_version(self, filenames, sign='Api Submit', version_id=None):
+    def create_version(self, filenames, sign="Api Submit", version_id=None):
         # type: (Iterable[Text], Text , Text) -> Text
         """Create new task version.
 
@@ -91,7 +93,8 @@ class SelectionFlow(SelectionAttachment):
         select = self.select
         version_id = version_id or uuid.uuid4().hex
         select.call(
-            'c_version', 'create',
+            "c_version",
+            "create",
             field_data_array={
                 "#link_id": select[0],
                 "version": "",
@@ -103,11 +106,11 @@ class SelectionFlow(SelectionAttachment):
                 "from_version": "",
                 "is_upload_web": "N",
                 "#id": version_id,
-            }
+            },
         )
         return version_id
 
-    def assign(self, accounts, start='', end=''):
+    def assign(self, accounts, start="", end=""):
         # type: (List[Text], Text, Text) -> None
         """Assgin tasks.
 
@@ -120,39 +123,42 @@ class SelectionFlow(SelectionAttachment):
         if isinstance(accounts, six.text_type):
             accounts = [accounts]
         select = self.select
-        select.call('c_work_flow', 'assign_to',
-                    assign_account_id=','.join(accounts),
-                    start_date=start,
-                    end_date=end,
-                    task_id_array=select)
+        select.call(
+            "c_work_flow",
+            "assign_to",
+            assign_account_id=",".join(accounts),
+            start_date=start,
+            end_date=end,
+            task_id_array=select,
+        )
 
     def has_field_permission(self, field):
         # type: (Text) -> bool
-        """Return if current user has permission to edit the field.  """
+        """Return if current user has permission to edit the field."""
 
-        field = Field(field).in_namespace(
-            self.select.module.default_field_namespace)
+        field = Field(field).in_namespace(self.select.module.default_field_namespace)
         resp = self.call(
-            'c_work_flow', 'is_status_field_has_permission',
+            "c_work_flow",
+            "is_status_field_has_permission",
             field_sign=field,
-            task_id_array=self.select
+            task_id_array=self.select,
         )
         return resp
 
-    def close(self, field, message='', images=()):
+    def close(self, field, message="", images=()):
         # type: (Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
-        """Shorthand method to set take status to `Close`.  """
+        """Shorthand method to set take status to `Close`."""
 
-        return self.update(field, 'Close', message, images)
+        return self.update(field, "Close", message, images)
 
-    def approve(self, field, message='', images=()):
+    def approve(self, field, message="", images=()):
         # type: (Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
-        """Shorthand method to set take status to `Approve`.  """
+        """Shorthand method to set take status to `Approve`."""
 
-        return self.update(field, 'Approve', message, images)
+        return self.update(field, "Approve", message, images)
 
-    def retake(self, field, message='', images=()):
+    def retake(self, field, message="", images=()):
         # type: (Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
-        """Shorthand method to set take status to `Retake`.  """
+        """Shorthand method to set take status to `Retake`."""
 
-        return self.update(field, 'Retake', message, images)
+        return self.update(field, "Retake", message, images)

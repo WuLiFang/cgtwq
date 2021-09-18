@@ -3,4 +3,4 @@
 
 
 class DatabaseError(ValueError):
-    """Indicate can not determinate database.  """
+    """Indicate can not determinate database."""

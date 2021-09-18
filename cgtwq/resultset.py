@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database query result set.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 
@@ -18,15 +17,15 @@ if TYPE_CHECKING:
 
 
 class ResultSet(list):
-    """Database query result.  """
+    """Database query result."""
 
     def __init__(self, roles, data, module):
         # type: (Iterable[Text], Iterable[Iterable[Any]], cgtwq.Module) -> None
         from .module import Module
+
         assert isinstance(module, Module)
         roles = list(roles)
-        assert all(isinstance(i, list) and len(i) == len(roles)
-                   for i in data), data
+        assert all(isinstance(i, list) and len(i) == len(roles) for i in data), data
         super(ResultSet, self).__init__(data)
         self.module = module
         self.roles = [six.text_type(i) for i in roles]

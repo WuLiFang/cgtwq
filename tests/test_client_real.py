@@ -1,8 +1,7 @@
 # -*- coding=UTF-8 -*-
 # pylint: disable=invalid-name
 """Test `cgtw.client` module on real server.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from unittest import TestCase, main
 
@@ -22,10 +21,10 @@ class DesktopClientTestCase(TestCase):
             pass
 
     def test_refresh(self):
-        cgtwq.DesktopClient().refresh('proj_sdktest', 'shot')
+        cgtwq.DesktopClient().refresh("proj_sdktest", "shot")
 
     def test_refresh_selected(self):
-        cgtwq.DesktopClient().refresh_selected('proj_sdktest', 'shot')
+        cgtwq.DesktopClient().refresh_selected("proj_sdktest", "shot")
 
 
 def test_current_select():
@@ -33,9 +32,9 @@ def test_current_select():
         select = cgtwq.DesktopClient().current_select()
         assert isinstance(select, cgtwq.Selection)
     except ValueError as ex:
-        if ex.args != ('Empty selection.',):
+        if ex.args != ("Empty selection.",):
             raise
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

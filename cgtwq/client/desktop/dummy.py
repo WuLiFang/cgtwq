@@ -2,12 +2,12 @@
 # pyright: reportUnknownParameterType=none
 """Dummy desktop client for non win32 platform.  """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 
 class DesktopClient(object):
-    """Dummy desktop client for non win32 platform.  """
+    """Dummy desktop client for non win32 platform."""
+
     # pylint:disable=missing-docstring,no-self-use,unused-argument
 
     def __init__(self, socket_url=None):

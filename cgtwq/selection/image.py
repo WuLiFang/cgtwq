@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database module selection.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import json
 
@@ -17,9 +16,9 @@ if TYPE_CHECKING:
 
 
 class SelectionImage(SelectionAttachment):
-    """Image feature for selection.  """
+    """Image feature for selection."""
 
-    def set(self, path, field='image'):
+    def set(self, path, field="image"):
         # type: (Text, Text) -> ImageInfo
         """Set image for the field.
 
@@ -34,11 +33,10 @@ class SelectionImage(SelectionAttachment):
         image = upload_image(path, select.module.database.name, select.token)
 
         # Server need strange data format for image field in cgteamwork5.2
-        select.set_fields(
-            **{field: dict(path=path, max=[image.max], min=[image.min])})
+        select.set_fields(**{field: dict(path=path, max=[image.max], min=[image.min])})
         return image
 
-    def get(self, field='image'):
+    def get(self, field="image"):
         # type: (Text) -> Tuple[ImageInfo, ...]
         """Get imageinfo used on the field.
 
@@ -58,16 +56,16 @@ class SelectionImage(SelectionAttachment):
             try:
                 data = json.loads(i)
                 assert isinstance(data, dict)
-                info = ImageInfo(max=data['max'][0],
-                                 min=data['min'][0],
-                                 path=data.get('path'))
+                info = ImageInfo(
+                    max=data["max"][0], min=data["min"][0], path=data.get("path")
+                )
                 ret.add(info)
             except (TypeError, KeyError):
                 continue
         ret = tuple(sorted(ret))
         return ret
 
-    def get_one(self, field='image'):
+    def get_one(self, field="image"):
         # type: (str) -> ImageInfo
         """Get single imageinfo used on the field.
 
@@ -83,7 +81,7 @@ class SelectionImage(SelectionAttachment):
         """
         try:
             images = self.get(field)
-            assert len(images) == 1, 'Multiple image on the selection.'
+            assert len(images) == 1, "Multiple image on the selection."
             return images[0]
         except IndexError:
-            raise ValueError('No image on this selection.')
+            raise ValueError("No image on this selection.")

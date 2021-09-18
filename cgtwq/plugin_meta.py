@@ -1,8 +1,7 @@
 # -*- coding=UTF-8 -*-
 """Handle CGTeamWork plugin metadata.  """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import json
 import time
@@ -25,27 +24,25 @@ if TYPE_CHECKING:
 def _accessor(field):
     # type: (Text) -> Any
     # pylint:disable=protected-access
-    def _get(self): 
+    def _get(self):
         # type: (Any) -> Any
-        
+
         self.fetch()
         return getattr(self._cached_info, field)
 
     def _set(self, value):
         # type: (Any, Any) -> Any
-        self.set_fields(**{
-            _get_server_field(PluginInfo, field):
-            value})
+        self.set_fields(**{_get_server_field(PluginInfo, field): value})
 
     return property(_get, _set)
 
 
 @six.python_2_unicode_compatible
 class PluginMeta(object):
-    """ CGTeamWork plug-in metadata.  """
+    """CGTeamWork plug-in metadata."""
 
-    name = _accessor('name')
-    type = _accessor('type')
+    name = _accessor("name")
+    type = _accessor("type")
 
     def __init__(self, uuid):
         # type: (Text) -> None
@@ -54,24 +51,26 @@ class PluginMeta(object):
         self.last_fetch_time = None
         self._cached_info = None
 
-        self.call = partial(server.call, 'c_plugin', id=self.uuid)
+        self.call = partial(server.call, "c_plugin", id=self.uuid)
 
-        self.arguments = PluginMetaArguments(self, 'arguments')
+        self.arguments = PluginMetaArguments(self, "arguments")
 
     def __str__(self):
-        return 'Plugin<uuid={0.uuid}, name={0.name}, type={0.type}>'.format(self)
+        return "Plugin<uuid={0.uuid}, name={0.name}, type={0.type}>".format(self)
 
     def fetch(self, token=None):
         # type: (Text) -> None
-        """Fetch plugin data from server.  """
+        """Fetch plugin data from server."""
 
-        if (self.last_fetch_time
-                and (self.last_fetch_time - time.time() > core.CONFIG['MIN_FETCH_INTERVAL'])):  # type: ignore
+        if self.last_fetch_time and (
+            self.last_fetch_time - time.time() > core.CONFIG["MIN_FETCH_INTERVAL"]
+        ):  # type: ignore
             return
 
-        token = token or cast.text(core.CONFIG['DEFAULT_TOKEN'])
+        token = token or cast.text(core.CONFIG["DEFAULT_TOKEN"])
         resp = server.call(
-            'c_plugin', 'get_one_with_id',
+            "c_plugin",
+            "get_one_with_id",
             token=token,
             id=self.uuid,
             field_array=PluginInfo.fields,
@@ -89,12 +88,9 @@ class PluginMeta(object):
             \*\*data: Field name as key, Value as value.
         """
 
-        token = token or cast.text(core.CONFIG['DEFAULT_TOKEN'])
+        token = token or cast.text(core.CONFIG["DEFAULT_TOKEN"])
 
-        self.call('set_one_with_id',
-                  token=token,
-                  id=self.uuid,
-                  field_data_array=data)
+        self.call("set_one_with_id", token=token, id=self.uuid, field_data_array=data)
 
         self.last_fetch_time = None
 
@@ -129,7 +125,7 @@ class PluginMeta(object):
         payload = self.arguments.data
 
         default_value = None
-        default_descrtion = ''
+        default_descrtion = ""
 
         if key in payload:
             old_value = payload[key]
@@ -139,19 +135,16 @@ class PluginMeta(object):
 
         new_value = PluginArgumentInfo(
             value=value if value is not None else default_value,
-            description=description if description is not None else default_descrtion
+            description=description if description is not None else default_descrtion,
         )
 
         payload[key] = new_value
         payload = {k: dict(v._asdict()) for k, v in payload.items()}
 
         for v in payload.values():
-            v['value'] = json.dumps(v['value'])
+            v["value"] = json.dumps(v["value"])
 
-        self.set_fields(
-            token=token,
-            argv=payload
-        )
+        self.set_fields(token=token, argv=payload)
 
     @classmethod
     def filter(cls, filters=None, token=None):
@@ -166,12 +159,13 @@ class PluginMeta(object):
             list[Plugin]: Matched plug-ins.
         """
 
-        filters = filters or Field('#id').has('%')
-        token = token or cast.text(core.CONFIG['DEFAULT_TOKEN'])
+        filters = filters or Field("#id").has("%")
+        token = token or cast.text(core.CONFIG["DEFAULT_TOKEN"])
 
         filters = FilterList(filters)
         resp = server.call(
-            'c_plugin', 'get_with_filter',
+            "c_plugin",
+            "get_with_filter",
             token=token,
             field_array=PluginInfo.fields,
             filter_array=filters,
@@ -202,7 +196,8 @@ def _get_server_field(model, field):
 
 
 class PluginMetaArguments(object):
-    """Plugin metadata argument accessor.  """
+    """Plugin metadata argument accessor."""
+
     # pylint:disable=protected-access
 
     def __init__(self, plugin, field):

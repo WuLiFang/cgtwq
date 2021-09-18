@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database on cgtw server.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from ..core import FIELD_TYPES, ControllerGetterMixin
 from ..filter import Field, FilterList
@@ -15,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
-    """Field feature for database.  """
+    """Field feature for database."""
 
     def filter(self, *args):
         # type: (Union[FilterList, cgtwq.Filter]) -> Tuple[FieldMeta, ...]
@@ -28,11 +27,12 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             tuple[FieldMeta]: Field information.
         """
 
-        filters = (FilterList.from_arbitrary_args(*args)
-                   or FilterList(Field('sign').has('%')))
+        filters = FilterList.from_arbitrary_args(*args) or FilterList(
+            Field("sign").has("%")
+        )
         return self._filter_model(
-            'c_field', 'get_with_filter', FieldMeta,
-            filters=filters)
+            "c_field", "get_with_filter", FieldMeta, filters=filters
+        )
 
     def filter_one(self, *args):
         # type: (Union[FilterList, cgtwq.Filter]) -> FieldMeta
@@ -45,9 +45,10 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
 
         filters = FilterList.from_arbitrary_args(*args)
         resp = self.call(
-            'c_field', 'get_one_with_filter',
+            "c_field",
+            "get_one_with_filter",
             field_array=FieldMeta.fields,
-            filter_array=filters
+            filter_array=filters,
         )
         return FieldMeta(*resp)
 
@@ -62,16 +63,16 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             label (str, optional): Defaults to None. Field chinese name.
         """
 
-        assert type_ in FIELD_TYPES,\
-            'Field type must in {}'.format(FIELD_TYPES)
-        assert '.' in sign, 'Sign must contains a `.` character to specific module.'
+        assert type_ in FIELD_TYPES, "Field type must in {}".format(FIELD_TYPES)
+        assert "." in sign, "Sign must contains a `.` character to specific module."
 
-        module, sign = sign.split('.')
+        module, sign = sign.split(".")
         label = label or sign
         name = name or sign
 
         self.call(
-            "c_field", "python_create",
+            "c_field",
+            "python_create",
             module=module,
             field_str=label,
             en_name=name,
@@ -88,6 +89,4 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             id_ (str): Field id.
         """
 
-        self.call(
-            'c_field', 'del_one_with_id',
-            id=id_)
+        self.call("c_field", "del_one_with_id", id=id_)

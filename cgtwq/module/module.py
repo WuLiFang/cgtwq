@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database module.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 
@@ -26,11 +25,11 @@ if TYPE_CHECKING:
 
 @six.python_2_unicode_compatible
 class Module(ControllerGetterMixin):
-    """Module(Database table) in database.    """
+    """Module(Database table) in database."""
 
-    default_field_namespace = 'task'
+    default_field_namespace = "task"
 
-    def __init__(self, name, database, module_type='task'):
+    def __init__(self, name, database, module_type="task"):
         # type: (Text, cgtwq.Database, Text) -> None
         """
         Args:
@@ -41,6 +40,7 @@ class Module(ControllerGetterMixin):
         if name:
             self.name = name
         from ..database import Database
+
         assert isinstance(database, Database)
         self.database = database
         self.module_type = module_type
@@ -58,14 +58,16 @@ class Module(ControllerGetterMixin):
         return self.select(name)
 
     def __str__(self):
-        return ('Module<database={0.database.name}, '
-                'name={0.name}, type={0.module_type}, '
-                'label={0.label}>').format(self)
+        return (
+            "Module<database={0.database.name}, "
+            "name={0.name}, type={0.module_type}, "
+            "label={0.label}>"
+        ).format(self)
 
     @property
     def token(self):
         # type: () -> Text
-        """User token.   """
+        """User token."""
         return self._token or self.database.token
 
     @token.setter
@@ -75,11 +77,11 @@ class Module(ControllerGetterMixin):
 
     def call(self, *args, **kwargs):
         # type: (Any, *Any) -> Any
-        """Call on this module.   """
+        """Call on this module."""
 
-        kwargs.setdefault('token', self.token)
-        kwargs.setdefault('module', self.name)
-        kwargs.setdefault('module_type', self.module_type)
+        kwargs.setdefault("token", self.token)
+        kwargs.setdefault("module", self.name)
+        kwargs.setdefault("module_type", self.module_type)
         return self.database.call(*args, **kwargs)
 
     def select(self, *id_list):
@@ -110,17 +112,19 @@ class Module(ControllerGetterMixin):
             Selection: Created selection.
         """
 
-        namespace = kwargs.pop('namespace', self.default_field_namespace)
-        filters = FilterList.from_arbitrary_args(
-            *args).in_namespace(namespace)
+        namespace = kwargs.pop("namespace", self.default_field_namespace)
+        filters = FilterList.from_arbitrary_args(*args).in_namespace(namespace)
 
-        resp = self.call('c_orm', 'get_with_filter',
-                         sign_array=(Field('id').in_namespace(
-                             self.name
-                             if self.module_type == "info"
-                             else self.module_type
-                         ),),
-                         sign_filter_array=filters)
+        resp = self.call(
+            "c_orm",
+            "get_with_filter",
+            sign_array=(
+                Field("id").in_namespace(
+                    self.name if self.module_type == "info" else self.module_type
+                ),
+            ),
+            sign_filter_array=filters,
+        )
         if resp:
             id_list = [i[0] for i in resp]
         else:
@@ -143,18 +147,18 @@ class Module(ControllerGetterMixin):
             tuple
         """
 
-        namespace = kwargs.pop('namespace', self.default_field_namespace)
-        filters = FilterList.from_arbitrary_args(
-            *args).in_namespace(namespace)
-        key = Field(kwargs.pop('key', filters[0][0])).in_namespace(namespace)
+        namespace = kwargs.pop("namespace", self.default_field_namespace)
+        filters = FilterList.from_arbitrary_args(*args).in_namespace(namespace)
+        key = Field(kwargs.pop("key", filters[0][0])).in_namespace(namespace)
 
         resp = self.call(
-            'c_orm', 'get_distinct_with_filter',
+            "c_orm",
+            "get_distinct_with_filter",
             distinct_sign=key,
             sign_filter_array=filters,
             order_sign_array=[key],
         )
-        assert all(len(i) == 1 for i in resp), 'Unknown response'
+        assert all(len(i) == 1 for i in resp), "Unknown response"
         return tuple(i[0] for i in resp)
 
     def create(self, kwargs=None, **data):
@@ -170,13 +174,10 @@ class Module(ControllerGetterMixin):
         """
 
         kwargs = kwargs or dict()
-        namespace = kwargs.pop('namespace', self.default_field_namespace)
+        namespace = kwargs.pop("namespace", self.default_field_namespace)
 
-        data = {
-            Field(k).in_namespace(namespace): v
-            for k, v in data.items()}
-        self.call('c_orm', 'create',
-                  sign_data_array=data)
+        data = {Field(k).in_namespace(namespace): v for k, v in data.items()}
+        self.call("c_orm", "create", sign_data_array=data)
 
     def count(self, *args, **kwargs):
         # type: (Union[cgtwq.FilterList, cgtwq.Filter], *Any) -> int
@@ -191,12 +192,10 @@ class Module(ControllerGetterMixin):
             int: Count value.
         """
 
-        namespace = kwargs.pop('namespace', self.default_field_namespace)
-        filters = FilterList.from_arbitrary_args(
-            *args).in_namespace(namespace)
+        namespace = kwargs.pop("namespace", self.default_field_namespace)
+        filters = FilterList.from_arbitrary_args(*args).in_namespace(namespace)
 
-        resp = self.call('c_orm', 'get_count_with_filter',
-                         sign_filter_array=filters)
+        resp = self.call("c_orm", "get_count_with_filter", sign_filter_array=filters)
         return int(resp)
 
     def pipelines(self):
@@ -206,26 +205,26 @@ class Module(ControllerGetterMixin):
             tuple[Pipeline]: namedtuple for ('id', 'name', 'module').
         """
 
-        return self.database.pipeline.filter(Filter('module', self.name))
+        return self.database.pipeline.filter(Filter("module", self.name))
 
     def flow(self):
-        """Workflow of the module.  """
+        """Workflow of the module."""
 
-        resp = self.call('c_flow', 'get_data')
+        resp = self.call("c_flow", "get_data")
         return tuple(FlowInfo(*i) for i in resp)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Module.field.meta` insted.',
+        version="3.0.0",
+        reason="Use `Module.field.meta` insted.",
     )
     def fields(self):
-        """Get fields in this module.  """
+        """Get fields in this module."""
 
         return self.field.meta()
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Module.field.format` insted.',
+        version="3.0.0",
+        reason="Use `Module.field.format` insted.",
     )
     def format_field(self, name):
         # type: (Text) -> Text
@@ -241,8 +240,8 @@ class Module(ControllerGetterMixin):
         return self.field.format(name)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Module.field.create` insted.',
+        version="3.0.0",
+        reason="Use `Module.field.create` insted.",
     )
     def create_field(self, sign, type_, name=None, label=None):
         # type: (Text, Text, Text, Text) -> None
@@ -257,8 +256,8 @@ class Module(ControllerGetterMixin):
         return self.field.create(sign, type_, name, label)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Module.field.delete` insted.',
+        version="3.0.0",
+        reason="Use `Module.field.delete` insted.",
     )
     def delete_field(self, id_):
         # type: (Text) -> None
@@ -271,8 +270,8 @@ class Module(ControllerGetterMixin):
         self.field.delete(id_)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Module.history.filter` insted.',
+        version="3.0.0",
+        reason="Use `Module.history.filter` insted.",
     )
     def get_history(self, filters):
         # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Tuple[cgtwq.model.HistoryInfo, ...]
@@ -286,8 +285,8 @@ class Module(ControllerGetterMixin):
         return self.history.filter(filters)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Module.history.count` insted.',
+        version="3.0.0",
+        reason="Use `Module.history.count` insted.",
     )
     def count_history(self, filters):
         # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> int
@@ -304,8 +303,8 @@ class Module(ControllerGetterMixin):
         return self.history.count(filters)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Module.history.undo` insted.',
+        version="3.0.0",
+        reason="Use `Module.history.undo` insted.",
     )
     def undo_history(self, history):
         # type: (cgtwq.model.HistoryInfo) -> None
@@ -318,8 +317,8 @@ class Module(ControllerGetterMixin):
         self.history.undo(history)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `FilterList.in_namespace` insted.',
+        version="3.0.0",
+        reason="Use `FilterList.in_namespace` insted.",
     )
     def format_filters(self, filters):
         # type: (Union[FilterList, Filter]) -> FilterList

@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Helper for cgtwq query with WuLiFang style naming schema.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 import re
@@ -27,7 +26,7 @@ CACHE = {}
 CACHE_KEY_PREFIX_DATABASE_MAP = "prefix_database_map"
 
 
-def _get_shot(path, version_pattern=r'(.+)v(\d+)'):
+def _get_shot(path, version_pattern=r"(.+)v(\d+)"):
     # type: (Text, Text) -> Text
     """The related shot for this footage.
 
@@ -50,7 +49,7 @@ def _get_shot(path, version_pattern=r'(.+)v(\d+)'):
     if not match:
         return cast.text(p.stem)
     shot = match.group(1)
-    return shot.strip('_')
+    return shot.strip("_")
 
 
 def guess_entry(select):
@@ -65,8 +64,8 @@ def guess_entry(select):
     """
 
     current_account_id = cgtwq.current_account_id()
-    data = select.get_fields('id', 'account_id')
-    data = {i[0]: i[1] and i[1].split(',') for i in data}
+    data = select.get_fields("id", "account_id")
+    data = {i[0]: i[1] and i[1].split(",") for i in data}
     entries = select.to_entries()
 
     def _by_artist(entry):
@@ -100,9 +99,9 @@ def get_database_by_file(filename):
     if CACHE_KEY_PREFIX_DATABASE_MAP not in CACHE:
         data = {}  # type: Dict[text_type, text_type]
         result_set = cgtwq.PROJECT.select_activated().get_fields(
-            'code',
-            'database',
-            'filename_prefix',
+            "code",
+            "database",
+            "filename_prefix",
         )
         # default to database code
         for i in result_set:
@@ -123,11 +122,10 @@ def get_database_by_file(filename):
         if norm_filename.startswith(k):
             return prefix_database_map[k]
 
-    raise DatabaseError(
-        'Can not determinate database from filename.', filename)
+    raise DatabaseError("Can not determinate database from filename.", filename)
 
 
-def get_entry_by_file(filename, pipeline, module='shot'):
+def get_entry_by_file(filename, pipeline, module="shot"):
     # type: (Text, Text, Text) -> cgtwq.Entry
     """Get entry from filename and pipeline
 
@@ -143,44 +141,43 @@ def get_entry_by_file(filename, pipeline, module='shot'):
     shot = _get_shot(filename)
     database = cgtwq.Database(get_database_by_file(filename))
     select = database.module(module).filter(
-        (cgtwq.Field('pipeline') == pipeline)
-        & (cgtwq.Field('shot.shot') == shot))
+        (cgtwq.Field("pipeline") == pipeline) & (cgtwq.Field("shot.shot") == shot)
+    )
     try:
         entry = select.to_entry()
     except ValueError:
-        LOGGER.warning('Duplicated task: %s', shot)
+        LOGGER.warning("Duplicated task: %s", shot)
         entry = guess_entry(select)
 
     return entry
 
 
-@deprecated(
-    version="3.0.0",
-    reason="Use other functions instead."
-)
+@deprecated(version="3.0.0", reason="Use other functions instead.")
 class CGTWQHelper(object):  # TODO: remove this at next major version.
     """DEPRECATED: Helper class for cgtwq query.
 
     Attributes:
         prefix_filters: Function list that filter project code to prefix.
     """
+
     cache = {}
     prefix_filters = []  # type: List[Callable[[Text], Text]]
 
     @classmethod
     def project_data(cls):
         # type: () -> Any
-        """Cached project data.  """
+        """Cached project data."""
 
-        if 'project_data' not in cls.cache:
-            cls.cache['project_data'] = cgtwq.PROJECT.select_activated(
-            ).get_fields('code', 'database')
-        return cls.cache['project_data']
+        if "project_data" not in cls.cache:
+            cls.cache["project_data"] = cgtwq.PROJECT.select_activated().get_fields(
+                "code", "database"
+            )
+        return cls.cache["project_data"]
 
     @classmethod
     def get_prefix(cls, code):
         # type: (Text) -> Text
-        """Use filters to get prefix from project code.  """
+        """Use filters to get prefix from project code."""
 
         ret = code
         for i in cls.prefix_filters:
@@ -208,18 +205,17 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
             prefix = cls.get_prefix(code)
             prefix_database_map[prefix] = database
 
-        prefix = text_type(filename).split('_')[0]
+        prefix = text_type(filename).split("_")[0]
         if prefix in prefix_database_map:
             return prefix_database_map[prefix]
         for k in prefix_database_map:
             if (text_type(filename)).startswith(k):
                 return prefix_database_map[k]
 
-        raise DatabaseError(
-            'Can not determinate database from filename.', filename)
+        raise DatabaseError("Can not determinate database from filename.", filename)
 
     @classmethod
-    def get_entry(cls, filename, pipeline, module='shot'):
+    def get_entry(cls, filename, pipeline, module="shot"):
         # type: (Text, Text, Text) -> cgtwq.Entry
         """Get entry from filename and pipeline
 
@@ -239,12 +235,12 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
         shot = _get_shot(filename)
         database = cgtwq.Database(cls.get_database(filename))
         select = database.module(module).filter(
-            (cgtwq.Field('pipeline') == pipeline)
-            & (cgtwq.Field('shot.shot') == shot))
+            (cgtwq.Field("pipeline") == pipeline) & (cgtwq.Field("shot.shot") == shot)
+        )
         try:
             entry = select.to_entry()
         except ValueError:
-            LOGGER.warning('Duplicated task: %s', shot)
+            LOGGER.warning("Duplicated task: %s", shot)
             entry = CGTWQHelper.guess_entry(select)
 
         cls.cache[key] = entry

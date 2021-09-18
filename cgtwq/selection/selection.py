@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database module selection.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import six
 from deprecated import deprecated
@@ -28,11 +27,12 @@ if TYPE_CHECKING:
 
 
 class Selection(tuple):
-    """Selection with all feature.  
+    """Selection with all feature.
 
     Raises:
         EmptySelection: when selection size is 0.
     """
+
     # pylint: disable=too-many-instance-attributes
     _token = None
 
@@ -55,6 +55,7 @@ class Selection(tuple):
 
         super(Selection, self).__init__()
         from ..module import Module
+
         assert isinstance(module, Module)
         self.module = module
 
@@ -69,6 +70,7 @@ class Selection(tuple):
         self.folder = SelectionFolder(self)
 
     if TYPE_CHECKING:
+
         @overload
         def __getitem__(self, name):
             # type: (int) -> Text
@@ -93,7 +95,7 @@ class Selection(tuple):
     @property
     def token(self):
         # type: () -> Text
-        """User token.   """
+        """User token."""
 
         return self._token or self.module.token
 
@@ -104,11 +106,11 @@ class Selection(tuple):
 
     def call(self, *args, **kwargs):
         # type: (Any, *Any) -> Any
-        """Call on this selection.   """
+        """Call on this selection."""
 
-        kwargs.setdefault('token', self.token)
-        kwargs.setdefault('id_array', self)
-        kwargs.setdefault('task_id_array', self)
+        kwargs.setdefault("token", self.token)
+        kwargs.setdefault("id_array", self)
+        kwargs.setdefault("task_id_array", self)
         return self.module.call(*args, **kwargs)
 
     def filter(self, *filters):
@@ -122,7 +124,7 @@ class Selection(tuple):
             Selection: Filtered selection.
         """
 
-        return self.module.filter(Field('id').in_(self), *filters)
+        return self.module.filter(Field("id").in_(self), *filters)
 
     def count(self, *filters):
         # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> int
@@ -135,7 +137,7 @@ class Selection(tuple):
             int: Count value.
         """
 
-        return self.module.count(Field('id').in_(self), *filters)
+        return self.module.count(Field("id").in_(self), *filters)
 
     def distinct(self, *filters, **kwargs):
         # type: (Union[cgtwq.Filter,cgtwq.FilterList], *Any) -> Tuple[Any, ...]
@@ -152,7 +154,7 @@ class Selection(tuple):
             tuple
         """
 
-        return self.module.distinct(Field('id').in_(self), *filters, **kwargs)
+        return self.module.distinct(Field("id").in_(self), *filters, **kwargs)
 
     def get_fields(self, *fields, **kwargs):
         # type: (Text, *Any) -> ResultSet
@@ -169,13 +171,15 @@ class Selection(tuple):
             ResultSet: Optimized tuple object contains fields data.
         """
 
-        namespace = kwargs.pop(
-            'namespace', self.module.default_field_namespace)
+        namespace = kwargs.pop("namespace", self.module.default_field_namespace)
 
         server_fields = [Field(i).in_namespace(namespace) for i in fields]
-        resp = self.call("c_orm", "get_in_id",
-                         sign_array=server_fields,
-                         order_sign_array=server_fields)
+        resp = self.call(
+            "c_orm",
+            "get_in_id",
+            sign_array=server_fields,
+            order_sign_array=server_fields,
+        )
         return ResultSet(server_fields, resp, self.module)
 
     def set_fields(self, kwargs=None, **data):
@@ -191,17 +195,13 @@ class Selection(tuple):
         """
 
         kwargs = kwargs or dict()
-        namespace = kwargs.pop(
-            'namespace', self.module.default_field_namespace)
+        namespace = kwargs.pop("namespace", self.module.default_field_namespace)
 
-        data = {
-            Field(k).in_namespace(namespace): v
-            for k, v in data.items()}
-        self.call("c_orm", "set_in_id",
-                  sign_data_array=data)
+        data = {Field(k).in_namespace(namespace): v for k, v in data.items()}
+        self.call("c_orm", "set_in_id", sign_data_array=data)
 
     def delete(self):
-        """Delete the selected item on database.  """
+        """Delete the selected item on database."""
 
         self.call("c_orm", "del_in_id")
 
@@ -221,10 +221,12 @@ class Selection(tuple):
         select = self
 
         resp = select.call(
-            "c_folder", "get_replace_path_in_sign",
+            "c_folder",
+            "get_replace_path_in_sign",
             sign_array=sign_list,
             task_id_array=self,
-            os=_OS)
+            os=_OS,
+        )
         assert isinstance(resp, dict), type(resp)
         return resp
 
@@ -240,9 +242,10 @@ class Selection(tuple):
         """
 
         if len(self) != 1:
-            raise ValueError('Need exactly one selected item.')
+            raise ValueError("Need exactly one selected item.")
 
         from .entry import Entry
+
         return Entry(self.module, self[0])
 
     def to_entries(self):
@@ -253,6 +256,7 @@ class Selection(tuple):
         """
 
         from .entry import Entry
+
         return tuple(Entry(self.module, i) for i in self)
 
     @classmethod
@@ -269,16 +273,14 @@ class Selection(tuple):
         """
 
         from ..database import Database
-        return Database(
-            kwargs['database']
-        ).module(
-            kwargs['module'], module_type=kwargs['module_type']
-        ).select(*kwargs['id_list'])
 
-    @deprecated(
-        version='3.0.0',
-        reason='Use `Selection.flow.submit` insted.'
-    )
+        return (
+            Database(kwargs["database"])
+            .module(kwargs["module"], module_type=kwargs["module_type"])
+            .select(*kwargs["id_list"])
+        )
+
+    @deprecated(version="3.0.0", reason="Use `Selection.flow.submit` insted.")
     def submit(self, pathnames=(), filenames=(), note=""):
         # type: (Tuple[Text, ...], Tuple[Text, ...], Text) -> None
         """Submit file to task, then change status to `Check`.
@@ -291,11 +293,8 @@ class Selection(tuple):
 
         self.flow.submit(pathnames + filenames, message=note)
 
-    @deprecated(
-        version='3.0.0',
-        reason='Use `Selection.image.set` insted.'
-    )
-    def set_image(self, path, field='image'):
+    @deprecated(version="3.0.0", reason="Use `Selection.image.set` insted.")
+    def set_image(self, path, field="image"):
         # type: (Text, Text) -> cgtwq.model.ImageInfo
         """Set image for the field.
 
@@ -309,10 +308,10 @@ class Selection(tuple):
         return self.image.set(path, field)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Selection.image.get` insted.',
+        version="3.0.0",
+        reason="Use `Selection.image.get` insted.",
     )
-    def get_image(self, field='image'):
+    def get_image(self, field="image"):
         # type: (Text) -> Tuple[cgtwq.model.ImageInfo, ...]
         """Get imageinfo used on the field.
 
@@ -326,8 +325,8 @@ class Selection(tuple):
         return self.image.get(field)
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Selection.flow.has_field_permission` Instead',
+        version="3.0.0",
+        reason="Use `Selection.flow.has_field_permission` Instead",
     )
     def has_permission_on_status(self, field):
         # type: (Text) -> bool

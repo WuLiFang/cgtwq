@@ -1,8 +1,7 @@
 # -*- coding=UTF-8 -*-
 """Test `cgtwq.helper.wlf` module.  """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import pytest
 
@@ -16,8 +15,7 @@ def test_get_database():
     #     'MT_example.jpg') == 'proj_mt'
     # assert cgtwq.helper.wlf.get_database_by_file(
     #     'MT2_example.jpg') == 'proj_mt2'
-    assert cgtwq.helper.wlf.get_database_by_file(
-        'JSL_example.jpg') == 'proj_slj'
+    assert cgtwq.helper.wlf.get_database_by_file("JSL_example.jpg") == "proj_slj"
 
     with pytest.raises(cgtwq.helper.wlf.DatabaseError):
-        cgtwq.helper.wlf.CGTWQHelper.get_database('example.jpg')
+        cgtwq.helper.wlf.CGTWQHelper.get_database("example.jpg")

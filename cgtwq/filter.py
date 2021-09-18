@@ -1,8 +1,7 @@
 # -*- coding=UTF-8 -*-
 """Filter used on cgtw server.  """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import six
 from six.moves import reduce
@@ -20,12 +19,12 @@ if TYPE_CHECKING:
 
 
 class Filter(list):
-    """CGTeamWork style filter.  """
+    """CGTeamWork style filter."""
 
     def __init__(self, key, value, operator=None):
         # type: (Text, Any, Text) -> None
         if operator is None:
-            operator = 'in' if isinstance(value, (list, tuple)) else '='
+            operator = "in" if isinstance(value, (list, tuple)) else "="
         super(Filter, self).__init__((key, operator, value))
 
     def __and__(self, other):
@@ -48,8 +47,7 @@ class Filter(list):
         """
 
         key, operator, value = self
-        return self.from_list(
-            [Field(key).in_namespace(namespace), operator, value])
+        return self.from_list([Field(key).in_namespace(namespace), operator, value])
 
     @classmethod
     def from_list(cls, obj):
@@ -67,12 +65,12 @@ class Filter(list):
         """
 
         if not len(obj) == 3:
-            raise ValueError('Can not convert to filter.', obj)
+            raise ValueError("Can not convert to filter.", obj)
         return cls(obj[0], obj[2], obj[1])
 
 
 class FilterList(list):
-    """CGTeamWork style filter list.  """
+    """CGTeamWork style filter list."""
 
     def __init__(self, list_):
         # type: (Union[Filter, Iterable[Any]]) -> None
@@ -81,7 +79,7 @@ class FilterList(list):
         elif isinstance(list_, Iterable):
             list_ = list(list_)
             if not all(isinstance(i, (Filter, str, six.text_type)) for i in list_):
-                raise ValueError('Malformed list', list_)
+                raise ValueError("Malformed list", list_)
         super(FilterList, self).__init__(list_)
 
     def _combine(self, other, operator):
@@ -93,11 +91,11 @@ class FilterList(list):
 
     def __and__(self, other):
         # type: (Union[FilterList, Filter]) -> FilterList
-        return self._combine(other, 'and')
+        return self._combine(other, "and")
 
     def __or__(self, other):
         # type: (Union[FilterList, Filter]) -> FilterList
-        return self._combine(other, 'or')
+        return self._combine(other, "or")
 
     def in_namespace(self, namespace):
         # type: (Text) -> FilterList
@@ -110,9 +108,9 @@ class FilterList(list):
             FilterList
         """
 
-        return FilterList(i.in_namespace(namespace)
-                          if isinstance(i, Filter) else i
-                          for i in self)
+        return FilterList(
+            i.in_namespace(namespace) if isinstance(i, Filter) else i for i in self
+        )
 
     @classmethod
     def from_arbitrary_args(cls, *filters):
@@ -123,15 +121,17 @@ class FilterList(list):
             FilterList
         """
 
-        ret = [i if isinstance(i, (Filter, FilterList)) else Filter.from_list(i)
-               for i in filters]
+        ret = [
+            i if isinstance(i, (Filter, FilterList)) else Filter.from_list(i)
+            for i in filters
+        ]
         if ret:
             ret = reduce(lambda a, b: a & b, ret)  # type: ignore
         return cls(ret)
 
 
 class Field(six.text_type):
-    """Data base field name for filter.  """
+    """Data base field name for filter."""
 
     def __hash__(self):
         return six.text_type(self).__hash__()
@@ -146,32 +146,32 @@ class Field(six.text_type):
 
     def __eq__(self, value):
         # type: (Any) -> Filter
-        return Filter(self, value, '=')
+        return Filter(self, value, "=")
 
     def __gt__(self, value):
         # type: (Any) -> Filter
-        return Filter(self, value, '>')
+        return Filter(self, value, ">")
 
     def __lt__(self, value):
         # type: (Any) -> Filter
-        return Filter(self, value, '<')
+        return Filter(self, value, "<")
 
     def in_(self, value):
         # type: (Any) -> Filter
-        """Represents matched data in value list.  """
+        """Represents matched data in value list."""
         if isinstance(value, (str, six.text_type)):
             value = [value]
-        return Filter(self, value, 'in')
+        return Filter(self, value, "in")
 
     def has(self, value):
         # type: (Any) -> Filter
-        """Represents data has value in it.  """
-        return Filter(self, value, 'has')
+        """Represents data has value in it."""
+        return Filter(self, value, "has")
 
     def contains(self, value):
         # type: (Any) -> Filter
-        """Represents value in data item list.  """
-        return Filter(self, value, 'concat')
+        """Represents value in data item list."""
+        return Filter(self, value, "concat")
 
     def in_namespace(self, namespace):
         # type: (Text) -> Field
@@ -185,6 +185,6 @@ class Field(six.text_type):
         """
 
         key = self
-        if not ('.' in key or '#' in key):
-            key = '{}.{}'.format(namespace, key)
+        if not ("." in key or "#" in key):
+            key = "{}.{}".format(namespace, key)
         return Field(key)

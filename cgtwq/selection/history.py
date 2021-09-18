@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database module selection.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from ..filter import Filter
 from .core import SelectionAttachment
@@ -15,11 +14,11 @@ if TYPE_CHECKING:
 
 
 class SelectionHistory(SelectionAttachment):
-    """Get history of the selection.  """
+    """Get history of the selection."""
 
     def _combine_filters(self, filters):
         # type: (Union[Filter, cgtwq.FilterList, None]) -> Union[cgtwq.FilterList, Filter]
-        _filters = Filter('#task_id', self.select)
+        _filters = Filter("#task_id", self.select)
         if filters:
             _filters &= filters
         return _filters
@@ -37,9 +36,12 @@ class SelectionHistory(SelectionAttachment):
             tuple[HistoryInfo]: History records.
         """
 
-        return tuple(sorted(
-            self.select.module.history.filter(self._combine_filters(filters)),
-            key=lambda i: i.time))
+        return tuple(
+            sorted(
+                self.select.module.history.filter(self._combine_filters(filters)),
+                key=lambda i: i.time,
+            )
+        )
 
     def count(self, filters=None):
         # type: (Union[Filter, cgtwq.FilterList, None]) -> int
@@ -53,8 +55,7 @@ class SelectionHistory(SelectionAttachment):
             int: Records count.
         """
 
-        return self.select.module.history.count(
-            self._combine_filters(filters))
+        return self.select.module.history.count(self._combine_filters(filters))
 
     def undo(self, history):
         # type: (cgtwq.model.HistoryInfo) -> None

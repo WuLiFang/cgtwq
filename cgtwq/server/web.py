@@ -1,8 +1,7 @@
 # -*- coding=UTF-8 -*-
 """Use cgtw web api.  """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import mimetypes
 import os
@@ -31,15 +30,19 @@ def upload_image(filename, folder, token):
 
     filename = cast.text(filename)
     basename = os.path.basename(filename)
-    data = post('web_upload_file',
-                {'folder': folder,
-                 'type': 'project',
-                 'method': 'convert_image',
-                 'filename': basename},
-                token=token,
-                files={'file':
-                       (basename, open(filename, 'rb'),
-                        mimetypes.guess_type(basename)[0])})
+    data = post(
+        "web_upload_file",
+        {
+            "folder": folder,
+            "type": "project",
+            "method": "convert_image",
+            "filename": basename,
+        },
+        token=token,
+        files={
+            "file": (basename, open(filename, "rb"), mimetypes.guess_type(basename)[0])
+        },
+    )
     assert isinstance(data, dict), type(data)
-    data['path'] = filename
+    data["path"] = filename
     return ImageInfo(**data)

@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database module selection.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from ..account import get_account_id
 from ..message import Message
@@ -13,8 +12,9 @@ if TYPE_CHECKING:
     from typing import Text, Tuple, Union, Any
     import cgtwq.model
 
+
 class SelectionNotify(SelectionAttachment):
-    """Note or message on the Selection.  """
+    """Note or message on the Selection."""
 
     def get(self):
         """Get notes on first item in the selection.
@@ -24,9 +24,9 @@ class SelectionNotify(SelectionAttachment):
         """
 
         select = self.select
-        resp = select.call("c_note", "get_with_task_id",
-                           task_id=select[0],
-                           field_array=NoteInfo.fields)
+        resp = select.call(
+            "c_note", "get_with_task_id", task_id=select[0], field_array=NoteInfo.fields
+        )
         return tuple(NoteInfo(*i) for i in resp)
 
     def add(self, text, account=None, images=()):
@@ -48,13 +48,17 @@ class SelectionNotify(SelectionAttachment):
         message.images += images
 
         select = self.select
-        select.call("c_note", "create",
-                    field_data_array={
-                        "module": select.module.name,
-                        "module_type": select.module.module_type,
-                        "#task_id": ",".join(select),
-                        "text": message.dumps(),
-                        "#from_account_id": account})
+        select.call(
+            "c_note",
+            "create",
+            field_data_array={
+                "module": select.module.name,
+                "module_type": select.module.module_type,
+                "#task_id": ",".join(select),
+                "text": message.dumps(),
+                "#from_account_id": account,
+            },
+        )
 
     def send(self, title, content, *to, **kwargs):
         # type: (Text, Text, Text, *Any) -> None
@@ -70,23 +74,25 @@ class SelectionNotify(SelectionAttachment):
         # pylint: disable=invalid-name
 
         select = self.select
-        from_ = kwargs.get('from_')
+        from_ = kwargs.get("from_")
 
         return select.call(
-            'c_msg', 'send_task',
+            "c_msg",
+            "send_task",
             task_id=select[0],
             account_id_array=to,
             title=title,
             content=content,
-            from_account_id=from_
+            from_account_id=from_,
         )
 
     def delete(self, *note_id_list):
         # type: (Text) -> None
-        """Delete note on selection.  """
+        """Delete note on selection."""
 
         self.call(
-            'v_note', 'del_in_id',
+            "v_note",
+            "del_in_id",
             id_array=note_id_list,
             task_id_array=self.select,
             show_sign_array=[],

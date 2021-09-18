@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database module selection.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from six import text_type
 
@@ -16,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class Entry(Selection):
-    """A selection that only has one item.  """
+    """A selection that only has one item."""
 
     def __init__(self, module, id_):
         # type: (cgtwq.Module, Text) -> None
@@ -59,15 +58,18 @@ class Entry(Selection):
         """
 
         pipelines = self.module.database.pipeline.filter(*filters)
-        resp = self.call('c_note', 'get_task_id_array',
-                         task_id=self[0],
-                         pipeline_id_array=[i.id for i in pipelines])
+        resp = self.call(
+            "c_note",
+            "get_task_id_array",
+            task_id=self[0],
+            pipeline_id_array=[i.id for i in pipelines],
+        )
         return self.module.select(*resp)
 
     # Deprecated methods.
     # TODO: Remove at next major version.
 
-    def _get_image(self, field='image'):
+    def _get_image(self, field="image"):
         # type: (Text) -> ImageInfo
         """Get imageinfo used on the field.
 
@@ -86,4 +88,4 @@ class Entry(Selection):
             assert isinstance(ret, ImageInfo), type(ret)
             return ret
         except IndexError:
-            raise ValueError('No image in this field.', field)
+            raise ValueError("No image in this field.", field)

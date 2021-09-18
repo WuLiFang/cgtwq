@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database module.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from deprecated import deprecated
 
@@ -12,8 +11,9 @@ TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Text, Tuple
 
+
 class ModuleField(ModuleAttachment):
-    """Field feature for module.  """
+    """Field feature for module."""
 
     def meta(self):
         # type: () -> Tuple[FieldMeta, ...]
@@ -24,7 +24,8 @@ class ModuleField(ModuleAttachment):
         """
 
         resp = self.call(
-            'c_field', 'get_join_module_data',
+            "c_field",
+            "get_join_module_data",
             field_array=FieldMeta.fields,
             order_field_array=["module", "sort_id"],
         )
@@ -42,11 +43,10 @@ class ModuleField(ModuleAttachment):
         """
 
         module = self.module
-        if '.' not in sign:
-            module_name = 'task' if module.module_type == 'task' else module.name
-            sign = '{}.{}'.format(module_name, sign)
-        module.database.create_field(
-            sign=sign, type_=type_, name=name, label=label)
+        if "." not in sign:
+            module_name = "task" if module.module_type == "task" else module.name
+            sign = "{}.{}".format(module_name, sign)
+        module.database.create_field(sign=sign, type_=type_, name=name, label=label)
 
     def delete(self, id_):
         # type: (Text) -> None
@@ -64,8 +64,8 @@ class ModuleField(ModuleAttachment):
         )
 
     @deprecated(
-        version='3.0.0',
-        reason='Use `Field.in_namespace` instead.',
+        version="3.0.0",
+        reason="Use `Field.in_namespace` instead.",
     )
     def format(self, name):
         # type: (Text) -> Text
@@ -79,7 +79,6 @@ class ModuleField(ModuleAttachment):
         """
 
         module = self.module
-        if ('.' in name
-                or '#' in name):
+        if "." in name or "#" in name:
             return name
-        return '{}.{}'.format(module.default_field_namespace, name)
+        return "{}.{}".format(module.default_field_namespace, name)

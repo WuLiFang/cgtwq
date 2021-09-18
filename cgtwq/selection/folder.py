@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database module selection.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from .core import _OS, SelectionAttachment
 
@@ -11,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class SelectionFolder(SelectionAttachment):
-    """Folder feature for selection.  """
+    """Folder feature for selection."""
 
     def from_sign(self, *sign_list):
         # type: (Text) -> Dict[Text,List[Any]]
@@ -24,9 +23,8 @@ class SelectionFolder(SelectionAttachment):
         select = self.select
 
         resp = select.call(
-            "c_folder", "get_replace_path_in_sign",
-            sign_array=sign_list,
-            os=_OS)
+            "c_folder", "get_replace_path_in_sign", sign_array=sign_list, os=_OS
+        )
 
         assert isinstance(resp, dict), type(resp)
         return resp
@@ -38,6 +36,4 @@ class SelectionFolder(SelectionAttachment):
             list[str]: Folder path list.
         """
 
-        return self.call(
-            'c_folder', 'get_create_folder_data',
-            os=_OS)
+        return self.call("c_folder", "get_create_folder_data", os=_OS)

@@ -1,8 +1,7 @@
 # -*- coding=UTF-8 -*-
 """Client attachment for plugin related features.  """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 from uuid import UUID
@@ -49,7 +48,7 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
 
         if sys.argv and _is_uuid(sys.argv[-1]):
             return sys.argv[-1]
-        return ''
+        return ""
 
     def data(self, process_id=None):
         # type: (Text) -> PluginData
@@ -64,14 +63,12 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
 
         process_id = process_id or self.process_id()
         client = self.client
-        data = client.call_main_widget(
-            "get_plugin_data",
-            plugin_uuid=process_id)
+        data = client.call_main_widget("get_plugin_data", plugin_uuid=process_id)
         if not data:
-            msg = 'No matched plugin process'
+            msg = "No matched plugin process"
             if process_id:
-                msg += ': {}'.format(process_id)
-            msg += '.'
+                msg += ": {}".format(process_id)
+            msg += "."
             raise IDError(msg)
         if data is True:
             data = {}
@@ -96,10 +93,9 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
 
         process_id = process_id or self.process_id()
         client = self.client
-        client.call_main_widget("exec_plugin_result",
-                                uuid=process_id,
-                                result=result,
-                                type='send')
+        client.call_main_widget(
+            "exec_plugin_result", uuid=process_id, result=result, type="send"
+        )
 
     def metadata(self):
         """Get plugin metadata for current plugin process.
@@ -112,13 +108,13 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
         """
 
         if not self.uuid():
-            raise IDError('No plug-in uuid found for current python process.')
+            raise IDError("No plug-in uuid found for current python process.")
 
         return PluginMeta(self.data().plugin_id)
 
     @deprecated(
-        version='3.0.0',
-        reason='Renamed to `process_id`',
+        version="3.0.0",
+        reason="Renamed to `process_id`",
     )
     def uuid(self):
         return self.process_id()

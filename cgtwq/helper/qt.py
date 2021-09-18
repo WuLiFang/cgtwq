@@ -1,13 +1,19 @@
 # -*- coding=UTF-8 -*-
 """Helper for cgtwq with qt.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import sys
 
 import cgtwq
-from Qt.QtWidgets import (QApplication, QDialog, QLabel,  # type: ignore
-                          QLineEdit, QMessageBox, QPushButton, QVBoxLayout)
+from Qt.QtWidgets import (
+    QApplication,
+    QDialog,
+    QLabel,  # type: ignore
+    QLineEdit,
+    QMessageBox,
+    QPushButton,
+    QVBoxLayout,
+)
 from six import text_type
 
 TYPE_CHECKING = False
@@ -18,7 +24,7 @@ if TYPE_CHECKING:
 
 def application():
     # type: () -> QApplication
-    """Get QApplication instance, create one if needed.  """
+    """Get QApplication instance, create one if needed."""
 
     app = QApplication.instance()
 
@@ -45,30 +51,30 @@ def ask_login(parent=None):
     while True:
         dialog.exec_()
         if dialog.result() == QDialog.Rejected:
-            raise ValueError('Rejected')
+            raise ValueError("Rejected")
         account, password = account_input.text(), password_input.text()
         try:
             return cgtwq.login(account, password)
         except (ValueError, cgtwq.AccountNotFoundError, cgtwq.PasswordError) as ex:
             msg = text_type(ex)
-            QMessageBox.critical(parent, '登录失败', msg)
+            QMessageBox.critical(parent, "登录失败", msg)
 
 
 def _setup_login_dialog(dialog, account_input, password_input):
     # type: (Any, Any, Any) -> None
-    dialog.setWindowTitle('登录CGTeamWork')
-    account_input.setPlaceholderText('CGTeamwork账号名')
-    password_input.setPlaceholderText('密码')
+    dialog.setWindowTitle("登录CGTeamWork")
+    account_input.setPlaceholderText("CGTeamwork账号名")
+    password_input.setPlaceholderText("密码")
     password_input.setEchoMode(QLineEdit.Password)
 
-    ok_button = QPushButton('登录')
+    ok_button = QPushButton("登录")
     ok_button.setDefault(True)
     ok_button.clicked.connect(dialog.accept)
 
     layout = QVBoxLayout(dialog)
-    layout.addWidget(QLabel('帐号'))
+    layout.addWidget(QLabel("帐号"))
     layout.addWidget(account_input)
-    layout.addWidget(QLabel('密码'))
+    layout.addWidget(QLabel("密码"))
     layout.addWidget(password_input)
     layout.addWidget(ok_button)
     dialog.setLayout(layout)

@@ -1,7 +1,6 @@
 # -*- coding=UTF-8 -*-
 """Database on cgtw server.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from . import core
 from ..core import ControllerGetterMixin
@@ -13,7 +12,8 @@ if TYPE_CHECKING:
 
 
 class DatabaseSoftware(core.DatabaseAttachment, ControllerGetterMixin):
-    """Software feature for database.  """
+    """Software feature for database."""
+
     # pylint: disable=too-few-public-methods
 
     def get_path(self, name):

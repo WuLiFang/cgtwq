@@ -31,3 +31,13 @@ build: .venv/.make.sentinel
 		python ./setup.py build bdist_wheel
 	# https://github.com/pypa/setuptools/issues/1871
 	rm -rf build/lib
+
+lint:
+	. ./scripts/activate-venv.sh &&\
+		PYTHONPATH=`python -c 'import site; print(";".join(site.getsitepackages()))'` npx pyright --pythonversion 3.8 ./auto_derby/
+	. ./scripts/activate-venv.sh &&\
+		python -m black -t py38 --check --diff .
+
+format:
+	. ./scripts/activate-venv.sh &&\
+		python -m black -t py38 . 

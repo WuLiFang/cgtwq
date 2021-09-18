@@ -23,9 +23,8 @@ def get_status(token=None):
         tuple[StatusInfo]: Status data.
     """
 
-    token = token or cast.text(CONFIG['DEFAULT_TOKEN'])
-    resp = http.call('c_status', 'get_all', token=token,
-                     field_array=StatusInfo._fields)
+    token = token or cast.text(CONFIG["DEFAULT_TOKEN"])
+    resp = http.call("c_status", "get_all", token=token, field_array=StatusInfo._fields)
     return tuple(StatusInfo(*i) for i in resp)
 
 
@@ -40,6 +39,6 @@ def get_software_types(token=None):
         list[str]
     """
 
-    token = token or cast.text(CONFIG['DEFAULT_TOKEN'])
-    resp = http.call('c_status', 'get_software_type', token=token)
+    token = token or cast.text(CONFIG["DEFAULT_TOKEN"])
+    resp = http.call("c_status", "get_software_type", token=token)
     return resp

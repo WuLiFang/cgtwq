@@ -1,10 +1,9 @@
 # -*- coding=UTF-8 -*-
 """Create connection with cgtw server.  """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from . import meta
 from .http import call
 
 
-__all__ = ['meta', 'call']
+__all__ = ["meta", "call"]
