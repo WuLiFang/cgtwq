@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import cast_unknown as cast
 
 from . import core, server
-from .exceptions import AccountNotFoundError, PasswordError
+from .exceptions import AuthenticateError
 from .model import AccountInfo
 
 TYPE_CHECKING = False
@@ -71,12 +71,13 @@ def login(account, password):
     except ValueError as ex:
         try:
             raise {
-                "token::login, get account data error": AccountNotFoundError(account),
-                "token::login, 密码错误,请检查": PasswordError,
-            }[ex.args[0]]
+                "token::login, get account data error": AuthenticateError,
+                "token::login, 密码错误,请检查": AuthenticateError,
+                "token::login, 账号或密码错误, 请检查": AuthenticateError,
+            }[cast.text(ex.args[0])]
         except (KeyError, IndexError):
             pass
-        raise
+        raise ex
     assert isinstance(resp, dict), type(resp)
     # Correct server-side typo.
     resp["password_complexity"] = (

@@ -6,6 +6,7 @@ from ..core import ControllerGetterMixin
 from ..filter import FilterList
 from ..model import HistoryInfo
 from .core import ModuleAttachment
+from .. import compat
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -16,6 +17,52 @@ if TYPE_CHECKING:
 class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
     """History feature for module."""
 
+    def _filter_v5_2(self, *args):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Tuple[HistoryInfo, ...]
+
+        filters = FilterList.from_arbitrary_args(*args)
+        fields = (
+            "#id",
+            "#task_id",
+            "#account_id",
+            "step",
+            "status",
+            "file",
+            "text",
+            "create_by",
+            "time",
+        )
+        resp = self.call(
+            "c_history",
+            "get_with_filter",
+            field_array=fields,
+            filter_array=filters,
+        )
+        return tuple(HistoryInfo(*i) for i in resp)
+
+    def _filter_v6_1(self, *args):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Tuple[HistoryInfo, ...]
+
+        filters = FilterList.from_arbitrary_args(*args)
+        fields = (
+            "#id",
+            "#link_id",
+            "account_id",
+            "step",
+            "status",
+            "file",
+            "text",
+            "create_by",
+            "time",
+        )
+        resp = self.call(
+            "c_history",
+            "get_with_filter",
+            field_array=fields,
+            filter_array=filters,
+        )
+        return tuple(HistoryInfo(*i) for i in resp)
+
     def filter(self, *args):
         # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Tuple[HistoryInfo, ...]
         """Filter history record from the module.
@@ -25,8 +72,9 @@ class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
             tuple[HistoryInfo]: History records.
         """
 
-        filters = FilterList.from_arbitrary_args(*args)
-        return self._filter_model("c_history", "get_with_filter", HistoryInfo, filters)
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._filter_v5_2(*args)
+        return self._filter_v6_1(*args)
 
     def count(self, *args):
         # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> int
@@ -46,13 +94,8 @@ class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
         )
         return int(resp)
 
-    def undo(self, history):
+    def _undo_v5_2(self, history):
         # type: (HistoryInfo) -> None
-        """Undo a history.
-
-        Args:
-            history (HistoryInfo): History information.
-        """
         assert isinstance(history, HistoryInfo), type(history)
 
         self.call(
@@ -62,3 +105,28 @@ class ModuleHistory(ModuleAttachment, ControllerGetterMixin):
             task_id=history.task_id,
             show_field_sign_arr=[],
         )
+
+    def _undo_v6_1(self, history):
+        # type: (HistoryInfo) -> None
+        assert isinstance(history, HistoryInfo), type(history)
+
+        self.call(
+            "v_history",
+            "undo",
+            id=history.id,
+            main_id=history.task_id,
+            show_sign_arr=[],
+        )
+
+    def undo(self, history):
+        # type: (HistoryInfo) -> None
+        """Undo a history.
+
+        Args:
+            history (HistoryInfo): History information.
+        """
+        assert isinstance(history, HistoryInfo), type(history)
+
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._undo_v5_2(history)
+        return self._undo_v6_1(history)

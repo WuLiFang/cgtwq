@@ -231,6 +231,9 @@ class PluginMetaArguments(object):
 
     def __delitem__(self, key):
         # type: (Text) -> None
-        data = self.data
-        del data[key]
-        self.plugin.set_fields(**{self.server_field: data})
+        payload = {k: dict(v._asdict()) for k, v in self.data.items() if k != key}
+
+        for v in payload.values():
+            v["value"] = json.dumps(v["value"])
+
+        self.plugin.set_fields(**{self.server_field: payload})

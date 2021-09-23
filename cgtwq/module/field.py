@@ -6,6 +6,7 @@ from deprecated import deprecated
 
 from ..model import FieldMeta
 from .core import ModuleAttachment
+from .. import compat
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -48,6 +49,22 @@ class ModuleField(ModuleAttachment):
             sign = "{}.{}".format(module_name, sign)
         module.database.create_field(sign=sign, type_=type_, name=name, label=label)
 
+    def _delete_v5_2(self, id_):
+        # type: (Text) -> None
+        self.call(
+            "v_main_window",
+            "del_field_with_id",
+            field_id=id_,
+        )
+
+    def _delete_v6_1(self, id_):
+        # type: (Text) -> None
+        self.call(
+            "v_field",
+            "delete",
+            id=id_,
+        )
+
     def delete(self, id_):
         # type: (Text) -> None
         r"""Delete field in the module.
@@ -55,13 +72,9 @@ class ModuleField(ModuleAttachment):
         Args:
             id_ (str): Field id.
         """
-
-        # Old api using: 'c_field', 'del_one_with_id',
-        self.call(
-            "v_main_window",
-            "del_field_with_id",
-            field_id=id_,
-        )
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._delete_v5_2(id_)
+        return self._delete_v6_1(id_)
 
     @deprecated(
         version="3.0.0",

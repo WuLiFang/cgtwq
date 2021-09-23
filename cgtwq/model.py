@@ -17,7 +17,7 @@ class PipelineInfo(
 ):
     """Pipeline information."""
 
-    fields = ("#id", "entity_name", "module", "module_type", "description")
+    fields = ("#id", "entity", "module", "module_type", "description")
 
 
 class NoteInfo(
@@ -89,10 +89,20 @@ class HistoryInfo(
         return super(HistoryInfo, cls).__new__(cls, **data)
 
 
-class FileBoxMeta(namedtuple("FileBoxInfo", ("id", "pipeline_id", "title"))):
+class FileBoxMeta(
+    namedtuple("FileBoxInfo", ("id", "pipeline_id", "title", "is_extend"))
+):
     """Filebox metadata."""
 
-    fields = ("#id", "#pipeline_id", "title")
+    fields_v5_2 = ("#id", "#pipeline_id", "title")
+    fields_v6_1 = ("#id", "pipeline_id", "title", "is_extend")
+
+    def __new__(cls, id, pipeline_id, title, is_extend=None):
+        # type: (Text, Text, Text, Optional[Text]) -> Any
+        return super(FileBoxMeta, cls).__new__(cls, id, pipeline_id, title, is_extend)
+
+    # TODO: remove not versioned fields in next major version
+    fields = fields_v5_2
 
 
 class FileBoxInfo(
@@ -117,6 +127,12 @@ class FileBoxInfo(
             "is_in_history_add_datetime",
             "is_cover_disable",
             "is_msg_to_first_qc",
+            "server_id",
+            "pipeline_id",
+            "is_drag_in",
+            "is_online",
+            "is_file_log",
+            "submit_type",
         ),
     )
 ):
@@ -145,17 +161,20 @@ class FileBoxInfo(
 
     def __new__(cls, *args, **kwargs):
         # type: (Any, *Any) -> Any
-        kwargs["id"] = kwargs.pop("#id")
-        return super(FileBoxInfo, cls).__new__(cls, *args, **kwargs)
+        if "#id" in kwargs:
+            kwargs["id"] = kwargs.pop("#id")
+        for index, i in enumerate(cls._fields):
+            kwargs.setdefault(i, args[index] if index < len(args) else None)
+        return super(FileBoxInfo, cls).__new__(cls, **kwargs)
 
 
-class ImageInfo(namedtuple("ImageInfo", ("max", "min", "path"))):
+class ImageInfo(namedtuple("ImageInfo", ("max", "min", "path", "attachment_id"))):
     """Image information."""
 
-    def __new__(cls, max, min, path=None):
-        # type: (int, int, Text) -> Any
+    def __new__(cls, max, min, path=None, attachment_id=None):
+        # type: (Text, Text, Optional[Text], Optional[Text]) -> Any
         # pylint: disable=redefined-builtin
-        return super(ImageInfo, cls).__new__(cls, max, min, path)
+        return super(ImageInfo, cls).__new__(cls, max, min, path, attachment_id)
 
     def __getitem__(self, index):
         # type: (Union[Text, int]) -> Any
@@ -263,10 +282,20 @@ AccountInfo = namedtuple(
         "remote_ip",
         "name",
         "password_complexity",
+        "login_time",
     ),
 )
 
-FlowInfo = namedtuple("FlowInfo", ("flow_id", "pipeline_id"))
+
+class FlowInfo(
+    namedtuple("FlowInfo", ("flow_id", "pipeline_id", "flow_name", "pipeline_name"))
+):
+    def __new__(cls, flow_id, pipeline_id, flow_name="", pipeline_name=""):
+        # type: (int, int, Text, Text) -> Any
+        return super(FlowInfo, cls).__new__(
+            cls, flow_id, pipeline_id, flow_name, pipeline_name
+        )
+
 
 PluginData = namedtuple(
     "PluginData",
@@ -281,6 +310,9 @@ PluginData = namedtuple(
         "file_path_list",
         "argv",
         "retake_pipeline_id_list",
+        "link_id_list",
+        "is_link",
+        "link_module",
     ),
 )
 

@@ -6,6 +6,7 @@ from ..core import FIELD_TYPES, ControllerGetterMixin
 from ..filter import Field, FilterList
 from ..model import FieldMeta
 from . import core
+from .. import compat
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -31,7 +32,10 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             Field("sign").has("%")
         )
         return self._filter_model(
-            "c_field", "get_with_filter", FieldMeta, filters=filters
+            "c_field",
+            "get_with_filter",
+            FieldMeta,
+            filters=compat.adapt_filters(filters),
         )
 
     def filter_one(self, *args):
@@ -48,7 +52,7 @@ class DatabaseField(core.DatabaseAttachment, ControllerGetterMixin):
             "c_field",
             "get_one_with_filter",
             field_array=FieldMeta.fields,
-            filter_array=filters,
+            filter_array=compat.adapt_filters(filters),
         )
         return FieldMeta(*resp)
 

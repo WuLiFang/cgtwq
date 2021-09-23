@@ -32,6 +32,8 @@ steps:
     commands:
       - pip install -U pip virtualenv
       - make test
+depends_on:
+  - python-3.7
 ---
 kind: pipeline
 name: python-2.7
@@ -49,6 +51,8 @@ steps:
     commands:
       - pip install -U pip virtualenv
       - make test
+depends_on:
+  - python-3.6
 ---
 kind: pipeline
 name: notification
@@ -56,24 +60,22 @@ name: notification
 clone:
   disable: true
 steps:
-  - name: rocket-chat
-    image: mike1pol/drone-rocket@sha256:6148c807bc3986509fcb8d63736ab33c7355d9d65ba640e00f09d63c8febfa94
+  - name: youdu
+    image: registry.wlf.com/drone-youdu
     failure: ignore
     settings:
       url:
-        from_secret: ROCKETCHAT_URL
-      user_id:
-        from_secret: ROCKETCHAT_USER_ID
-      token:
-        from_secret: ROCKETCHAT_TOKEN
-      channel:
-        from_secret: ROCKETCHAT_CHANNEL
-      message:
-        "**{{ build.status }}** {{ repo.fullName }}[#{{ build.number }}]({{ build.link }}) ({{ build.event }})
-
-        [{{ truncate build.commit 8 }}](${DRONE_COMMIT_LINK}) on `{{ build.branch }}` by _{{ build.author }}_
-
-        {{build.message}}"
+        from_secret: YOUDU_URL
+      buin:
+        from_secret: YOUDU_BUIN
+      app_id:
+        from_secret: YOUDU_APP_ID
+      aes_key:
+        from_secret: YOUDU_AES_KEY
+      from:
+        from_secret: YOUDU_FROM
+      to:
+        from_secret: YOUDU_TO
 depends_on:
   - python-3.7
   - python-3.6

@@ -5,29 +5,28 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import os
 import uuid
 
-import six
-
 import cast_unknown as cast
+import six
+from cgtwq import compat
+from deprecated import deprecated
 
-from .. import account, exceptions
+from .. import account, constants, exceptions
 from ..filter import Field
 from ..message import Message
 from .core import SelectionAttachment
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Text, Union, Tuple, List, Iterable
+    from typing import Iterable, List, Optional, Text, Tuple, Union
+
     from ..model import ImageInfo
 
 
 class SelectionFlow(SelectionAttachment):
     """Flow operation on selection."""
 
-    def update(self, field, status, message="", images=()):
+    def _update_v5_2(self, field, status, message="", images=()):
         # type: (Text, Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
-        """Update flow status."""
-        # TODO: refactor arguments at next major version.
-
         select = self.select
         message = Message.load(message)
         message.images += images
@@ -49,16 +48,39 @@ class SelectionFlow(SelectionAttachment):
                 raise exceptions.PermissionError
             raise
 
-    def submit(self, filenames=(), message="", account_id=None):
+    def _update_v6_1(self, field, status, message="", images=()):
+        # type: (Text, Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
+        select = self.select
+        message = Message.load(message)
+        message.images += images
+        field = Field(field).in_namespace(self.select.module.default_field_namespace)
+
+        try:
+            self.call(
+                "c_work_flow",
+                "python_update_flow",
+                field_sign=field,
+                status=status,
+                dom_text_array=message.api_payload(),
+                task_id=select[0],
+            )
+        except ValueError as ex:
+            if ex.args and ex.args[0] == (
+                "work_flow::python_update_flow, " "no permission to qc"
+            ):
+                raise exceptions.PermissionError
+            raise
+
+    def update(self, field, status, message="", images=()):
+        # type: (Text, Text, Text, Tuple[Union[Text, ImageInfo], ...]) -> None
+        """Update flow status."""
+        # TODO: refactor arguments at next major version.
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._update_v5_2(field, status, message, images)
+        return self._update_v6_1(field, status, message, images)
+
+    def _submit_v5_2(self, filenames=(), message="", account_id=None):
         # type: (Tuple[Text, ...], Union[Message, Text], Text) -> None
-        """Submit file to task, then change status to `Check`.
-
-        Args:
-            pathnames (tuple, optional): Defaults to (). Server pathnames.
-            filenames (tuple, optional): Defaults to (). Local filenames.
-            message (Message, optional): Defaults to "". Submit note(and images).
-        """
-
         select = self.select
         message = Message.load(message)
         account_id = account_id or account.get_account_id(select.token)
@@ -77,21 +99,37 @@ class SelectionFlow(SelectionAttachment):
             text=message.dumps(),
         )
 
-    def create_version(self, filenames, sign="Api Submit", version_id=None):
-        # type: (Iterable[Text], Text , Text) -> Text
-        """Create new task version.
+    def _submit_v6_1(self, filenames=(), message="", account_id=None):
+        # type: (Tuple[Text, ...], Union[Message, Text], Text) -> None
+        select = self.select
+        message = Message.load(message)
+        version_id = self._create_version_v6_1(filenames)
+        select.call(
+            "c_work_flow",
+            "submit",
+            task_id=select[0],
+            submit_type="review",
+            dom_text_array=message.api_payload(),
+            version_id=version_id,
+        )
+
+    def submit(self, filenames=(), message="", account_id=None):
+        # type: (Tuple[Text, ...], Union[Message, Text], Text) -> None
+        """Submit file to task, then change status to `Check`.
 
         Args:
-            filenames (list): Filename list.
-            sign (str, optional): Defaults to 'Api Submit'. Server version sign.
-            version_id (str, optional): Defaults to None. Wanted version id.
-
-        Returns:
-            str: Created version id.
+            filenames (tuple, optional): Defaults to (). Local filenames.
+            message (Message, optional): Defaults to "". Submit note(and images).
         """
 
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._submit_v5_2(filenames, message, account_id)
+        return self._submit_v6_1(filenames, message, account_id)
+
+    def _create_version_v5_2(self, filenames, sign="Api Submit"):
+        # type: (Iterable[Text], Text) -> Text
         select = self.select
-        version_id = version_id or uuid.uuid4().hex
+        version_id = uuid.uuid4().hex
         select.call(
             "c_version",
             "create",
@@ -109,6 +147,45 @@ class SelectionFlow(SelectionAttachment):
             },
         )
         return version_id
+
+    def _create_version_v6_1(self, filenames, sign="review"):
+        # type: (Iterable[Text], Text) -> Text
+        select = self.select
+        filebox_data = select.filebox.get_submit(sign)
+        submit_dir = filebox_data.path
+        filenames = filenames or tuple(
+            os.path.join(submit_dir, i) for i in os.listdir(submit_dir)
+        )
+        if not filenames:
+            raise ValueError("no file to submit")
+        version_id = select.call(
+            "c_version",
+            "client_create",
+            link_id=select[0],
+            sign=sign,
+            submit_dir=submit_dir,
+            submit_path_array=filenames,
+            submit_file_path_array=filenames,
+            os=constants.OS,
+        )
+        return version_id
+
+    def create_version(self, filenames, sign=None, version_id=None):
+        # type: (Iterable[Text], Optional[Text] , Text) -> Text
+        """Create new task version.
+
+        Args:
+            filenames (list): Filename list.
+            sign (str, optional): Defaults to None. Server version sign.
+            version_id (str, optional): Deprecated. Defaults to None. Wanted version id.
+
+        Returns:
+            str: Created version id.
+        """
+
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._create_version_v5_2(filenames, sign or "Api Submit")
+        return self._create_version_v6_1(filenames, sign or "review")
 
     def assign(self, accounts, start="", end=""):
         # type: (List[Text], Text, Text) -> None
@@ -132,10 +209,12 @@ class SelectionFlow(SelectionAttachment):
             task_id_array=select,
         )
 
+    @deprecated(version="3.2.3", reason="Not avaliable in cgteamwork6.1")
     def has_field_permission(self, field):
         # type: (Text) -> bool
         """Return if current user has permission to edit the field."""
-
+        if compat.api_level() != compat.API_LEVEL_5_2:
+            raise NotImplementedError("not avaliable in cgteamwork 6.1")
         field = Field(field).in_namespace(self.select.module.default_field_namespace)
         resp = self.call(
             "c_work_flow",

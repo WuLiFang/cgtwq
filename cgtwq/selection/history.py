@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from ..filter import Filter
 from .core import SelectionAttachment
-
+from .. import compat
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -18,7 +18,10 @@ class SelectionHistory(SelectionAttachment):
 
     def _combine_filters(self, filters):
         # type: (Union[Filter, cgtwq.FilterList, None]) -> Union[cgtwq.FilterList, Filter]
-        _filters = Filter("#task_id", self.select)
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            _filters = Filter("#task_id", self.select)
+        else:
+            _filters = Filter("#link_id", self.select)
         if filters:
             _filters &= filters
         return _filters

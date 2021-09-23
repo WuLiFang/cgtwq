@@ -6,6 +6,7 @@ from deprecated import deprecated
 
 from ..model import FileBoxInfo
 from .core import _OS, SelectionAttachment
+from .. import compat
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -41,6 +42,30 @@ class SelectionFilebox(SelectionAttachment):
             raise ValueError("SelectionFilebox.from_id: no matched filebox", id_)
         return FileBoxInfo(**resp)
 
+    def _from_sign_v5_2(self, sign):
+        # type: (Text) -> FileBoxInfo
+        select = self.select
+        resp = select.call(
+            "c_file", "filebox_get_one_with_sign", task_id=select[0], sign=sign, os=_OS
+        )
+        if not resp:
+            raise ValueError("SelectionFilebox.from_sign: no matched filebox", sign)
+        return FileBoxInfo(**resp)
+
+    def _from_sign_v6_1(self, sign):
+        # type: (Text) -> FileBoxInfo
+        select = self.select
+        resp = select.call(
+            "c_filebox",
+            "filebox_get_one_with_sign",
+            task_id=select[0],
+            sign=sign,
+            os=_OS,
+        )
+        if not resp:
+            raise ValueError("SelectionFilebox.from_sign: no matched filebox", sign)
+        return FileBoxInfo(**resp)
+
     def from_sign(self, sign):
         # type: (Text) -> FileBoxInfo
         """Get filebox information from sign.
@@ -54,27 +79,41 @@ class SelectionFilebox(SelectionAttachment):
         Returns:
             FileboxInfo
         """
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._from_sign_v5_2(sign)
+        return self._from_sign_v6_1(sign)
 
-        select = self.select
-        resp = select.call(
-            "c_file", "filebox_get_one_with_sign", task_id=select[0], sign=sign, os=_OS
-        )
-        if not resp:
-            raise ValueError("SelectionFilebox.from_sign: no matched filebox", sign)
-        return FileBoxInfo(**resp)
-
-    def get_submit(self):
-        """Get filebox that set to submit.
-        Returns:
-            model.FileboxInfo: Filebox information.
-        """
-
+    def _get_submit_v5_2(self):
+        # type: () -> FileBoxInfo
         select = self.select
         resp = select.call(
             "c_file", "filebox_get_submit_data", task_id=select[0], os=_OS
         )
         assert isinstance(resp, dict), resp
         return FileBoxInfo(**resp)
+
+    def _get_submit_v6_1(self, sign):
+        # type: (Text) -> FileBoxInfo
+        select = self.select
+        resp = select.call(
+            "c_filebox",
+            "filebox_get_submit_data",
+            task_id=select[0],
+            os=_OS,
+            sign=sign,
+        )
+        assert isinstance(resp, dict), resp
+        return FileBoxInfo(**resp)
+
+    def get_submit(self, sign="review"):
+        # type: (Text) -> FileBoxInfo
+        """Get filebox that set to submit.
+        Returns:
+            model.FileboxInfo: Filebox information.
+        """
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._get_submit_v5_2()
+        return self._get_submit_v6_1(sign)
 
     @deprecated(version="3.0.0", reason="Use `from_sign` or `from_id` instead.")
     def get(self, sign=None, id_=None):

@@ -11,6 +11,7 @@ import cast_unknown as cast
 
 from .server.web import upload_image
 from .model import ImageInfo
+from . import compat
 
 LOGGER = logging.getLogger(__name__)
 
@@ -31,19 +32,37 @@ class Message(six.text_type):
         return ret
 
     def _check_images(self):
+        # type: () -> List[ImageInfo]
         if any(not isinstance(i, ImageInfo) for i in self.images):
             raise ValueError(
                 "Invalid images with the message, maybe not uploaded or wrong data format."
             )
+        return self.images  # type: ignore
 
     def dumps(self):
-        """Dump data to string in server defined format."""
+        """Dump data to string in api version 5.2 defined format."""
 
-        self._check_images()
-
+        images = self._check_images()
         return json.dumps(
-            {"data": self, "image": [i._asdict() for i in self.images]},  # type: ignore
+            {"data": self, "image": [i._asdict() for i in images]},  # type: ignore
         )
+
+    def api_payload(self):
+        # type: () -> Any
+        """Dump data to in server defined format."""
+
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self.dumps()
+        images = self._check_images()
+        return [{"type": "text", "content": self, "style": ""}] + [
+            {
+                "type": "image",
+                "min": i.min,
+                "max": i.max,
+                "att_id": i.attachment_id,
+            }
+            for i in images
+        ]
 
     def upload_images(self, folder, token):
         # type: (Text, Text) -> None
@@ -60,10 +79,23 @@ class Message(six.text_type):
         if isinstance(data, cls):
             return data
 
+
         data = data or ""
 
         try:
             data = json.loads(data)
+            # api version 6.1
+            if isinstance(data, list):
+                list_data = data  # type: Any
+                text = "\n<br>".join(i["content"] for i in list_data if i["type"] == "text")
+                images = (
+                    ImageInfo(max=i["max"], min=i["min"], attachment_id=i["att_id"])
+                    for i in list_data
+                    if i["type"] == "image"
+                )
+                ret = cls(text)
+                ret.images = list(images)
+                return ret
             assert isinstance(data, dict), type(data)
             text = data.get("data", "")
             images = data.get("image", data.get("images", []))
@@ -81,10 +113,15 @@ def _upload_image(image, folder, token):
     # type: (Any, Text, Text) -> ImageInfo
     if isinstance(image, ImageInfo):
         return image
-    elif isinstance(image, dict):
+    if isinstance(image, dict):
         if image.get("max") and image.get("min"):
-            return ImageInfo(max=image["max"], min=image["min"], path=image.get("path"))
-        elif image.get("path"):
+            return ImageInfo(
+                max=image["max"],
+                min=image["min"],
+                path=image.get("path"),
+                attachment_id=image.get("att_id"),
+            )
+        if image.get("path"):
             image = image["path"]
         else:
             raise TypeError(
@@ -92,7 +129,7 @@ def _upload_image(image, folder, token):
                 image.keys(),
             )
 
-    if not isinstance(image, (six.text_type, six.binary_type)):
+    if not isinstance(image, (six.text_type, str)):
         raise TypeError("Not support such data type.", type(image))
 
     return upload_image(cast.text(image), folder, token)

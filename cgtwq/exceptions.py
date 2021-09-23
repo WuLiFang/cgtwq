@@ -2,6 +2,7 @@
 """Exceptions for cgtwq.  """
 
 from __future__ import absolute_import, division, print_function, unicode_literals
+from cgtwq.model import AccountInfo
 
 import cast_unknown as cast
 import six
@@ -80,14 +81,14 @@ class EmptySelection(CGTeamWorkException, ValueError):
         super(EmptySelection, self).__init__("Empty selection.")
 
 
-@six.add_metaclass(_template_meta(b"Wrong password", "密码错误"))
-class PasswordError(CGTeamWorkException):
-    """Indicate password not correct."""
+@six.add_metaclass(_template_meta(b"authentication failed", "账号验证失败"))
+class AuthenticateError(CGTeamWorkException):
+    """Indicate credential not valid."""
 
 
-@six.add_metaclass(_template_meta(b"Account not found", "无此帐号"))
-class AccountNotFoundError(CGTeamWorkException):
-    """Indicate account not found."""
+# TODO: remove alias at next major version
+PasswordError = AuthenticateError
+AccountNotFoundError = AuthenticateError
 
 
 class AccountError(CGTeamWorkException):

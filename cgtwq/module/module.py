@@ -13,6 +13,7 @@ from ..model import FlowInfo
 from ..selection import Selection
 from .field import ModuleField
 from .history import ModuleHistory
+from .. import compat
 
 LOGGER = logging.getLogger(__name__)
 
@@ -114,6 +115,7 @@ class Module(ControllerGetterMixin):
 
         namespace = kwargs.pop("namespace", self.default_field_namespace)
         filters = FilterList.from_arbitrary_args(*args).in_namespace(namespace)
+        filters = compat.adapt_filters(filters)
 
         resp = self.call(
             "c_orm",
@@ -149,7 +151,9 @@ class Module(ControllerGetterMixin):
 
         namespace = kwargs.pop("namespace", self.default_field_namespace)
         filters = FilterList.from_arbitrary_args(*args).in_namespace(namespace)
+        filters = compat.adapt_filters(filters)
         key = Field(kwargs.pop("key", filters[0][0])).in_namespace(namespace)
+        key = compat.adapt_field_sign(key)
 
         resp = self.call(
             "c_orm",
@@ -194,6 +198,7 @@ class Module(ControllerGetterMixin):
 
         namespace = kwargs.pop("namespace", self.default_field_namespace)
         filters = FilterList.from_arbitrary_args(*args).in_namespace(namespace)
+        filters = compat.adapt_filters(filters)
 
         resp = self.call("c_orm", "get_count_with_filter", sign_filter_array=filters)
         return int(resp)
@@ -207,11 +212,27 @@ class Module(ControllerGetterMixin):
 
         return self.database.pipeline.filter(Filter("module", self.name))
 
-    def flow(self):
-        """Workflow of the module."""
-
+    def _flow_v5_2(self):
         resp = self.call("c_flow", "get_data")
         return tuple(FlowInfo(*i) for i in resp)
+
+    def _flow_v6_1(self):
+        pipelines = self.pipelines()
+        resp = self.call(
+            "c_flow",
+            "get_with_pipeline_id",
+            pipeline_id_array=[i.id for i in pipelines],
+        )
+        return tuple(
+            FlowInfo(i["flow_id"], i["pipeline_id"], i["flow_name"], i["pipeline_name"])
+            for i in resp
+        )
+
+    def flow(self):
+        """Workflow of the module."""
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._flow_v5_2()
+        return self._flow_v6_1()
 
     @deprecated(
         version="3.0.0",

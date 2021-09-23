@@ -7,6 +7,7 @@ from six import text_type
 from .. import exceptions
 from ..model import ImageInfo
 from .selection import Selection
+from .. import filter, compat
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -46,6 +47,26 @@ class Entry(Selection):
         assert isinstance(ret, list), ret
         return tuple(ret)
 
+    def _related_v5_2(self, *filters):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Selection
+
+        pipelines = self.module.database.pipeline.filter(*filters)
+        resp = self.call(
+            "c_note",
+            "get_task_id_array",
+            task_id=self[0],
+            pipeline_id_array=[i.id for i in pipelines],
+        )
+        return self.module.select(*resp)
+
+    def _related_v6_1(self, *filters):
+        # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Selection
+        pipelines = self.module.database.pipeline.filter(*filters)
+        return self.module.filter(
+            filter.Field("shot.entity") == self["shot.entity"],
+            filter.Field("pipeline.id").in_([i.id for i in pipelines]),
+        )
+
     def related(self, *filters):
         # type: (Union[cgtwq.Filter, cgtwq.FilterList]) -> Selection
         r"""Select related entries.
@@ -57,14 +78,9 @@ class Entry(Selection):
             Selection
         """
 
-        pipelines = self.module.database.pipeline.filter(*filters)
-        resp = self.call(
-            "c_note",
-            "get_task_id_array",
-            task_id=self[0],
-            pipeline_id_array=[i.id for i in pipelines],
-        )
-        return self.module.select(*resp)
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._related_v5_2(*filters)
+        return self._related_v6_1(*filters)
 
     # Deprecated methods.
     # TODO: Remove at next major version.

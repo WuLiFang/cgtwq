@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import six
 from deprecated import deprecated
 
+from .. import compat
 from ..exceptions import EmptySelection
 from ..filter import Field
 from ..resultset import ResultSet
@@ -72,12 +73,12 @@ class Selection(tuple):
     if TYPE_CHECKING:
 
         @overload
-        def __getitem__(self, name):
+        def __getitem__(self, name):  # type: ignore
             # type: (int) -> Text
             raise NotImplementedError()
 
         @overload
-        def __getitem__(self, name):
+        def __getitem__(self, name):  # type: ignore
             # type: (Text) -> Tuple[Any, ...]
             raise NotImplementedError()
 
@@ -174,11 +175,12 @@ class Selection(tuple):
         namespace = kwargs.pop("namespace", self.module.default_field_namespace)
 
         server_fields = [Field(i).in_namespace(namespace) for i in fields]
+        adapted_fields = [compat.adapt_field_sign(i) for i in server_fields]
         resp = self.call(
             "c_orm",
             "get_in_id",
-            sign_array=server_fields,
-            order_sign_array=server_fields,
+            sign_array=adapted_fields,
+            order_sign_array=adapted_fields,
         )
         return ResultSet(server_fields, resp, self.module)
 
@@ -197,7 +199,10 @@ class Selection(tuple):
         kwargs = kwargs or dict()
         namespace = kwargs.pop("namespace", self.module.default_field_namespace)
 
-        data = {Field(k).in_namespace(namespace): v for k, v in data.items()}
+        data = {
+            compat.adapt_field_sign(Field(k).in_namespace(namespace)): v
+            for k, v in data.items()
+        }
         self.call("c_orm", "set_in_id", sign_data_array=data)
 
     def delete(self):

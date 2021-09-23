@@ -15,7 +15,10 @@ def _entry():
     return (
         cgtwq.Database("proj_sdktest")
         .module("shot")
-        .select("D84AF30B-89FD-D06D-349A-F01F5D99744C")
+        .filter(
+            cgtwq.Field("shot.entity") == "SDKTEST_EP01_01_sc001",
+            cgtwq.Field("task.pipeline") == "合成",
+        )
         .to_entry()
     )
 
@@ -25,3 +28,4 @@ def test_entry_related(entry):
     assert isinstance(entry, cgtwq.Entry)
     result = entry.related()
     assert isinstance(result, cgtwq.Selection)
+    assert len(result) > 1

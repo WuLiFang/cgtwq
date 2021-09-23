@@ -7,6 +7,8 @@ from ..filter import Field
 from ..model import PipelineInfo
 from . import core
 
+from .. import compat
+
 
 class SelectionPipeline(core.SelectionAttachment, ControllerGetterMixin):
     """Pipeline feature for selection."""
@@ -23,10 +25,11 @@ class SelectionPipeline(core.SelectionAttachment, ControllerGetterMixin):
             tuple[PipelineInfo]
         """
 
-        # XXX: Should use a dedicated API.
         select = self.select
         return select.module.database.pipeline.filter(
-            Field("entity_name").in_(select.distinct(key="pipeline"))
+            Field(compat.adapt_field_sign("entity")).in_(
+                select.distinct(key="pipeline")
+            )
         )
 
     def one(self):

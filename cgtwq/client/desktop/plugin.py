@@ -74,7 +74,7 @@ class DesktopClientPlugin(core.DesktopClientAttachment):
             data = {}
         assert isinstance(data, dict), type(data)
         for i in PluginData._fields:
-            if i in ("id_list", "file_path_list", "retake_pipeline_id_list"):
+            if i in ("id_list", "file_path_list", "retake_pipeline_id_list", "link_id_list"):
                 data.setdefault(i, [])
             else:
                 data.setdefault(i, None)

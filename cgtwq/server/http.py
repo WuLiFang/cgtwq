@@ -10,6 +10,7 @@ import requests
 import cast_unknown as cast
 
 from .. import core, exceptions
+import six
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -47,7 +48,10 @@ def _raise_error(result):
         return
     elif (code, type_, data) == ("2", "msg", "please login!!!"):
         raise exceptions.LoginError
-    raise ValueError(cast.binary(data))
+    msg = cast.text(data)
+    if six.PY2:
+        msg = cast.binary(msg)
+    raise ValueError(msg)
 
 
 def _cgteamwork_url(pathname):

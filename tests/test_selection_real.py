@@ -27,7 +27,7 @@ class SelectionTestCase(TestCase):
         select = module.filter(
             cgtwq.Filter("flow_name", "合成")
             & cgtwq.Filter(
-                "shot.shot", ["SDKTEST_EP01_01_sc001", "SDKTEST_EP01_01_sc002"]
+                "shot.entity", ["SDKTEST_EP01_01_sc001", "SDKTEST_EP01_01_sc002"]
             )
         )
         assert isinstance(select, cgtwq.Selection)
@@ -54,7 +54,7 @@ class SelectionTestCase(TestCase):
         )
 
     def test_get_fields(self):
-        result = self.select.get_fields("id", "shot.shot")
+        result = self.select.get_fields("id", "shot.entity")
         for i in result:
             self.assertEqual(len(i), 2)
 
@@ -67,7 +67,7 @@ class SelectionTestCase(TestCase):
         for i in self.select.to_entries():
             assert isinstance(i, cgtwq.Entry)
             try:
-                path = i.image.get_one().path
+                path = i.image.get()[0].path
                 i.image.set(path)
             except (IndexError, OSError, IOError):
                 path = util.path("resource", "gray.png")
@@ -80,7 +80,9 @@ class SelectionTestCase(TestCase):
 
     def test_send_message(self):
         self.select.notify.send(
-            "test", "test <b>message</b>", cgtwq.account.get_account_id()
+            "test",
+            "test <b>message</b>",
+            cgtwq.account.get_account_id(),
         )
 
     def test_get_filebox_submit(self):
@@ -88,6 +90,7 @@ class SelectionTestCase(TestCase):
         result = select.filebox.get_submit()
         self.assertIsInstance(result, cgtwq.model.FileBoxInfo)
 
+    @util.skip_for_cgteamwork6
     def test_has_permission_on_status(self):
         select = self.select
         result = select.flow.has_field_permission("artist")
@@ -99,7 +102,10 @@ def _select():
     return (
         cgtwq.Database("proj_sdktest")
         .module("shot")
-        .select("D84AF30B-89FD-D06D-349A-F01F5D99744C")
+        .filter(
+            cgtwq.Field("shot.entity") == "SDKTEST_EP01_01_sc001",
+            cgtwq.Field("task.pipeline") == "合成",
+        )
     )
 
 
@@ -160,18 +166,19 @@ def test_note(select):
         assert isinstance(i, cgtwq.model.NoteInfo)
         if i.message == note_message:
             note = i
-    assert note
+    assert note, notes
     select.notify.delete(note.id)
     assert list(set(notes).difference(select.notify.get()))[0] is note
 
 
 def test_selection_count(select):
-    result = select.count(cgtwq.Field("shot.shot").has("_sc001"))
+    result = select.count(cgtwq.Field("shot.entity").has("_sc001"))
     assert isinstance(result, int)
+    assert result > 0
 
 
 def test_selection_distinct(select):
-    result = select.distinct(cgtwq.Field("shot.shot").has("_sc001"))
+    result = select.distinct(cgtwq.Field("shot.entity").has("_sc001"))
     assert isinstance(result, tuple)
 
 

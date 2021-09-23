@@ -6,6 +6,7 @@ from ..core import ControllerGetterMixin
 from ..filter import Field, FilterList
 from ..model import PipelineInfo
 from . import core
+from .. import compat
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -31,9 +32,12 @@ class DatabasePipeline(core.DatabaseAttachment, ControllerGetterMixin):
         """
 
         filters = FilterList.from_arbitrary_args(*args) or FilterList(
-            Field("entity_name").has("%")
+            Field("entity").has("%")
         )
 
         return self._filter_model(
-            "c_pipeline", "get_with_filter", PipelineInfo, filters
+            "c_pipeline",
+            "get_with_filter",
+            PipelineInfo,
+            compat.adapt_filters(filters),
         )

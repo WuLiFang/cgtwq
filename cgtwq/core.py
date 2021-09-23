@@ -18,7 +18,8 @@ if TYPE_CHECKING:
 ENV = Env()
 CONFIG = {
     "URL": ENV("CGTEAMWORK_URL", "http://192.168.55.11"),
-    "DEFAULT_TOKEN": ENV("CGTEAMWORK_DEFAULT_TOKEN", None),
+    "API_VERSION": ENV("CGTEAMWORK_VERSION", ""),
+    "DEFAULT_TOKEN": ENV("CGTEAMWORK_DEFAULT_TOKEN", ""),
     "DESKTOP_WEBSOCKET_URL": ENV(
         "CGTEAMWORK_DESKTOP_WEBSOCKET_URL", "ws://127.0.0.1:64999"
     ),
@@ -48,10 +49,17 @@ class ControllerGetterMixin(object):
             tuple[model]: Result
         """
 
+        # TODO: move mixin to mixins/ folder
+        from . import compat
+
         assert isinstance(filters, FilterList), type(filters)
-        fields = getattr(model, "fields", model._fields)
+        fields = getattr(model, "fields", model._fields)  # type: Any
+
         resp = self.call(  # type: ignore
-            controller, method, field_array=fields, filter_array=filters
+            controller,
+            method,
+            field_array=[compat.adapt_field_sign(i) for i in fields],
+            filter_array=compat.adapt_filters(filters),
         )
         return tuple(model(*i) for i in resp)
 

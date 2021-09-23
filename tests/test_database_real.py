@@ -23,15 +23,17 @@ class DataBaseTestCase(TestCase):
     def setUp(self):
         self.database = cgtwq.Database("proj_sdktest")
 
-    def test_get_filebox(self):
-        # filters.
-        self.database.filebox.filter(cgtwq.Filter("title", "检查MOV"))
-        # id
-        self.database.filebox.from_id("271")
-
     def test_get_pipeline(self):
-        result = self.database.pipeline.filter(cgtwq.Filter("entity_name", "合成"))
+        result = self.database.pipeline.filter(cgtwq.Filter("entity", "合成"))
         self.assertIsInstance(result[0], cgtwq.model.PipelineInfo)
+
+
+def test_list_filebox_by_pipeline():
+    db = cgtwq.Database("proj_sdktest")
+    (pipeline,) = db.pipeline.filter(cgtwq.Field("entity") == "合成")
+    pipeline.module
+    filebox_list = db.filebox.list_by_pipeline(pipeline)
+    assert filebox_list
 
 
 class ModuleTestCase(TestCase):
@@ -49,6 +51,10 @@ class ModuleTestCase(TestCase):
         result = self.module.history.filter(Filter("status", "Approve"))
         for i in result:
             assert isinstance(i, model.HistoryInfo)
+            assert i.id
+            assert i.account_id
+            assert i.task_id
+            assert i.time
 
     def test_count_history(self):
 
@@ -93,7 +99,9 @@ def test_database_fields(database):
     assert isinstance(database, cgtwq.Database)
     result = database.field.filter()
     assert all(isinstance(i, cgtwq.model.FieldMeta) for i in result)
-    result = database.field.filter_one(cgtwq.Field("sign") == "shot.shot")
+    result = database.field.filter_one(
+        cgtwq.Field("sign") == cgtwq.compat.adapt_field_sign("shot.entity")
+    )
     assert isinstance(result, cgtwq.model.FieldMeta)
 
     # Create
@@ -112,7 +120,7 @@ def test_database_fields(database):
     assert field.sign == field_sign
     database.field.delete(field.id)
 
-
+@util.skip_for_cgteamwork6
 def test_database_filebox(database):
     result = database.filebox.filter()
     assert all(isinstance(i, cgtwq.model.FileBoxMeta) for i in result)

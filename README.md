@@ -6,6 +6,8 @@
 
 [文档](https://wulifang.github.io/cgtwq/)
 
+支持 cgteamwork 5.2/6.1
+
 ## 安装
 
 因为使用了 PEP508 URL 依赖, 需求 pip 版本高于 18.1

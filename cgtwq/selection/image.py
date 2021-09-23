@@ -4,8 +4,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import json
 
+import cast_unknown as cast
 import six
-
+from .. import compat
 from ..model import ImageInfo
 from ..server.web import upload_image
 from .core import SelectionAttachment
@@ -18,6 +19,44 @@ if TYPE_CHECKING:
 class SelectionImage(SelectionAttachment):
     """Image feature for selection."""
 
+    def _set_v5_2(self, path, field="image"):
+        # type: (Text, Text) -> ImageInfo
+        select = self.select
+        image = upload_image(path, select.module.database.name, select.token)
+
+        # Server need strange data format for image field in cgteamwork5.2
+        select.set_fields(
+            **{
+                field: dict(
+                    path=path,
+                    max=[image.max],
+                    min=[image.min],
+                )
+            }
+        )
+        return image
+
+    def _set_v6_1(self, path, field="image"):
+        # type: (Text, Text) -> ImageInfo
+        select = self.select
+        image = upload_image(path, select.module.database.name, select.token)
+
+        select.set_fields(
+            **{
+                field: json.dumps(
+                    [
+                        dict(
+                            type="image",
+                            max=image.max,
+                            min=image.min,
+                            att_id=image.attachment_id,
+                        )
+                    ]
+                )
+            }
+        )
+        return image
+
     def set(self, path, field="image"):
         # type: (Text, Text) -> ImageInfo
         """Set image for the field.
@@ -29,12 +68,10 @@ class SelectionImage(SelectionAttachment):
         Returns:
             ImageInfo: Uploaded image.
         """
-        select = self.select
-        image = upload_image(path, select.module.database.name, select.token)
 
-        # Server need strange data format for image field in cgteamwork5.2
-        select.set_fields(**{field: dict(path=path, max=[image.max], min=[image.min])})
-        return image
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._set_v5_2(path, field)
+        return self._set_v6_1(path, field)
 
     def get(self, field="image"):
         # type: (Text) -> Tuple[ImageInfo, ...]
@@ -49,18 +86,18 @@ class SelectionImage(SelectionAttachment):
 
         select = self.select
         ret = set()
-        data = select[field]
-        if isinstance(data, six.text_type):
-            data = [data]
-        for i in data:
+        rows = cast.list_(select[field], (str, six.text_type))
+        for row in rows:
             try:
-                data = json.loads(i)
-                assert isinstance(data, dict)
-                info = ImageInfo(
-                    max=data["max"][0], min=data["min"][0], path=data.get("path")
-                )
-                ret.add(info)
-            except (TypeError, KeyError):
+                for data in cast.list_(json.loads(row), dict):
+                    info = ImageInfo(
+                        max=cast.list_(data["max"], (six.text_type, str))[0],
+                        min=cast.list_(data["min"], (six.text_type, str))[0],
+                        path=data.get("path"),
+                        attachment_id=data.get("att_id"),
+                    )
+                    ret.add(info)
+            except (TypeError, KeyError, ValueError):
                 continue
         ret = tuple(sorted(ret))
         return ret

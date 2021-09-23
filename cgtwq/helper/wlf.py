@@ -99,7 +99,7 @@ def get_database_by_file(filename):
     if CACHE_KEY_PREFIX_DATABASE_MAP not in CACHE:
         data = {}  # type: Dict[text_type, text_type]
         result_set = cgtwq.PROJECT.select_activated().get_fields(
-            "code",
+            "entity",
             "database",
             "filename_prefix",
         )
@@ -170,7 +170,7 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
 
         if "project_data" not in cls.cache:
             cls.cache["project_data"] = cgtwq.PROJECT.select_activated().get_fields(
-                "code", "database"
+                "entity", "database"
             )
         return cls.cache["project_data"]
 

@@ -34,7 +34,7 @@ build: .venv/.make.sentinel
 
 lint:
 	. ./scripts/activate-venv.sh &&\
-		PYTHONPATH=`python -c 'import site; print(";".join(site.getsitepackages()))'` npx pyright --pythonversion 3.8 ./auto_derby/
+		PYTHONPATH=`python -c 'import site; print(";".join(site.getsitepackages()))'` npx pyright --pythonversion 3.8 ./cgtwq/
 	. ./scripts/activate-venv.sh &&\
 		python -m black -t py38 --check --diff .
 

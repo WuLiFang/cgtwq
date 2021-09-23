@@ -6,7 +6,7 @@ import os
 
 import pytest
 
-from cgtwq import DesktopClient
+from cgtwq import DesktopClient, compat
 
 skip_if_not_logged_in = pytest.mark.skipif(
     not (
@@ -19,7 +19,9 @@ skip_if_not_logged_in = pytest.mark.skipif(
 skip_if_ci = pytest.mark.skipif(
     os.getenv("CI") == "true", reason="Not run with ci."  # pylint: disable=invalid-name
 )
-
+skip_for_cgteamwork6 = pytest.mark.skipif(
+    compat.api_level() == compat.API_LEVEL_6_1, reason="not run for cgteamwork6"
+)
 
 skip_if_desktop_client_not_running = pytest.mark.skipif(  # pylint: disable=invalid-name
     not DesktopClient().is_running(), reason="CGTeamWork desktop client not running."

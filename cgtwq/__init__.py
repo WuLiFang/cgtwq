@@ -30,7 +30,7 @@ from .resultset import ResultSet
 from .selection import Entry, Selection
 from .util import current_account, current_account_id, update_setting
 from deprecated import deprecated
-from . import __version__
+from . import __version__, compat
 
 __all__ = [
     "login",
@@ -63,6 +63,7 @@ __all__ = [
     "current_account",
     "current_account_id",
     "update_setting",
+    "compat",
 ]
 
 get_all_status = deprecated(
