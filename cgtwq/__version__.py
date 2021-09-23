@@ -4,16 +4,17 @@
 version info.
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 from datetime import datetime
 
-VERSION = "3.2.3"
-RELEASE_DATE = datetime.fromtimestamp(1624505697)
-LAST_GIT_COMMIT_DESCRIBE = "v3.2.2-1-gb2ca9ed"
-LAST_GIT_COMMIT_HASH = "b2ca9ed6f90d79d027ac054b86ab30289bb57cce"
-LAST_GIT_COMMIT_AUTHOR_NAME = "NateScarlet"
-LAST_GIT_COMMIT_AUTHOR_EMAIL = "NateScarlet@Gmail.com"
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1624505140)
-LAST_GIT_COMMIT_SUBJECT = "fix: wrong id from other module returned by filter"
-LAST_GIT_COMMIT_BODY = ""
+VERSION = '3.3.0'
+RELEASE_DATE = datetime.fromtimestamp(1632394553)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.2.3-2-gfde078b'
+LAST_GIT_COMMIT_HASH = 'fde078b0f9cd7bab57b8b81a0c9debebcb393098'
+LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
+LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1632394476)
+LAST_GIT_COMMIT_SUBJECT = 'feat: support cgteamwork6.1'
+LAST_GIT_COMMIT_BODY = ''

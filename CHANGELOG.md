@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/WuLiFang/cgtwq/compare/v3.2.3...v3.3.0) (2021-09-23)
+
+### Features
+
+- support cgteamwork6.1 fde078b
+
 ## [3.2.3](https://github.com/WuLiFang/cgtwq/compare/v3.2.2...v3.2.3) (2021-06-24)
 
 ### Bug Fixes
