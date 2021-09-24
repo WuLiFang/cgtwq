@@ -3,7 +3,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from .core import SelectionAttachment
-
+from deprecated import deprecated
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class SelectionLink(SelectionAttachment):
     """Link feature for selection."""
 
-    def link(self, *id_list, **kwargs):
+    def add(self, *id_list, **kwargs):
         # type: (Text, Any) -> None
         """Link the selection to other items."""
         to_module = kwargs.get("to_module", "asset")
@@ -28,7 +28,9 @@ class SelectionLink(SelectionAttachment):
             is_main="Y",
         )
 
-    def unlink(self, *id_list, **kwargs):
+    link = deprecated(version="3.4.1", reason="renamed to `add`")(add)
+
+    def remove(self, *id_list, **kwargs):
         # type: (Text, Any) -> None
         """Unlink the selection with other items."""
         to_module = kwargs.get("to_module", "asset")
@@ -44,6 +46,8 @@ class SelectionLink(SelectionAttachment):
                 link_module=to_module,
                 is_main="Y",
             )
+
+    unlink = deprecated(version="3.4.1", reason="renamed to `remove`")(remove)
 
     def get(self, **kwargs):
         # type: (Any) -> Set[Text]
