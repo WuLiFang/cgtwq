@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/WuLiFang/cgtwq/compare/v3.3.2...v3.4.0) (2021-09-24)
+
+### Features
+
+- add flow.list_submit_file b6320a2
+
+### Bug Fixes
+
+- **build:** should not include tests as package ff2c270
+
 ## [3.3.2](https://github.com/WuLiFang/cgtwq/compare/v3.3.1...v3.3.2) (2021-09-24)
 
 ### Bug Fixes
