@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.2](https://github.com/WuLiFang/cgtwq/compare/v3.3.1...v3.3.2) (2021-09-24)
+
+### Bug Fixes
+
+- helper.wlf.get_entry_by_file using old field name d44d041
+
 ## [3.3.1](https://github.com/WuLiFang/cgtwq/compare/v3.3.0...v3.3.1) (2021-09-24)
 
 ### Bug Fixes

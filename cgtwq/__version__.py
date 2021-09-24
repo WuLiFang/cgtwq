@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.3.1'
-RELEASE_DATE = datetime.fromtimestamp(1632452438)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.3.0-1-geb5f943'
-LAST_GIT_COMMIT_HASH = 'eb5f943b5ee862797f092bd12b4ee0a6adfacf1f'
+VERSION = '3.3.2'
+RELEASE_DATE = datetime.fromtimestamp(1632453116)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.3.1-1-gd44d041'
+LAST_GIT_COMMIT_HASH = 'd44d041c18491c2530c6fd5a9e70af2e3ebcec6e'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1632452033)
-LAST_GIT_COMMIT_SUBJECT = 'fix: missing packages when install from archive'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1632453075)
+LAST_GIT_COMMIT_SUBJECT = 'fix: helper.wlf.get_entry_by_file using old field name'
 LAST_GIT_COMMIT_BODY = ''
