@@ -27,12 +27,12 @@ skip_if_desktop_client_not_running = pytest.mark.skipif(  # pylint: disable=inva
 )
 
 
+def database():
+    return Database("proj_sdktest")
+
+
 def select():
-    return (
-        Database("proj_sdktest")
-        .module("shot")
-        .filter(
-            Field("shot.entity") == "SDKTEST_EP01_01_sc001",
-            Field("task.pipeline") == "合成",
-        )
+    return database.module("shot").filter(
+        Field("shot.entity") == "SDKTEST_EP01_01_sc001",
+        Field("task.pipeline") == "合成",
     )

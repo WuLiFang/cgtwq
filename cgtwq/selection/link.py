@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from .core import SelectionAttachment
 from deprecated import deprecated
+from .. import compat
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -13,10 +14,8 @@ if TYPE_CHECKING:
 class SelectionLink(SelectionAttachment):
     """Link feature for selection."""
 
-    def add(self, *id_list, **kwargs):
-        # type: (Text, Any) -> None
-        """Link the selection to other items."""
-        to_module = kwargs.get("to_module", "asset")
+    def _add_v5_2(self, *id_list, to_module):
+        # type: (Text, Text) -> None
 
         select = self.select
         select.call(
@@ -27,6 +26,29 @@ class SelectionLink(SelectionAttachment):
             link_module=to_module,
             is_main="Y",
         )
+
+    def _add_v6_1(self, *id_list, to_module):
+        # type: (Text, Text) -> None
+
+        select = self.select
+        count_dict = {}
+        for i in id_list:
+            count_dict[i] = count_dict.setdefault(i, 0) + 1
+        select.call(
+            "c_many",
+            "add_link",
+            module_tab_id_array=select,
+            link_module=to_module,
+            link_module_id_data_array=count_dict,
+        )
+
+    def add(self, *id_list, **kwargs):
+        # type: (Text, Any) -> None
+        """Link the selection to other items."""
+        to_module = kwargs.get("to_module", "asset")
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._add_v5_2(*id_list, to_module=to_module)
+        return self._add_v6_1(*id_list, to_module=to_module)
 
     link = deprecated(version="3.4.1", reason="renamed to `add`")(add)
 
@@ -49,13 +71,8 @@ class SelectionLink(SelectionAttachment):
 
     unlink = deprecated(version="3.4.1", reason="renamed to `remove`")(remove)
 
-    def get(self, **kwargs):
+    def _get_v5_1(self, **kwargs):
         # type: (Any) -> Set[Text]
-        """Get linked items for the selections.
-
-        Returns:
-            set: All linked item id.
-        """
         to_module = kwargs.get("to_module", "asset")
 
         select = self.select
@@ -70,3 +87,31 @@ class SelectionLink(SelectionAttachment):
             )
             ret.update(resp)
         return ret
+
+    def _get_v6_1(self, **kwargs):
+        # type: (Any) -> Set[Text]
+        to_module = kwargs.get("to_module", "asset")
+
+        select = self.select
+        ret = set()
+        for id_ in select:
+            resp = select.call(
+                "c_many",
+                "get_link",
+                module_tab_id=id_,
+                link_module=to_module,
+            )
+            ret.update(resp)
+        return ret
+
+    def get(self, **kwargs):
+        # type: (Any) -> Set[Text]
+        """Get linked items for the selections.
+
+        Returns:
+            set: All linked item id.
+        """
+        to_module = kwargs.get("to_module", "asset")
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._get_v5_1(to_module=to_module)
+        return self._get_v6_1(to_module=to_module)
