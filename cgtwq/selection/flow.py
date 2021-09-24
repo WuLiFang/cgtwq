@@ -2,22 +2,21 @@
 """Database module selection.  """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import json
 import os
 import uuid
 
-import cast_unknown as cast
 import six
-from cgtwq import compat
 from deprecated import deprecated
 
-from .. import account, constants, exceptions
+from .. import account, compat, constants, exceptions
 from ..filter import Field
 from ..message import Message
 from .core import SelectionAttachment
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Iterable, List, Optional, Text, Tuple, Union
+    from typing import Iterable, List, Optional, Sequence, Text, Tuple, Union
 
     from ..model import ImageInfo
 
@@ -80,15 +79,13 @@ class SelectionFlow(SelectionAttachment):
         return self._update_v6_1(field, status, message, images)
 
     def _submit_v5_2(self, filenames=(), message="", account_id=None):
-        # type: (Tuple[Text, ...], Union[Message, Text], Text) -> None
+        # type: (Sequence[Text], Union[Message, Text], Text) -> None
         select = self.select
         message = Message.load(message)
         account_id = account_id or account.get_account_id(select.token)
 
         # Create path data.
-        path_data = {"path": [], "file_path": []}
-        for i in filenames:
-            path_data["path" if os.path.isdir(cast.text(i)) else "file_path"].append(i)
+        path_data = {"path": filenames, "file_path": filenames}
         select.call(
             "c_work_flow",
             "submit",
@@ -100,7 +97,7 @@ class SelectionFlow(SelectionAttachment):
         )
 
     def _submit_v6_1(self, filenames=(), message="", account_id=None):
-        # type: (Tuple[Text, ...], Union[Message, Text], Text) -> None
+        # type: (Sequence[Text], Union[Message, Text], Text) -> None
         select = self.select
         message = Message.load(message)
         version_id = self._create_version_v6_1(filenames)
@@ -114,7 +111,7 @@ class SelectionFlow(SelectionAttachment):
         )
 
     def submit(self, filenames=(), message="", account_id=None):
-        # type: (Tuple[Text, ...], Union[Message, Text], Text) -> None
+        # type: (Sequence[Text], Union[Message, Text], Text) -> None
         """Submit file to task, then change status to `Check`.
 
         Args:
@@ -241,3 +238,30 @@ class SelectionFlow(SelectionAttachment):
         """Shorthand method to set take status to `Retake`."""
 
         return self.update(field, "Retake", message, images)
+
+    def _list_submit_file_v5_2(self):
+        # type: () -> Sequence[Text]
+        raw_files = self.select.get_fields("task.submit_file_path").column(
+            "task.submit_file_path"
+        )
+        return [j for i in raw_files for j in json.loads(i)["path"]]
+
+    def _list_submit_file_v6_1(self, sign, os):
+        # type: (Text,Text) -> Sequence[Text]
+        s = self.select
+        resp = s.module.database.call(
+            "c_version",
+            "get_submit_file",
+            link_module=s.module.name,
+            link_module_type=s.module.module_type,
+            link_id_array=s,
+            os=os,
+            submit_type=sign,
+        )
+        return [j for i in resp for j in i["path"]]
+
+    def list_submit_file(self, sign="review", os=constants.OS):
+        # type: (Text, Text) -> Sequence[Text]
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._list_submit_file_v5_2()
+        return self._list_submit_file_v6_1(sign, os)
