@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://github.com/WuLiFang/cgtwq/compare/v3.4.1...v3.5.0) (2021-09-24)
+
+### Features
+
+- rename link.link to link.add, link.unlink to link.remove 6d6909d
+
+### Bug Fixes
+
+- invalid syntax for python2 3860864
+- selection link.add not work in cgteamwork6.1 86b3d24
+- selection link.remove not work in cgteamwork6.1 a09e4cc
+
 ## [3.4.1](https://github.com/WuLiFang/cgtwq/compare/v3.4.0...v3.4.1) (2021-09-24)
 
 ### Bug Fixes

@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.4.1'
-RELEASE_DATE = datetime.fromtimestamp(1632467319)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.4.0-1-g63028a5'
-LAST_GIT_COMMIT_HASH = '63028a55cfd46a68edf173af8f9e72ad713c7490'
+VERSION = '3.5.0'
+RELEASE_DATE = datetime.fromtimestamp(1632470235)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.4.1-6-g3860864'
+LAST_GIT_COMMIT_HASH = '38608647cb51bb2cdaef7ca24e34b868d51367e7'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1632467304)
-LAST_GIT_COMMIT_SUBJECT = 'fix: filebox.from_id error when using cgteamwork6.1'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1632470072)
+LAST_GIT_COMMIT_SUBJECT = 'fix: invalid syntax for python2'
 LAST_GIT_COMMIT_BODY = ''
