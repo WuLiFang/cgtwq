@@ -141,7 +141,7 @@ def get_entry_by_file(filename, pipeline, module="shot"):
     shot = _get_shot(filename)
     database = cgtwq.Database(get_database_by_file(filename))
     select = database.module(module).filter(
-        (cgtwq.Field("pipeline") == pipeline) & (cgtwq.Field("shot.shot") == shot)
+        (cgtwq.Field("pipeline") == pipeline) & (cgtwq.Field("shot.entity") == shot)
     )
     try:
         entry = select.to_entry()
@@ -235,7 +235,7 @@ class CGTWQHelper(object):  # TODO: remove this at next major version.
         shot = _get_shot(filename)
         database = cgtwq.Database(cls.get_database(filename))
         select = database.module(module).filter(
-            (cgtwq.Field("pipeline") == pipeline) & (cgtwq.Field("shot.shot") == shot)
+            (cgtwq.Field("pipeline") == pipeline) & (cgtwq.Field("shot.entity") == shot)
         )
         try:
             entry = select.to_entry()
