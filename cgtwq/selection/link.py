@@ -52,10 +52,8 @@ class SelectionLink(SelectionAttachment):
 
     link = deprecated(version="3.4.1", reason="renamed to `add`")(add)
 
-    def remove(self, *id_list, **kwargs):
-        # type: (Text, Any) -> None
-        """Unlink the selection with other items."""
-        to_module = kwargs.get("to_module", "asset")
+    def _remove_v5_2(self, *id_list, to_module):
+        # type: (Text, Text) -> None
 
         select = self.select
         for id_ in select:
@@ -68,6 +66,28 @@ class SelectionLink(SelectionAttachment):
                 link_module=to_module,
                 is_main="Y",
             )
+
+    def _remove_v6_1(self, *id_list, to_module):
+        # type: (Text, Text) -> None
+
+        select = self.select
+        for id_ in select:
+            select.call(
+                "c_many",
+                "remove_link",
+                id=id_,
+                module_tab_id_array=select,
+                link_module=to_module,
+                link_module_tab_id_array=id_list,
+            )
+
+    def remove(self, *id_list, **kwargs):
+        # type: (Text, Any) -> None
+        """Unlink the selection with other items."""
+        to_module = kwargs.get("to_module", "asset")
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._remove_v5_2(*id_list, to_module=to_module)
+        return self._remove_v6_1(*id_list, to_module=to_module)
 
     unlink = deprecated(version="3.4.1", reason="renamed to `remove`")(remove)
 
