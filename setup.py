@@ -1,6 +1,6 @@
 import codecs
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with codecs.open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -12,7 +12,7 @@ with codecs.open("VERSION", "r", encoding="utf-8") as fh:
 setup(
     name="cgtwq",
     version=version,
-    packages=["cgtwq"],
+    packages=find_packages(),
     description="CGTeamWork python client for humans.",
     long_description=long_description,
     long_description_content_type="text/markdown",
