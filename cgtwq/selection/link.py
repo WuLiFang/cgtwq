@@ -14,8 +14,9 @@ if TYPE_CHECKING:
 class SelectionLink(SelectionAttachment):
     """Link feature for selection."""
 
-    def _add_v5_2(self, *id_list, to_module):
-        # type: (Text, Text) -> None
+    def _add_v5_2(self, *id_list, **kwargs):
+        # type: (Text, Any) -> None
+        to_module = kwargs["to_module"]
 
         select = self.select
         select.call(
@@ -27,8 +28,9 @@ class SelectionLink(SelectionAttachment):
             is_main="Y",
         )
 
-    def _add_v6_1(self, *id_list, to_module):
-        # type: (Text, Text) -> None
+    def _add_v6_1(self, *id_list, **kwargs):
+        # type: (Text, Any) -> None
+        to_module = kwargs["to_module"]
 
         select = self.select
         count_dict = {}
@@ -52,8 +54,9 @@ class SelectionLink(SelectionAttachment):
 
     link = deprecated(version="3.4.1", reason="renamed to `add`")(add)
 
-    def _remove_v5_2(self, *id_list, to_module):
-        # type: (Text, Text) -> None
+    def _remove_v5_2(self, *id_list, **kwargs):
+        # type: (Text, Any) -> None
+        to_module = kwargs["to_module"]
 
         select = self.select
         for id_ in select:
@@ -67,8 +70,9 @@ class SelectionLink(SelectionAttachment):
                 is_main="Y",
             )
 
-    def _remove_v6_1(self, *id_list, to_module):
-        # type: (Text, Text) -> None
+    def _remove_v6_1(self, *id_list, **kwargs):
+        # type: (Text, Any) -> None
+        to_module = kwargs["to_module"]
 
         select = self.select
         for id_ in select:
