@@ -33,7 +33,11 @@ def database():
 
 
 def select():
-    return database.module("shot").filter(
-        Field("shot.entity") == "SDKTEST_EP01_01_sc001",
-        Field("task.pipeline") == "合成",
+    return (
+        database()
+        .module("shot")
+        .filter(
+            Field("shot.entity") == "SDKTEST_EP01_01_sc001",
+            Field("task.pipeline") == "合成",
+        )
     )
