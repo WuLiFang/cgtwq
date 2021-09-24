@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.3.0'
-RELEASE_DATE = datetime.fromtimestamp(1632394553)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.2.3-2-gfde078b'
-LAST_GIT_COMMIT_HASH = 'fde078b0f9cd7bab57b8b81a0c9debebcb393098'
+VERSION = '3.3.1'
+RELEASE_DATE = datetime.fromtimestamp(1632452438)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.3.0-1-geb5f943'
+LAST_GIT_COMMIT_HASH = 'eb5f943b5ee862797f092bd12b4ee0a6adfacf1f'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1632394476)
-LAST_GIT_COMMIT_SUBJECT = 'feat: support cgteamwork6.1'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1632452033)
+LAST_GIT_COMMIT_SUBJECT = 'fix: missing packages when install from archive'
 LAST_GIT_COMMIT_BODY = ''

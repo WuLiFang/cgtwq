@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.1](https://github.com/WuLiFang/cgtwq/compare/v3.3.0...v3.3.1) (2021-09-24)
+
+### Bug Fixes
+
+- missing packages when install from archive eb5f943
+
 ## [3.3.0](https://github.com/WuLiFang/cgtwq/compare/v3.2.3...v3.3.0) (2021-09-23)
 
 ### Features
