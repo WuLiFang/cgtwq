@@ -12,7 +12,7 @@ with codecs.open("VERSION", "r", encoding="utf-8") as fh:
 setup(
     name="cgtwq",
     version=version,
-    packages=find_packages(),
+    packages=find_packages(include=["cgtwq", "cgtwq.*"]),
     description="CGTeamWork python client for humans.",
     long_description=long_description,
     long_description_content_type="text/markdown",
