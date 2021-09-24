@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.1](https://github.com/WuLiFang/cgtwq/compare/v3.4.0...v3.4.1) (2021-09-24)
+
+### Bug Fixes
+
+- filebox.from_id error when using cgteamwork6.1 63028a5
+
 ## [3.4.0](https://github.com/WuLiFang/cgtwq/compare/v3.3.2...v3.4.0) (2021-09-24)
 
 ### Features
