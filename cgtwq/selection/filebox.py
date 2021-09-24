@@ -5,8 +5,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from deprecated import deprecated
 
 from ..model import FileBoxInfo
-from .core import _OS, SelectionAttachment
-from .. import compat
+from .core import SelectionAttachment
+from .. import compat, constants
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -15,6 +15,34 @@ if TYPE_CHECKING:
 
 class SelectionFilebox(SelectionAttachment):
     """File operation on selection."""
+
+    def _from_id_v5_2(self, id_):
+        # type: (Text) -> FileBoxInfo
+        select = self.select
+        resp = select.call(
+            "c_file",
+            "filebox_get_one_with_id",
+            task_id=select[0],
+            filebox_id=id_,
+            os=constants.OS,
+        )
+        if not resp:
+            raise ValueError("SelectionFilebox.from_id: no matched filebox", id_)
+        return FileBoxInfo(**resp)
+
+    def _from_id_v6_1(self, id_):
+        # type: (Text) -> FileBoxInfo
+        select = self.select
+        resp = select.call(
+            "c_filebox",
+            "filebox_get_one_with_id",
+            task_id=select[0],
+            filebox_id=id_,
+            os=constants.OS,
+        )
+        if not resp:
+            raise ValueError("SelectionFilebox.from_id: no matched filebox", id_)
+        return FileBoxInfo(**resp)
 
     def from_id(self, id_):
         # type: (Text) -> FileBoxInfo
@@ -29,24 +57,19 @@ class SelectionFilebox(SelectionAttachment):
         Returns:
             FileboxInfo
         """
-
-        select = self.select
-        resp = select.call(
-            "c_file",
-            "filebox_get_one_with_id",
-            task_id=select[0],
-            filebox_id=id_,
-            os=_OS,
-        )
-        if not resp:
-            raise ValueError("SelectionFilebox.from_id: no matched filebox", id_)
-        return FileBoxInfo(**resp)
+        if compat.api_level() == compat.API_LEVEL_5_2:
+            return self._from_id_v5_2(id_)
+        return self._from_id_v6_1(id_)
 
     def _from_sign_v5_2(self, sign):
         # type: (Text) -> FileBoxInfo
         select = self.select
         resp = select.call(
-            "c_file", "filebox_get_one_with_sign", task_id=select[0], sign=sign, os=_OS
+            "c_file",
+            "filebox_get_one_with_sign",
+            task_id=select[0],
+            sign=sign,
+            os=constants.OS,
         )
         if not resp:
             raise ValueError("SelectionFilebox.from_sign: no matched filebox", sign)
@@ -60,7 +83,7 @@ class SelectionFilebox(SelectionAttachment):
             "filebox_get_one_with_sign",
             task_id=select[0],
             sign=sign,
-            os=_OS,
+            os=constants.OS,
         )
         if not resp:
             raise ValueError("SelectionFilebox.from_sign: no matched filebox", sign)
@@ -87,7 +110,7 @@ class SelectionFilebox(SelectionAttachment):
         # type: () -> FileBoxInfo
         select = self.select
         resp = select.call(
-            "c_file", "filebox_get_submit_data", task_id=select[0], os=_OS
+            "c_file", "filebox_get_submit_data", task_id=select[0], os=constants.OS
         )
         assert isinstance(resp, dict), resp
         return FileBoxInfo(**resp)
@@ -99,7 +122,7 @@ class SelectionFilebox(SelectionAttachment):
             "c_filebox",
             "filebox_get_submit_data",
             task_id=select[0],
-            os=_OS,
+            os=constants.OS,
             sign=sign,
         )
         assert isinstance(resp, dict), resp

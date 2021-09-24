@@ -5,7 +5,7 @@ import os
 
 import pytest
 
-from cgtwq import DesktopClient, compat
+from cgtwq import DesktopClient, compat, Database, Field
 
 skip_if_not_logged_in = pytest.mark.skipif(
     not (
@@ -25,3 +25,14 @@ skip_for_cgteamwork6 = pytest.mark.skipif(
 skip_if_desktop_client_not_running = pytest.mark.skipif(  # pylint: disable=invalid-name
     not DesktopClient().is_running(), reason="CGTeamWork desktop client not running."
 )
+
+
+def select():
+    return (
+        Database("proj_sdktest")
+        .module("shot")
+        .filter(
+            Field("shot.entity") == "SDKTEST_EP01_01_sc001",
+            Field("task.pipeline") == "合成",
+        )
+    )
