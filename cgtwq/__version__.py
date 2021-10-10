@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.5.0'
-RELEASE_DATE = datetime.fromtimestamp(1632470235)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.4.1-6-g3860864'
-LAST_GIT_COMMIT_HASH = '38608647cb51bb2cdaef7ca24e34b868d51367e7'
+VERSION = '3.5.1'
+RELEASE_DATE = datetime.fromtimestamp(1633857379)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.5.0-7-g335757a'
+LAST_GIT_COMMIT_HASH = '335757a85c7026f89c5b3b6ae7696fd1863f40ff'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1632470072)
-LAST_GIT_COMMIT_SUBJECT = 'fix: invalid syntax for python2'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1633857344)
+LAST_GIT_COMMIT_SUBJECT = 'fix: handle psutil.AccessDenied'
 LAST_GIT_COMMIT_BODY = ''

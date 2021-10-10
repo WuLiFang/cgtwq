@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.1](https://github.com/WuLiFang/cgtwq/compare/v3.5.0...v3.5.1) (2021-10-10)
+
+### Bug Fixes
+
+- cannot get desktop client v6.1 executable path 4e49c2b
+- flow.submit not work 7565edb
+- handle psutil.AccessDenied 335757a
+
 ## [3.5.0](https://github.com/WuLiFang/cgtwq/compare/v3.4.1...v3.5.0) (2021-09-24)
 
 ### Features
