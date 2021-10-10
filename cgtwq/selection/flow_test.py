@@ -7,6 +7,7 @@ from cgtwq import _test, constants
 
 
 @_test.skip_if_not_logged_in
+@_test.skip_if_ci
 def test_list_submit_file():
     s = _test.select()
     s.flow.submit(
