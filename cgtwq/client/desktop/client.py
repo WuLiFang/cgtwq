@@ -59,7 +59,7 @@ class DesktopClient(CachedFunctionMixin):
         """
 
         # Get client executable.
-        for i in psutil.process_iter(["name", "exe"]):
+        for i in psutil.process_iter():
             if i.name().lower() == "cgteamwork.exe":
                 return i.exe()
 

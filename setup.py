@@ -37,7 +37,7 @@ setup(
         "pathlib2-unicode>=3.0.0, <4.0.0",
         "cast-unknown>=0.1.4, <0.2.0",
         "six>=1.11.0, <2.0.0",
-        "psutil~=5.8",
+        "psutil>=2.0.0",
     ],
     include_package_data=True,
 )
