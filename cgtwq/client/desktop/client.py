@@ -60,8 +60,11 @@ class DesktopClient(CachedFunctionMixin):
 
         # Get client executable.
         for i in psutil.process_iter():
-            if i.name().lower() == "cgteamwork.exe":
-                return i.exe()
+            try:
+                if i.name().lower() == "cgteamwork.exe":
+                    return i.exe()
+            except psutil.AccessDenied:
+                pass
 
         # Try use default path when client not running.
         for i in (
