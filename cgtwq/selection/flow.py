@@ -16,9 +16,18 @@ from .core import SelectionAttachment
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Iterable, List, Optional, Sequence, Text, Tuple, Union
+    from typing import Iterable, List, Optional, Sequence, Text, Tuple, Union, Iterator
 
     from ..model import ImageInfo
+
+
+def _listdir(path):
+    # type: (Text) -> Iterator[Text]
+    try:
+        for i in os.listdir(path):
+            yield os.path.join(path, i)
+    except OSError:
+        return
 
 
 class SelectionFlow(SelectionAttachment):
@@ -96,11 +105,11 @@ class SelectionFlow(SelectionAttachment):
             text=message.dumps(),
         )
 
-    def _submit_v6_1(self, filenames=(), message="", account_id=None):
-        # type: (Sequence[Text], Union[Message, Text], Text) -> None
+    def _submit_v6_1(self, filenames=(), message="", account_id=None, os=constants.OS):
+        # type: (Sequence[Text], Union[Message, Text], Text, Text) -> None
         select = self.select
         message = Message.load(message)
-        version_id = self._create_version_v6_1(filenames)
+        version_id = self._create_version_v6_1(filenames, os=os)
         select.call(
             "c_work_flow",
             "submit",
@@ -110,8 +119,8 @@ class SelectionFlow(SelectionAttachment):
             version_id=version_id,
         )
 
-    def submit(self, filenames=(), message="", account_id=None):
-        # type: (Sequence[Text], Union[Message, Text], Text) -> None
+    def submit(self, filenames=(), message="", account_id=None, os=constants.OS):
+        # type: (Sequence[Text], Union[Message, Text], Optional[Text], Text) -> None
         """Submit file to task, then change status to `Check`.
 
         Args:
@@ -121,7 +130,7 @@ class SelectionFlow(SelectionAttachment):
 
         if compat.api_level() == compat.API_LEVEL_5_2:
             return self._submit_v5_2(filenames, message, account_id)
-        return self._submit_v6_1(filenames, message, account_id)
+        return self._submit_v6_1(filenames, message, account_id, os)
 
     def _create_version_v5_2(self, filenames, sign="Api Submit"):
         # type: (Iterable[Text], Text) -> Text
@@ -145,14 +154,12 @@ class SelectionFlow(SelectionAttachment):
         )
         return version_id
 
-    def _create_version_v6_1(self, filenames, sign="review"):
-        # type: (Iterable[Text], Text) -> Text
+    def _create_version_v6_1(self, filenames, sign="review", os=constants.OS):
+        # type: (Iterable[Text], Text, Text) -> Text
         select = self.select
         filebox_data = select.filebox.get_submit(sign)
         submit_dir = filebox_data.path
-        filenames = filenames or tuple(
-            os.path.join(submit_dir, i) for i in os.listdir(submit_dir)
-        )
+        filenames = filenames or tuple(_listdir(submit_dir))
         if not filenames:
             raise ValueError("no file to submit")
         version_id = select.call(
@@ -164,12 +171,12 @@ class SelectionFlow(SelectionAttachment):
             submit_path_array=filenames,
             submit_file_path_array=filenames,
             server_id=filebox_data.server_id,
-            os=constants.OS,
+            os=os,
         )
         return version_id
 
-    def create_version(self, filenames, sign=None, version_id=None):
-        # type: (Iterable[Text], Optional[Text] , Text) -> Text
+    def create_version(self, filenames, sign=None, version_id=None, os=constants.OS):
+        # type: (Iterable[Text], Optional[Text] , Optional[Text], Text) -> Text
         """Create new task version.
 
         Args:
@@ -183,7 +190,7 @@ class SelectionFlow(SelectionAttachment):
 
         if compat.api_level() == compat.API_LEVEL_5_2:
             return self._create_version_v5_2(filenames, sign or "Api Submit")
-        return self._create_version_v6_1(filenames, sign or "review")
+        return self._create_version_v6_1(filenames, sign or "review", os)
 
     def assign(self, accounts, start="", end=""):
         # type: (List[Text], Text, Text) -> None

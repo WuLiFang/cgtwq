@@ -9,7 +9,9 @@ from cgtwq import _test, constants
 @_test.skip_if_not_logged_in
 def test_list_submit_file():
     s = _test.select()
-    s.flow.submit(s.flow.list_submit_file(os=constants.OS_WINDOWS))
+    s.flow.submit(
+        s.flow.list_submit_file(os=constants.OS_WINDOWS), os=constants.OS_WINDOWS
+    )
     files = s.flow.list_submit_file()
     assert files
     for i in files:
