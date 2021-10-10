@@ -9,6 +9,7 @@ from functools import partial
 from subprocess import Popen
 
 import cast_unknown as cast
+import psutil
 import websocket as ws
 from deprecated import deprecated
 from six import text_type
@@ -58,17 +59,19 @@ class DesktopClient(CachedFunctionMixin):
         """
 
         # Get client executable.
-        try:
-            executable = os.path.abspath(
-                os.path.join(__import__("cgtw").__file__, "../../cgtw/CgTeamWork.exe")
-            )
-        except ImportError:
-            # Try use default when sys.path not been set correctly.
-            executable = "C:/cgteamwork/bin/cgtw/CgTeamWork.exe"
+        for i in psutil.process_iter(["name", "exe"]):
+            if i.name().lower() == "cgteamwork.exe":
+                return i.exe()
 
-        if not os.path.exists(executable):
-            executable = None
-        return executable
+        # Try use default path when client not running.
+        for i in (
+            os.getenv("CGTEAMWORK_CLIENT_PATH", ""),
+            "C:/CgTeamWork_v6/bin/cgtw/CgTeamWork.exe",
+            "C:/cgteamwork/bin/cgtw/CgTeamWork.exe",
+        ):
+            if i and os.path.exists(i):
+                return i
+        return None
 
     def start(self):
         """Start client if not running."""
