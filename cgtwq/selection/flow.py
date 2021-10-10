@@ -163,6 +163,7 @@ class SelectionFlow(SelectionAttachment):
             submit_dir=submit_dir,
             submit_path_array=filenames,
             submit_file_path_array=filenames,
+            server_id=filebox_data.server_id,
             os=constants.OS,
         )
         return version_id
