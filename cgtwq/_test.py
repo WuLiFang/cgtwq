@@ -8,6 +8,10 @@ import pytest
 
 from cgtwq import DesktopClient, compat, Database, Field
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from typing import Text
+
 skip_if_not_logged_in = pytest.mark.skipif(
     not (
         os.getenv("CGTWQ_TEST_ACCOUNT")  # pylint: disable=invalid-name
@@ -41,3 +45,11 @@ def select():
             Field("task.pipeline") == "合成",
         )
     )
+
+
+__dirname__ = os.path.abspath(os.path.dirname(__file__))
+
+
+def workspace_path(*paths):
+    # type: (Text) -> Text
+    return os.path.join(os.path.dirname(__dirname__), *paths)

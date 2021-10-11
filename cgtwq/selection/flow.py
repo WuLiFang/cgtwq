@@ -13,12 +13,15 @@ from .. import account, compat, constants, exceptions
 from ..filter import Field
 from ..message import Message
 from .core import SelectionAttachment
+import cast_unknown as cast
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Iterable, List, Optional, Sequence, Text, Tuple, Union, Iterator
 
     from ..model import ImageInfo
+
+import shutil
 
 
 def _listdir(path):
@@ -28,6 +31,37 @@ def _listdir(path):
             yield os.path.join(path, i)
     except OSError:
         return
+
+
+def _is_under_dir(filename, dir):
+    # type: (Text, Text) -> bool
+    return os.path.normcase(os.path.abspath(filename)).startswith(
+        os.path.normcase(os.path.abspath(dir))
+    )
+
+
+def _copy_to_dir(filenames, dir):
+    # type: (Iterable[Text], Text) -> Iterator[Text]
+    os.makedirs(dir, exist_ok=True)
+    for src in filenames:
+        if _is_under_dir(src, dir):
+            yield src
+            continue
+        dst = os.path.join(dir, os.path.basename(src))
+        try:
+            shutil.copy(src, dst)
+        except shutil.SameFileError:
+            pass
+        yield dst
+
+
+def _cast_strings(v):
+    # type: (Sequence[Text]) -> Sequence[Text]
+    if isinstance(v, six.binary_type):
+        return (cast.text(v),)
+    if isinstance(v, six.text_type):
+        return (v,)
+    return v
 
 
 class SelectionFlow(SelectionAttachment):
@@ -87,8 +121,8 @@ class SelectionFlow(SelectionAttachment):
             return self._update_v5_2(field, status, message, images)
         return self._update_v6_1(field, status, message, images)
 
-    def _submit_v5_2(self, filenames=(), message="", account_id=None):
-        # type: (Sequence[Text], Union[Message, Text], Text) -> None
+    def _submit_v5_2(self, filenames, message, account_id):
+        # type: (Sequence[Text], Union[Message, Text], Optional[Text]) -> None
         select = self.select
         message = Message.load(message)
         account_id = account_id or account.get_account_id(select.token)
@@ -105,22 +139,25 @@ class SelectionFlow(SelectionAttachment):
             text=message.dumps(),
         )
 
-    def _submit_v6_1(self, filenames=(), message="", account_id=None, os=constants.OS):
+    def _submit_v6_1(self, filenames, message, os, sign):
         # type: (Sequence[Text], Union[Message, Text], Text, Text) -> None
         select = self.select
         message = Message.load(message)
-        version_id = self._create_version_v6_1(filenames, os=os)
+
+        version_id = self._create_version_v6_1(filenames, sign, os)
         select.call(
             "c_work_flow",
             "submit",
             task_id=select[0],
-            submit_type="review",
+            submit_type=sign,
             dom_text_array=message.api_payload(),
             version_id=version_id,
         )
 
-    def submit(self, filenames=(), message="", account_id=None, os=constants.OS):
-        # type: (Sequence[Text], Union[Message, Text], Optional[Text], Text) -> None
+    def submit(
+        self, filenames=(), message="", account_id=None, os=constants.OS, sign="review"
+    ):
+        # type: (Sequence[Text], Union[Message, Text], Optional[Text], Text, Text) -> None
         """Submit file to task, then change status to `Check`.
 
         Args:
@@ -128,12 +165,13 @@ class SelectionFlow(SelectionAttachment):
             message (Message, optional): Defaults to "". Submit note(and images).
         """
 
+        filenames = _cast_strings(filenames)
         if compat.api_level() == compat.API_LEVEL_5_2:
             return self._submit_v5_2(filenames, message, account_id)
-        return self._submit_v6_1(filenames, message, account_id, os)
+        return self._submit_v6_1(filenames, message, os, sign)
 
-    def _create_version_v5_2(self, filenames, sign="Api Submit"):
-        # type: (Iterable[Text], Text) -> Text
+    def _create_version_v5_2(self, filenames, sign):
+        # type: (Sequence[Text], Text) -> Text
         select = self.select
         version_id = uuid.uuid4().hex
         select.call(
@@ -154,12 +192,13 @@ class SelectionFlow(SelectionAttachment):
         )
         return version_id
 
-    def _create_version_v6_1(self, filenames, sign="review", os=constants.OS):
-        # type: (Iterable[Text], Text, Text) -> Text
+    def _create_version_v6_1(self, filenames, sign, os):
+        # type: (Sequence[Text], Text, Text) -> Text
         select = self.select
         filebox_data = select.filebox.get_submit(sign)
         submit_dir = filebox_data.path
-        filenames = filenames or tuple(_listdir(submit_dir))
+        server_id = filebox_data.server_id
+        filenames = tuple(_copy_to_dir(filenames, submit_dir) or _listdir(submit_dir))
         if not filenames:
             raise ValueError("no file to submit")
         version_id = select.call(
@@ -170,13 +209,23 @@ class SelectionFlow(SelectionAttachment):
             submit_dir=submit_dir,
             submit_path_array=filenames,
             submit_file_path_array=filenames,
-            server_id=filebox_data.server_id,
+            server_id=server_id,
             os=os,
+        )
+        select.call(
+            "c_file",
+            "create",
+            link_id=select[0],
+            sign=sign,
+            version_id=version_id,
+            path_array=filenames,
+            os=os,
+            server_id=server_id,
         )
         return version_id
 
     def create_version(self, filenames, sign=None, version_id=None, os=constants.OS):
-        # type: (Iterable[Text], Optional[Text] , Optional[Text], Text) -> Text
+        # type: (Sequence[Text], Optional[Text] , Optional[Text], Text) -> Text
         """Create new task version.
 
         Args:
