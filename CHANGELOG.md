@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.2](https://github.com/WuLiFang/cgtwq/compare/v3.5.1...v3.5.2) (2021-10-11)
+
+### Bug Fixes
+
+- error when flow.submit to cgteamwork v6.1 729f404
+
 ## [3.5.1](https://github.com/WuLiFang/cgtwq/compare/v3.5.0...v3.5.1) (2021-10-10)
 
 ### Bug Fixes
