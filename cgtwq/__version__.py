@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.5.2'
-RELEASE_DATE = datetime.fromtimestamp(1633922078)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.5.1-1-g729f404'
-LAST_GIT_COMMIT_HASH = '729f40493d9f82ba3a9b24dc563cf41fcda0e75b'
+VERSION = '3.5.3'
+RELEASE_DATE = datetime.fromtimestamp(1633923934)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.5.2-1-g62cd8ff'
+LAST_GIT_COMMIT_HASH = '62cd8ff6c9d70313063de94128007cb933024d5a'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1633922024)
-LAST_GIT_COMMIT_SUBJECT = 'fix: error when flow.submit to cgteamwork v6.1'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1633923858)
+LAST_GIT_COMMIT_SUBJECT = 'fix: makedirs error in python2.7'
 LAST_GIT_COMMIT_BODY = ''
