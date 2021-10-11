@@ -42,7 +42,11 @@ def _is_under_dir(filename, dir):
 
 def _copy_to_dir(filenames, dir):
     # type: (Iterable[Text], Text) -> Iterator[Text]
-    os.makedirs(dir, exist_ok=True)
+    try:
+        # exists_ok not avaliable in python2.7
+        os.makedirs(dir)
+    except OSError:
+        pass
     for src in filenames:
         if _is_under_dir(src, dir):
             yield src
