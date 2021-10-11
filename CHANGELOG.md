@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.4](https://github.com/WuLiFang/cgtwq/compare/v3.5.3...v3.5.4) (2021-10-11)
+
+### Bug Fixes
+
+- wrong image upload result 3e2cc4b
+
 ## [3.5.3](https://github.com/WuLiFang/cgtwq/compare/v3.5.2...v3.5.3) (2021-10-11)
 
 ### Bug Fixes
