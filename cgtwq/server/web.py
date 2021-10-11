@@ -59,7 +59,7 @@ def _upload_image_v5_2(filename, folder, token):
         },
     )
     assert isinstance(data, dict), type(data)
-    return ImageInfo(data["min"], data["max"], filename)
+    return ImageInfo(data["max"], data["min"], filename)
 
 
 def _upload_image_v6_1(filename, folder, token):
@@ -100,7 +100,7 @@ def _upload_image_v6_1(filename, folder, token):
         },
     )
     assert isinstance(data, dict), type(data)
-    return ImageInfo(data["min"], data["max"], filename, data["att_id"])
+    return ImageInfo(data["max"], data["min"], filename, data["att_id"])
 
 
 def upload_image(filename, folder, token):
