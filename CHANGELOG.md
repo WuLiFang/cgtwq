@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://github.com/WuLiFang/cgtwq/compare/v3.5.4...v3.6.0) (2021-11-09)
+
+### Features
+
+- read desktop client ws port from config file f9a298e
+
 ## [3.5.4](https://github.com/WuLiFang/cgtwq/compare/v3.5.3...v3.5.4) (2021-10-11)
 
 ### Bug Fixes
