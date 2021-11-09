@@ -10,7 +10,7 @@ from cgtwq import DesktopClient, compat, Database, Field
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Text
+    from typing import Text, Any
 
 skip_if_not_logged_in = pytest.mark.skipif(
     not (
@@ -22,7 +22,7 @@ skip_if_not_logged_in = pytest.mark.skipif(
 )
 skip_if_ci = pytest.mark.skipif(
     os.getenv("CI") == "true", reason="Not run with ci."  # pylint: disable=invalid-name
-)
+) # type: Any
 skip_for_cgteamwork6 = pytest.mark.skipif(
     compat.api_level() == compat.API_LEVEL_6_1, reason="not run for cgteamwork6"
 )

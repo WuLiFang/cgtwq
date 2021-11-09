@@ -8,7 +8,6 @@ import os
 from functools import partial
 from subprocess import Popen
 
-import cast_unknown as cast
 import psutil
 import websocket as ws
 from deprecated import deprecated
@@ -19,6 +18,7 @@ from ...exceptions import IDError
 from ...selection import Selection
 from . import core
 from .plugin import DesktopClientPlugin
+import configparser
 
 LOGGER = logging.getLogger(__name__)
 
@@ -29,12 +29,27 @@ if TYPE_CHECKING:
     T = TypeVar("T")
 
 
+def _default_socket_url():
+    cfg_path = DesktopClient.config_path()
+    if cfg_path:
+        try:
+            cfg = configparser.ConfigParser()
+            cfg.read(cfg_path)
+            port = cfg.get("General", "socket_server_port")
+            LOGGER.debug("ws port: %s", port)
+            return "ws://127.0.0.1:%s" % port
+        except Exception as ex:
+            LOGGER.warn("read config failed: %s", ex)
+    return CONFIG["DESKTOP_WEBSOCKET_URL"]
+
+
 class DesktopClient(CachedFunctionMixin):
     """Communicate with a CGTeamWork official GUI clients."""
 
     def __init__(self, socket_url=None):
+        # type: (str) -> None
         super(DesktopClient, self).__init__()
-        self.socket_url = socket_url or cast.text(CONFIG["DESKTOP_WEBSOCKET_URL"])
+        self.socket_url = socket_url or _default_socket_url()
 
         # Attachment.
         self.plugin = DesktopClientPlugin(self)
@@ -75,6 +90,13 @@ class DesktopClient(CachedFunctionMixin):
             if i and os.path.exists(i):
                 return i
         return None
+
+    @staticmethod
+    def config_path():
+        exe_path = DesktopClient.executable()
+        if not exe_path:
+            return
+        return os.path.join(os.path.dirname(exe_path), "config.ini")
 
     def start(self):
         """Start client if not running."""
