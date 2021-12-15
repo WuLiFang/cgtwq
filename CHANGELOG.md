@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.1](https://github.com/WuLiFang/cgtwq/compare/v3.6.0...v3.6.1) (2021-12-15)
+
+### Bug Fixes
+
+- should import configparser from six 8fe8afc
+
 ## [3.6.0](https://github.com/WuLiFang/cgtwq/compare/v3.5.4...v3.6.0) (2021-11-09)
 
 ### Features

@@ -9,12 +9,12 @@ from __future__ import (absolute_import, division, print_function,
 
 from datetime import datetime
 
-VERSION = '3.6.0'
-RELEASE_DATE = datetime.fromtimestamp(1636438345)
-LAST_GIT_COMMIT_DESCRIBE = 'v3.5.4-1-gf9a298e'
-LAST_GIT_COMMIT_HASH = 'f9a298e6b6006aa0ad4fc942717f4339e3e4efef'
+VERSION = '3.6.1'
+RELEASE_DATE = datetime.fromtimestamp(1639552001)
+LAST_GIT_COMMIT_DESCRIBE = 'v3.6.0-1-g8fe8afc'
+LAST_GIT_COMMIT_HASH = '8fe8afc1c9b8535bb2ba9ef4e1917a07673ef045'
 LAST_GIT_COMMIT_AUTHOR_NAME = 'NateScarlet'
 LAST_GIT_COMMIT_AUTHOR_EMAIL = 'NateScarlet@Gmail.com'
-LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1636436697)
-LAST_GIT_COMMIT_SUBJECT = 'feat: read desktop client ws port from config file'
+LAST_GIT_COMMIT_AUTHOR_DATE = datetime.fromtimestamp(1639551965)
+LAST_GIT_COMMIT_SUBJECT = 'fix: should import configparser from six'
 LAST_GIT_COMMIT_BODY = ''
