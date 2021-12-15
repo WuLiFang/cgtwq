@@ -12,13 +12,13 @@ import psutil
 import websocket as ws
 from deprecated import deprecated
 from six import text_type
+from six.moves import configparser
 
 from ...core import CONFIG, CachedFunctionMixin
 from ...exceptions import IDError
 from ...selection import Selection
 from . import core
 from .plugin import DesktopClientPlugin
-import configparser
 
 LOGGER = logging.getLogger(__name__)
 
