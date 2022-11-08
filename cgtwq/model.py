@@ -313,6 +313,7 @@ PluginData = namedtuple(
         "link_id_list",
         "is_link",
         "link_module",
+        "qc_field_sign",
     ),
 )
 
