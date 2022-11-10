@@ -11,14 +11,14 @@ if TYPE_CHECKING:
     from ._pipeline_service_protocol import PipelineService
     from ._flow_service_protocol import FlowService
 
-from ._filter import Filter, NULL_FILTER
-from ._http_client import HTTPClient
-from ._orm_table_view import ORMTableView
+import os
 
 from ._compat_service import CompatService
-import os
-from ._pipeline_service import PipelineServiceImpl
+from ._filter import NULL_FILTER, Filter
 from ._flow_service import FlowServiceImpl
+from ._http_client import HTTPClient
+from ._orm_table_view import ORMTableView
+from ._pipeline_service import PipelineServiceImpl
 
 
 class ClientImpl(object):
