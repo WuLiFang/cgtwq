@@ -63,8 +63,9 @@ class ORMTableView:
                 limit="%d" % (page_size,),
                 start_num="%d" % (page_index * page_size,),
             )
-            for i in resp.json():
-                has_next_page = True
+            for index, i in enumerate(resp.json()):
+                if index == page_size - 1:
+                    has_next_page = True
                 yield i
             page_index += 1
 

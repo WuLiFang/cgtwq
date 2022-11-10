@@ -51,9 +51,9 @@ class ViewServiceImpl:
 
     def refresh_row(self, *ids):
         # type: (RowID) -> None
-        groups = {}  # type: dict[tuple[Text,Text,Text],set[RowID]]
+        groups = {}  # type: dict[tuple[Text,Text,Text], set[Text]]
         for i in ids:
-            groups.setdefault((i.database, i.module, i.module_type), set()).add(i)
+            groups.setdefault((i.database, i.module, i.module_type), set()).add(i.value)
         compat = self._compat
         for k, v in iteritems(groups):
             database, module, module_type = k
@@ -67,7 +67,7 @@ class ViewServiceImpl:
                     db=database,
                     module=module,
                     module_type=module_type,
-                    id_list=[i.value for i in v],
+                    id_list=v,
                 )
 
 
