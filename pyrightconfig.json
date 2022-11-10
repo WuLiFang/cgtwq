@@ -1,8 +1,8 @@
 {
     "typeCheckingMode": "basic",
     "reportUnusedImport": "error",
-    "reportMissingModuleSource": "information",
     "reportUnknownParameterType": "error",
+    "reportMissingModuleSource": "none",
     "executionEnvironments": [
         {
             "root": ".",
