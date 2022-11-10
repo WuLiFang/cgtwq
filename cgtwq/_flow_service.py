@@ -237,6 +237,6 @@ class FlowServiceImpl:
         return self._update_v6_1(id, field, status, msg)
 
 
-def _(v):
-    # type: (FlowServiceImpl) -> FlowService
-    return v
+def new_flow_service(http, compat):
+    # type: (HTTPClient, CompatService) -> FlowService
+    return FlowServiceImpl(http, compat)

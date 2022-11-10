@@ -4,12 +4,12 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from ._client import ClientImpl as Client
+from ._client import new_client
 from ._row_id import RowID
 from ._field_sign import FieldSign as F, FieldSign
 
 __all__ = [
-    "Client",
+    "new_client",
     "RowID",
     "FieldSign",
     "F",

@@ -8,17 +8,15 @@ if TYPE_CHECKING:
     from typing import Text
     from ._table_view_protocol import TableView
     from ._client_protocol import Client
-    from ._pipeline_service_protocol import PipelineService
-    from ._flow_service_protocol import FlowService
 
 import os
 
 from ._compat_service import CompatService
 from ._filter import NULL_FILTER, Filter
-from ._flow_service import FlowServiceImpl
+from ._flow_service import new_flow_service
 from ._http_client import HTTPClient
 from ._orm_table_view import ORMTableView
-from ._pipeline_service import PipelineServiceImpl
+from ._pipeline_service import new_pipeline_service
 
 
 class ClientImpl(object):
@@ -32,19 +30,13 @@ class ClientImpl(object):
             CompatService.level_from_version(version or self.default_version)
             or CompatService.level_from_http(http),
         )
-        pipeline = PipelineServiceImpl(
-            http,
-            compat,
-        )
-        flow = FlowServiceImpl(
-            http,
-            compat,
-        )
+        pipeline = new_pipeline_service(http, compat)
+        flow = new_flow_service(http, compat)
 
         self._http = http
         self._compat = compat
-        self.pipeline = pipeline  # type: PipelineService
-        self.flow = flow  # type: FlowService
+        self.pipeline = pipeline
+        self.flow = flow
 
     @property
     def http_url(self):
@@ -71,6 +63,6 @@ class ClientImpl(object):
         )
 
 
-def _(v):
-    # type: (ClientImpl) -> Client
-    return v
+def new_client(http_url="", version=""):
+    # type: (Text, Text) -> Client
+    return ClientImpl(http_url, version)

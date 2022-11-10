@@ -66,3 +66,8 @@ class NeighborTaskResult:
         return [
             RowID(self._database, self._module, "task", i) for i in self.raw["previous"]
         ]
+
+
+def new_pipeline_service(http, compat):
+    # type: (HTTPClient, CompatService) -> PipelineService
+    return PipelineServiceImpl(http, compat)

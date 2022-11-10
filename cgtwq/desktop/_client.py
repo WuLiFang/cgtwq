@@ -7,17 +7,17 @@ TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Text
     from ._client_protocol import Client
-    from ._plugin_service_protocol import PluginService
-    from ._view_service_protocol import ViewService
+
 import os
 
 import psutil
 from six.moves import configparser
-from ._view_service import ViewServiceImpl
-from ._plugin_service import PluginServiceImpl
-from ._ws_client import WSClient
+
 from .._client import ClientImpl as BaseClientImpl
 from .._util import cast_text
+from ._plugin_service import new_plugin_service
+from ._view_service import new_view_service
+from ._ws_client import WSClient
 
 
 def _default_exe_path():
@@ -71,18 +71,18 @@ class ClientImpl(BaseClientImpl):
         super(ClientImpl, self).__init__(
             http_url="http://%s" % (self._get_server_ip(),)
         )
-        plugin = PluginServiceImpl(
+        plugin = new_plugin_service(
             self._http,
             self._compat,
             self._ws,
         )
-        view = ViewServiceImpl(
+        view = new_view_service(
             self._ws,
             self._compat,
         )
 
-        self.plugin = plugin  # type: PluginService
-        self.view = view  # type: ViewService
+        self.plugin = plugin
+        self.view = view
         self.token = self._get_token()
 
     @property
@@ -106,6 +106,6 @@ class ClientImpl(BaseClientImpl):
         return cast_text(ret)
 
 
-def _(v):
-    # type: (ClientImpl) -> Client
-    return v
+def new_client(exe_path="", socket_url=""):
+    # type: (Text, Text) -> Client
+    return ClientImpl(exe_path, socket_url)

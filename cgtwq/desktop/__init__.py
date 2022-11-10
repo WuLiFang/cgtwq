@@ -4,6 +4,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 
-from ._client import ClientImpl as Client
+from ._client import new_client
 
-__all__ = ["Client"]
+__all__ = ["new_client"]

@@ -52,6 +52,6 @@ class PluginServiceImpl(BasePluginServiceImpl):
         )
 
 
-def _(v):
-    # type: (PluginServiceImpl) -> PluginService
-    return v
+def new_plugin_service(http, compat, ws):
+    # type: (HTTPClient, CompatService,WSClient) -> PluginService
+    return PluginServiceImpl(http, compat, ws)

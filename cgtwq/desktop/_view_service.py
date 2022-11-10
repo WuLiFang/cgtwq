@@ -13,6 +13,8 @@ if TYPE_CHECKING:
     from .._row_id import RowID
 
 from .._util import iteritems
+
+
 class ViewServiceImpl:
     def __init__(self, ws, compat):
         # type: (WSClient, CompatService) -> None
@@ -49,7 +51,7 @@ class ViewServiceImpl:
 
     def refresh_row(self, *ids):
         # type: (RowID) -> None
-        groups = {} # type: dict[tuple[Text,Text,Text],set[RowID]]
+        groups = {}  # type: dict[tuple[Text,Text,Text],set[RowID]]
         for i in ids:
             groups.setdefault((i.database, i.module, i.module_type), set()).add(i)
         compat = self._compat
@@ -69,7 +71,6 @@ class ViewServiceImpl:
                 )
 
 
-
-def _(v):
-    # type: (ViewServiceImpl) -> ViewService
-    return v
+def new_view_service(ws, compat):
+    # type: (WSClient, CompatService) -> ViewService
+    return ViewServiceImpl(ws, compat)

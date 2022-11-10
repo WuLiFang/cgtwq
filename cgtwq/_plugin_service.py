@@ -71,6 +71,6 @@ class PluginServiceImpl(object):
         resp.json()
 
 
-def _(v):
-    # type: (PluginServiceImpl) -> PluginService
-    return v
+def new_plugin_service(http, compat):
+    # type: (HTTPClient, CompatService) -> PluginService
+    return PluginServiceImpl(http, compat)
