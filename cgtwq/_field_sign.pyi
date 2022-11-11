@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 from ._filter import Filter
-from typing import Any, List, Sequence
+from typing import Any, Sequence
 
 class FieldSign:
     value: str
