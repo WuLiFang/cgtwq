@@ -13,6 +13,7 @@ import json
 import socket
 
 from contextlib import closing
+from .._http_client import JSONEncoder
 
 
 def _handle_error_10042(exception):
@@ -33,6 +34,7 @@ class WSClient:
     def __init__(self, url):
         # type: (Text) -> None
         self._url = url
+        self._encoder = JSONEncoder()
 
     def call(self, controller, method, **kwargs):
         # type: (Text, Text, Any) -> Any
@@ -41,7 +43,7 @@ class WSClient:
         # XXX: can not reuse connection, second call will not work.
         with closing(websocket.create_connection(self._url, self.timeout)) as conn:  # type: ignore
             try:
-                conn.send(json.dumps(payload))  # type: ignore
+                conn.send(self._encoder.encode(payload))  # type: ignore
                 recv = json.loads(conn.recv())  # type: ignore
                 ret = recv["data"]
                 try:

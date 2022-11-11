@@ -58,14 +58,13 @@ class JSONEncoder(json.JSONEncoder):
         o,
     ):
         # type: (Any, Any) -> Any
-        if isinstance(o, OrderedDict):
-            return dict(o)  # type: ignore
-        method = getattr(o, "_asdict", None)
-        if callable(method):
-            return method()
         method = getattr(o, "as_payload", None)
         if callable(method):
             return method()
+        if isinstance(o, set):
+            return list(o) # type: ignore
+        if isinstance(o, OrderedDict):
+            return dict(o) # type: ignore
         return super(JSONEncoder, self).default(o)  # type: ignore
 
 
