@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Text, Any
+    from typing import Text, Any, Sequence
 
 
 from six import python_2_unicode_compatible  # type: ignore
@@ -46,7 +46,7 @@ class FieldSign:
         # type: (Any) -> Filter
         return Filter(self._s, "<=", v)
 
-    def greater_than(self, v) :
+    def greater_than(self, v):
         # type: (Any) -> Filter
         return Filter(self._s, ">", v)
 
@@ -54,35 +54,44 @@ class FieldSign:
         # type: (Any) -> Filter
         return Filter(self._s, ">=", v)
 
-    # def like(self, v):
-    #     # type: (Text) -> Filter
-    #     """
-    #     - `%` match zero or many character.
-    #     - `-` match one character
-    #     """
-    #     ...
+    def like(self, v):
+        # type: (Text) -> Filter
+        """
+        - `%` match zero or many character.
+        - `-` match one character
+        """
+        return Filter(self._s, "concat", v)
 
-    # def not_like(self, v: str) -> Filter:
-    #     "same syntax as `like`"
+    def not_like(self, v):
+        # type: (Text) -> Filter
+        "same syntax as `like`"
+        return Filter(self._s, "!concat", v)
 
-    # def has(self, v: str) -> Filter:
-    #     ...
+    def has(self, v):
+        # type: (Text) -> Filter
+        return Filter(self._s, "has", v)
 
-    # def has_ignore_case(self, v: str) -> Filter:
-    #     ...
+    def not_has(self, v):
+        # type: (Text) -> Filter
+        return Filter(self._s, "!has", v)
 
-    # def not_has(self, v: str) -> Filter:
-    #     ...
+    def has_ignore_case(self, v):
+        # type: (Text) -> Filter
+        return Filter(self._s, "!has", v)
 
     def in_(self, v):
-        # type: (list[Text]) -> Filter
+        # type: (Sequence[Text]) -> Filter
         return Filter(self._s, "in", v)
 
-    # def starts_with(self, v: str) -> Filter:
-    #     ...
+    def starts_with(self, v):
+        # type: (Text) -> Filter
+        return Filter(self._s, "start", v)
 
-    # def ends_with(self, v: str) -> Filter:
-    #     ...
+    def ends_with(self, v):
+        # type: (Text) -> Filter
+        return Filter(self._s, "end", v)
 
-    # def is_(self, v: Any) -> Filter:
-    #     "unknown usage"
+    def is_(self, v):
+        # type: (Any) -> Filter
+        "unknown usage"
+        return Filter(self._s, "is", v)
