@@ -40,6 +40,7 @@ class PluginServiceImpl(object):
 
     def get(self, id):
         # type: (Text) -> ...
+        assert id, "id is required"
         resp = self._http.call(
             "c_plugin",
             "get_one_with_id",
