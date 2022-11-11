@@ -7,7 +7,7 @@ TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Text
 
-    from ._view_service_protocol import ViewService
+    from ._view_service import ViewService
     from ._ws_client import WSClient
     from .._compat_service import CompatService
     from .._row_id import RowID

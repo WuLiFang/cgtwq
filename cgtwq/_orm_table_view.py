@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Text, Iterator, Sequence
-    from ._table_view_protocol import TableView
+    from ._table_view import TableView
 
 from ._filter import Filter, NULL_FILTER
 from ._http_client import HTTPClient

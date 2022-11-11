@@ -6,10 +6,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Text, Dict, Any
-    from ._pipeline_service_protocol import PipelineService
+    from ._pipeline_service import PipelineService
     from ._compat_service import CompatService
     from ._http_client import HTTPClient
-    from ._table_view_protocol import TableView
+    from ._table_view import TableView
 
 from ._filter import NULL_FILTER, Filter
 from ._pipeline_table_view import PipelineTableView

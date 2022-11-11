@@ -6,7 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Text, Sequence, Optional, Iterator, Iterable
-    from ._flow_service_protocol import FlowService
+    from ._flow_service import FlowService
     from ._compat_service import CompatService
     from ._http_client import HTTPClient
     from ._row_id import RowID

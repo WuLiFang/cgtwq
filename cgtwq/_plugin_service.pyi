@@ -8,7 +8,7 @@ from typing import (
     Iterable,
 )
 from ._filter import Filter
-from ._table_view_protocol import TableView
+from ._table_view import TableView
 from ._plugin import Plugin
 
 class PluginService(Protocol):

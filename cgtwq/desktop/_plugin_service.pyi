@@ -6,7 +6,7 @@ from __future__ import annotations
 from typing import Text, Protocol
 
 from ._plugin_context_result import PluginContextResult
-from .._plugin_service_protocol import PluginService as BasePluginService
+from .._plugin_service import PluginService as BasePluginService
 
 class PluginService(BasePluginService, Protocol):
     def context(self, id: Text = ..., /) -> PluginContextResult:

@@ -6,13 +6,13 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Any, Text, Dict
-    from ._plugin_service_protocol import PluginService
+    from ._plugin_service import PluginService
 
 from .._util import is_uuid
 import sys
 from ._ws_client import WSClient
 from ._plugin_context_result import PluginContextResult
-from .._plugin_service import PluginServiceImpl as BasePluginServiceImpl
+from .._plugin_service_impl import PluginServiceImpl as BasePluginServiceImpl
 
 from .._compat_service import CompatService
 from .._http_client import HTTPClient

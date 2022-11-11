@@ -6,17 +6,17 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Text
-    from ._client_protocol import Client
+    from ._client import Client
 
 import os
 
 import psutil
 from six.moves import configparser
 
-from .._client import ClientImpl as BaseClientImpl
+from .._client_impl import ClientImpl as BaseClientImpl
 from .._util import cast_text
-from ._plugin_service import new_plugin_service
-from ._view_service import new_view_service
+from ._plugin_service_impl import new_plugin_service
+from ._view_service_impl import new_view_service
 from ._ws_client import WSClient
 
 

@@ -6,9 +6,9 @@ from __future__ import annotations
 from typing import Protocol
 
 from ._filter import Filter
-from ._pipeline_service import NeighborTaskResult
+from ._pipeline_service_impl import NeighborTaskResult
 from ._row_id import RowID
-from ._table_view_protocol import TableView
+from ._table_view import TableView
 
 class PipelineService(Protocol):
     def table(

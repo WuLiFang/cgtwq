@@ -5,9 +5,9 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from .._client_protocol import Client as BaseClient
-from ._plugin_service_protocol import PluginService
-from ._view_service_protocol import ViewService
+from .._client import Client as BaseClient
+from ._plugin_service import PluginService
+from ._view_service import ViewService
 
 class Client(BaseClient, Protocol):
     plugin: PluginService

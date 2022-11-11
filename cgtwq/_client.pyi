@@ -6,9 +6,9 @@ from typing import (
     Protocol,
 )
 from ._filter import Filter
-from ._table_view_protocol import TableView
-from ._pipeline_service_protocol import PipelineService
-from ._flow_service_protocol import FlowService
+from ._table_view import TableView
+from ._pipeline_service import PipelineService
+from ._flow_service import FlowService
 
 class Client(Protocol):
     pipeline: PipelineService

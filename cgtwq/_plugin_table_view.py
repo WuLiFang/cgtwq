@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from typing import Text, Iterator, Sequence
     from ._compat_service import CompatService
     from ._http_client import HTTPClient
-    from ._table_view_protocol import TableView
+    from ._table_view import TableView
 
 from ._row_id import RowID
 

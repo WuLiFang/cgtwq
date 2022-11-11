@@ -4,7 +4,7 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from ._client import new_client
+from ._client_impl import new_client
 from ._row_id import RowID
 from ._field_sign import FieldSign as F, FieldSign
 
