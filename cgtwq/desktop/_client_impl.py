@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from ._client import Client
 
 import os
+import sys
 
 import psutil
 from six.moves import configparser
@@ -19,10 +20,23 @@ from ._plugin_service_impl import new_plugin_service
 from ._view_service_impl import new_view_service
 from ._ws_client import WSClient
 
+_WELL_KNOWN_EXE_PATH = [
+    "C:/CgTeamWork_v6/bin/cgtw/CgTeamWork.exe",
+    "C:/cgteamwork/bin/cgtw/CgTeamWork.exe",
+]
+
 
 def _default_exe_path():
     # type: () -> Text
-    # Get client executable.
+    for i in (
+        os.getenv("CGTEAMWORK_CLIENT_PATH", ""),
+        os.path.normpath(
+            os.path.join(sys.executable, "..", "..", "bin", "cgtw", "CgTeamWork.exe")
+        ),
+    ):
+        if i and os.path.exists(i):
+            return i
+
     for i in psutil.process_iter():  # type: ignore
         try:
             if i.name().lower() == "cgteamwork.exe":  # type: ignore
@@ -30,12 +44,7 @@ def _default_exe_path():
         except psutil.AccessDenied:
             pass
 
-    # Try use default path when client not running.
-    for i in (
-        os.getenv("CGTEAMWORK_CLIENT_PATH", ""),
-        "C:/CgTeamWork_v6/bin/cgtw/CgTeamWork.exe",
-        "C:/cgteamwork/bin/cgtw/CgTeamWork.exe",
-    ):
+    for i in _WELL_KNOWN_EXE_PATH:
         if i and os.path.exists(i):
             return i
     return ""
@@ -48,7 +57,7 @@ def _default_socket_url(exe_path):
     # type: (Text) -> Text
     if not exe_path:
         return _FALLBACK_SOCKET_URL
-    cfg_path = os.path.join(os.path.dirname(exe_path), "config.ini")
+    cfg_path = os.path.normpath(os.path.join(exe_path, "..", "config.ini"))
 
     if cfg_path:
         try:
