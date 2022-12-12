@@ -77,7 +77,7 @@ class FieldSign:
 
     def has_ignore_case(self, v):
         # type: (Text) -> Filter
-        return Filter(self._s, "!has", v)
+        return Filter(self._s, "~has", v)
 
     def in_(self, v):
         # type: (Sequence[Text]) -> Filter
