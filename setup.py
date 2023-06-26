@@ -30,7 +30,6 @@ setup(
     url="https://github.com/WuLiFang/cgtwq",
     install_requires=[
         "Qt.py>=1.1 ,<2.0",
-        "environs>=4.2.0 ,<4.3.0",
         "requests>=2.19 ,<3.0",
         "websocket-client>=0.47.0, <1.0",
         "deprecated>=1.2.12, <2.0.0",

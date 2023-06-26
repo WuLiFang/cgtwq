@@ -4,7 +4,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import time
 
-from environs import Env
 
 from deprecated import deprecated
 
@@ -14,17 +13,31 @@ TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Any, Text, Tuple, Callable
 
+import os
 
-ENV = Env()
+
+def _env_text(name, default):
+    # type: (Text,Text) -> Text
+    return os.getenv(name) or default
+
+
+def _env_int(name, default):
+    # type: (Text, int) -> int
+    try:
+        return int(os.getenv(name) or "")
+    except:
+        return default
+
+
 CONFIG = {
-    "URL": ENV("CGTEAMWORK_URL", "http://192.168.55.11"),
-    "API_VERSION": ENV("CGTEAMWORK_VERSION", ""),
-    "DEFAULT_TOKEN": ENV("CGTEAMWORK_DEFAULT_TOKEN", ""),
-    "DESKTOP_WEBSOCKET_URL": ENV(
+    "URL": _env_text("CGTEAMWORK_URL", "http://192.168.55.11"),
+    "API_VERSION": _env_text("CGTEAMWORK_VERSION", ""),
+    "DEFAULT_TOKEN": _env_text("CGTEAMWORK_DEFAULT_TOKEN", ""),
+    "DESKTOP_WEBSOCKET_URL": _env_text(
         "CGTEAMWORK_DESKTOP_WEBSOCKET_URL", "ws://127.0.0.1:64999"
     ),
-    "CONNECTION_TIMEOUT": ENV.int("CGTEAMWORK_CONNECTION_TIMEOUT", 1),
-    "MIN_FETCH_INTERVAL": ENV.int("CGTEAMWORK_MIN_FETCH_INTERVAL", 1),
+    "CONNECTION_TIMEOUT": _env_int("CGTEAMWORK_CONNECTION_TIMEOUT", 1),
+    "MIN_FETCH_INTERVAL": _env_int("CGTEAMWORK_MIN_FETCH_INTERVAL", 1),
 }
 FIELD_TYPES = ("int", "decimal", "lineedit", "textedit", "checkbox", "list")
 
