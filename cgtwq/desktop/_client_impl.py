@@ -21,8 +21,9 @@ from ._view_service_impl import new_view_service
 from ._ws_client import WSClient
 
 _WELL_KNOWN_EXE_PATH = [
-    "C:/CgTeamWork_v6/bin/cgtw/CgTeamWork.exe",
     "C:/cgteamwork/bin/cgtw/CgTeamWork.exe",
+    "C:/CgTeamWork_v7/bin/cgtw/CgTeamWork.exe",
+    "C:/CgTeamWork_v6/bin/cgtw/CgTeamWork.exe",
 ]
 
 
@@ -30,8 +31,15 @@ def _default_exe_path():
     # type: () -> Text
     for i in (
         os.getenv("CGTEAMWORK_CLIENT_PATH", ""),
+        # cgt6
         os.path.normpath(
             os.path.join(sys.executable, "..", "..", "bin", "cgtw", "CgTeamWork.exe")
+        ),
+        # cgt7
+        os.path.normpath(
+            os.path.join(
+                sys.executable, "..", "..", "..", "bin", "cgtw", "CgTeamWork.exe"
+            )
         ),
     ):
         if i and os.path.exists(i):
