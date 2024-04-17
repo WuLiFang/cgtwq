@@ -15,6 +15,10 @@ from ._filter import NULL_FILTER, Filter
 from ._plugin import Plugin
 from ._plugin_table_view import PluginTableView
 from ._util import iteritems
+import json
+
+
+# spell-checker: word argvs
 
 
 class PluginServiceImpl(object):
@@ -41,6 +45,13 @@ class PluginServiceImpl(object):
     def get(self, id):
         # type: (Text) -> ...
         assert id, "id is required"
+        if self._compat.level < self._compat.LEVEL_7_0:
+            return self._get_5_2(id)
+        return self._get_7_0(id)
+
+    def _get_5_2(self, id):
+        # type: (Text) -> ...
+        assert id, "id is required"
         resp = self._http.call(
             "c_plugin",
             "get_one_with_id",
@@ -50,7 +61,24 @@ class PluginServiceImpl(object):
         name, type, raw_argv = resp.json()
         return Plugin(id, name, type, raw_argv)
 
+    def _get_7_0(self, id):
+        # type: (Text) -> ...
+        assert id, "id is required"
+        resp = self._http.call(
+            "plugin",
+            "get_argvs",
+            id=id,
+        )
+        data = resp.json()
+        return Plugin(id, "unknown", "unknown", json.dumps(data))
+
     def save(self, obj, only_fields=()):
+        # type: (Plugin, Iterable[Text]) -> None
+        if self._compat.level < self._compat.LEVEL_7_0:
+            return self._save_5_2(obj, only_fields)
+        return self._save_7_0(obj)
+
+    def _save_5_2(self, obj, only_fields=()):
         # type: (Plugin, Iterable[Text]) -> None
         data = dict(
             type=obj.type,
@@ -63,13 +91,21 @@ class PluginServiceImpl(object):
             data = {k: v for k, v in iteritems(data) if k in only_fields}
         if not data:
             raise ValueError("only_fields item should be one of (%s)", fields)
-        resp = self._http.call(
+        self._http.call(
             "c_plugin",
             "set_one_with_id",
             id=obj.id,
             field_data_array=data,
         )
-        resp.json()
+
+    def _save_7_0(self, obj):
+        # type: (Plugin) -> None
+        self._http.call(
+            "plugin",
+            "set_argvs",
+            id=obj.id,
+            argv_data={k: v.value for k, v in obj.argv()},
+        )
 
 
 def new_plugin_service(http, compat):

@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 TYPE_CHECKING = False
 if TYPE_CHECKING:
     from typing import Any, Text, Dict
+
 from collections import OrderedDict
 
 import requests
@@ -13,6 +14,10 @@ import json
 from . import exceptions
 
 from ._util import cast_text
+
+import logging
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class CGTeamworkError(RuntimeError):
@@ -90,19 +95,16 @@ class HTTPClient:
 
     def post(self, pathname, data, **kwargs):
         # type: (Text, Dict[Text, Any],  *Any) -> HTTPResponse
-
         assert "data" not in kwargs
         if data is not None:
             data = {
                 "data": self._encoder.encode(data),
             }
+        url = self._build_url(pathname)
+        _LOGGER.debug("will request: POST %s: %s", url, data)
         return HTTPResponse(
             self._session.post(  # type: ignore
-                self._build_url(pathname),
-                data=data,
-                cookies={"token": self.token},
-                verify=False,
-                **kwargs
+                url, data=data, cookies={"token": self.token}, verify=False, **kwargs
             )
         )
 
@@ -122,6 +124,7 @@ class HTTPClient:
         # type: (Text, Text, *Any) -> HTTPResponse
         """Call controller method ."""
 
+        data.setdefault("app", "api")
         data["controller"] = controller
         data["method"] = method
 

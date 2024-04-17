@@ -16,6 +16,7 @@ class CompatService:
     LEVEL_UNKNOWN = 0
     LEVEL_5_2 = 1
     LEVEL_6_1 = 2
+    LEVEL_7_0 = 3
 
     @classmethod
     def level_from_version(cls, s):
@@ -27,6 +28,8 @@ class CompatService:
             return cls.LEVEL_5_2
         if "6.0" <= s < "7.0":
             return cls.LEVEL_6_1
+        if "7.0" <= s < "6.0":
+            return cls.LEVEL_7_0
         return cls.LEVEL_UNKNOWN
 
     @classmethod
@@ -34,9 +37,13 @@ class CompatService:
         # type: (HTTPClient) -> int
 
         resp = http.get("")
-        return {"nginx/1.9.15": cls.LEVEL_5_2, "nginx/1.15.9": cls.LEVEL_6_1,}.get(
+        return {
+            "nginx/1.9.15": cls.LEVEL_5_2,
+            "nginx/1.15.9": cls.LEVEL_6_1,
+            "nginx/1.19.9": cls.LEVEL_7_0,
+        }.get(
             resp.raw.headers.get("Server", ""),  # type: ignore
-            cls.LEVEL_6_1,
+            cls.LEVEL_7_0,
         )
 
     def __init__(self, level):
