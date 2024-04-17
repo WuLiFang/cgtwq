@@ -62,9 +62,9 @@ class JSONEncoder(json.JSONEncoder):
         if callable(method):
             return method()
         if isinstance(o, set):
-            return list(o) # type: ignore
+            return list(o)  # type: ignore
         if isinstance(o, OrderedDict):
-            return dict(o) # type: ignore
+            return dict(o)  # type: ignore
         return super(JSONEncoder, self).default(o)  # type: ignore
 
 
@@ -100,6 +100,7 @@ class HTTPClient:
                 self._build_url(pathname),
                 data=data,
                 cookies={"token": self.token},
+                verify=False,
                 **kwargs
             )
         )
@@ -108,7 +109,12 @@ class HTTPClient:
         # type: (Text,  *Any) -> HTTPResponse
 
         return HTTPResponse(
-            self._session.get(self._build_url(pathname), cookies={"token": self.token}, **kwargs)  # type: ignore
+            self._session.get(
+                self._build_url(pathname),
+                cookies={"token": self.token},
+                verify=False,
+                **kwargs
+            )  # type: ignore
         )
 
     def call(self, controller, method, **data):

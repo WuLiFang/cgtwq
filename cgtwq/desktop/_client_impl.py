@@ -61,32 +61,42 @@ def _default_exe_path():
 _FALLBACK_SOCKET_URL = os.getenv("CGTEAMWORK_DESKTOP_WEBSOCKET_URL", "")
 
 
-def _default_socket_url(exe_path):
-    # type: (Text) -> Text
-    if not exe_path:
-        return _FALLBACK_SOCKET_URL
-    cfg_path = os.path.normpath(os.path.join(exe_path, "..", "config.ini"))
-
-    if cfg_path:
+class _ConfigFile:
+    def __init__(self, exe_path):
+        # type: (Text) -> None
+        cfg_path = os.path.normpath(os.path.join(exe_path, "..", "config.ini"))
+        self.cfg = configparser.ConfigParser()
         try:
-            cfg = configparser.ConfigParser()
-            cfg.read(cfg_path)
-            port = cfg.get("General", "socket_server_port")
-            return "ws://127.0.0.1:%s" % port
+            self.cfg.read(cfg_path)
         except Exception:
             pass
-    return _FALLBACK_SOCKET_URL
+
+    def socket_url(self):
+        port = self.cfg.get("General", "socket_server_port")
+        if not port:
+            return _FALLBACK_SOCKET_URL
+        return "ws://127.0.0.1:%s" % port
+
+    def http_url(self):
+        host = self.cfg.get("General", "server")
+        if not host:
+            return ""
+        https_port = self.cfg.get("General", "https_port")
+        if not https_port:
+            return "http://%s" % (host,)
+        return "https://%s:%s" % (host, https_port)
 
 
 class ClientImpl(BaseClientImpl):
     def __init__(self, exe_path="", socket_url=""):
         # type: (Text, Text) -> None
         self._exe_path = exe_path or _default_exe_path()
-        self._socket_url = socket_url or _default_socket_url(self._exe_path)
+        cfg = _ConfigFile(self._exe_path)
+        self._socket_url = socket_url or cfg.socket_url()
         self._ws = WSClient(self._socket_url)
 
         super(ClientImpl, self).__init__(
-            http_url="http://%s" % (self._get_server_ip(),)
+            http_url=cfg.http_url() or self._http_url_by_ws()
         )
         plugin = new_plugin_service(
             self._http,
@@ -110,11 +120,9 @@ class ClientImpl(BaseClientImpl):
     def socket_url(self):
         return self._socket_url
 
-    def _get_server_ip(self):
-        ret = self._ws.call_main_widget("get_server_ip")
-        if ret is True:
-            return ""
-        return cast_text(ret)
+    def _http_url_by_ws(self):
+        host = self._ws.call_main_widget("get_server_ip")
+        return "http://%s" % (host,)
 
     def _get_token(self):
         ret = self._ws.call_main_widget("get_token")
