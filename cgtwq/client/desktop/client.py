@@ -8,7 +8,6 @@ import os
 from functools import partial
 from subprocess import Popen
 
-import psutil
 import websocket as ws
 from deprecated import deprecated
 from six import text_type
@@ -74,12 +73,17 @@ class DesktopClient(CachedFunctionMixin):
         """
 
         # Get client executable.
-        for i in psutil.process_iter():
-            try:
-                if i.name().lower() == "cgteamwork.exe":
-                    return i.exe()
-            except psutil.AccessDenied:
-                pass
+        try:
+            import psutil
+
+            for i in psutil.process_iter():
+                try:
+                    if i.name().lower() == "cgteamwork.exe":
+                        return i.exe()
+                except psutil.AccessDenied:
+                    pass
+        except ImportError:
+            pass
 
         # Try use default path when client not running.
         for i in (

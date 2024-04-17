@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 import os
 import sys
 
-import psutil
 from six.moves import configparser
 
 from .._client_impl import ClientImpl as BaseClientImpl
@@ -45,12 +44,17 @@ def _default_exe_path():
         if i and os.path.exists(i):
             return i
 
-    for i in psutil.process_iter():  # type: ignore
-        try:
-            if i.name().lower() == "cgteamwork.exe":  # type: ignore
-                return i.exe()  # type: ignore
-        except psutil.AccessDenied:
-            pass
+    try:
+        import psutil
+
+        for i in psutil.process_iter():  # type: ignore
+            try:
+                if i.name().lower() == "cgteamwork.exe":  # type: ignore
+                    return i.exe()  # type: ignore
+            except psutil.AccessDenied:
+                pass
+    except ImportError:
+        pass
 
     for i in _WELL_KNOWN_EXE_PATH:
         if i and os.path.exists(i):
