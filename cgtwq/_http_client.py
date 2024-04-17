@@ -12,7 +12,11 @@ import requests
 import json
 from . import exceptions
 
-from ._util import PY2, cast_text, cast_binary
+from ._util import cast_text
+
+
+class CGTeamworkError(RuntimeError):
+    pass
 
 
 def _raise_error(result):
@@ -32,10 +36,7 @@ def _raise_error(result):
         return
     elif (code, type_, data) == ("2", "msg", "please login!!!"):
         raise exceptions.LoginError
-    msg = cast_text(data)
-    if PY2:
-        msg = cast_binary(msg)
-    raise ValueError(msg)
+    raise CGTeamworkError(cast_text(data))
 
 
 class HTTPResponse:
