@@ -146,3 +146,8 @@ def current_client():
         return new_client()
     except (IOError, websocket.WebSocketException):
         pass
+
+
+def default_executable():
+    # type: () -> Text
+    return _default_exe_path()
