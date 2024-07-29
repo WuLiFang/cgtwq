@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Text
+    from typing import Text, Optional
     from ._client import Client
 
 import os
@@ -17,7 +17,7 @@ from .._client_impl import ClientImpl as BaseClientImpl
 from .._util import cast_text
 from ._plugin_service_impl import new_plugin_service
 from ._view_service_impl import new_view_service
-from ._ws_client import WSClient
+from ._ws_client import WSClient, websocket
 
 _WELL_KNOWN_EXE_PATH = [
     "C:/cgteamwork/bin/cgtw/CgTeamWork.exe",
@@ -138,3 +138,11 @@ class ClientImpl(BaseClientImpl):
 def new_client(exe_path="", socket_url=""):
     # type: (Text, Text) -> Client
     return ClientImpl(exe_path, socket_url)
+
+
+def current_client():
+    # type: () -> Optional[Client]
+    try:
+        return new_client()
+    except (IOError, websocket.WebSocketException):
+        pass
