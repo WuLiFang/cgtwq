@@ -35,6 +35,17 @@ class PipelineTableView:
 
     def rows(self, *fields):
         # type: (Text) -> Iterator[Sequence[Text]]
+        if self._compat.level < self._compat.LEVEL_7_0:
+            return self._rows_v5_2(*fields)
+        return self._rows_v7_0(*fields)
+
+    def column(self, field):
+        # type: (Text) -> ...
+        for (i,) in self.rows(field):
+            yield i
+
+    def _rows_v5_2(self, *fields):
+        # type: (Text) -> Iterator[Sequence[Text]]
         resp = self._http.call(
             "c_pipeline",
             "get_with_filter",
@@ -44,10 +55,17 @@ class PipelineTableView:
         )
         return resp.json()
 
-    def column(self, field):
-        # type: (Text) -> ...
-        for (i,) in self.rows(field):
-            yield i
+    def _rows_v7_0(self, *fields):
+        # type: (Text) -> Iterator[Sequence[Text]]
+        resp = self._http.call(
+            "pipeline",
+            "get_filter",
+            db=self._database,
+            field_array=[self._compat.transform_field(i) for i in fields],
+            filter_array=self._compat.transform_filter(self._filter_by),
+        )
+        return resp.json()
+
 
 def _(v):
     # type: (PipelineTableView) -> TableView
