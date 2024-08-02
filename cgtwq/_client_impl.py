@@ -19,6 +19,7 @@ from ._user_token import UserToken
 from ._orm_table_view import ORMTableView
 from ._pipeline_service_impl import new_pipeline_service
 from ._file_box_service_impl import new_file_box_service
+from ._image_service_impl import new_image_service
 
 
 class ClientImpl(object):
@@ -35,12 +36,14 @@ class ClientImpl(object):
         pipeline = new_pipeline_service(http, compat)
         flow = new_flow_service(http, compat)
         file_box = new_file_box_service(http, compat)
+        image = new_image_service(http, compat)
 
         self._http = http
         self._compat = compat
         self.file_box = file_box
         self.pipeline = pipeline
         self.flow = flow
+        self.image = image
 
     @property
     def http_url(self):

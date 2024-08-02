@@ -9,6 +9,7 @@ from ._row_id import RowID
 from ._field_sign import FieldSign as F, FieldSign
 from ._user_token import UserToken
 from ._message import Message as MessageV2
+from ._image import Image
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -28,6 +29,7 @@ if TYPE_CHECKING:
         "PipelineService",
         "UserToken",
         "MessageV2",
+        "Image",
         # legacy export,
         "server",
         "get_account",

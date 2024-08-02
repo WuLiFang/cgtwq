@@ -11,11 +11,13 @@ from ._pipeline_service import PipelineService
 from ._flow_service import FlowService
 from ._user_token import UserToken
 from ._file_box_service import FileBoxService
+from ._image_service import ImageService
 
 class Client(Protocol):
     pipeline: PipelineService
     flow: FlowService
     file_box: FileBoxService
+    image: ImageService
 
     def __init__(self, http_url: str = ..., version: str = ...) -> None: ...
     @property
