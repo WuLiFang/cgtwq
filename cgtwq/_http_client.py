@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Any, Text, Dict
+    from typing import Any, Text, Dict, Optional
 
 from collections import OrderedDict
 
@@ -14,6 +14,7 @@ import json
 from . import exceptions
 
 from ._util import cast_text
+from ._user_token import UserToken
 
 import logging
 
@@ -47,6 +48,8 @@ def _raise_error(result):
 class HTTPResponse:
     def __init__(self, raw):
         # type: (requests.Response) -> None
+        if raw.status_code != 200:  # type: ignore
+            raise RuntimeError("cgteamwork response status %d" % raw.status_code)
         self.raw = raw
 
     def json(self):
@@ -79,7 +82,7 @@ class HTTPClient:
         # type: (Text) -> None
         self._url = url
         self._session = requests.Session()
-        self.token = ""
+        self.token = UserToken("", "")
         self._encoder = JSONEncoder()
 
     def __del__(self):
@@ -94,7 +97,7 @@ class HTTPClient:
         return self._url
 
     def post(self, pathname, data, **kwargs):
-        # type: (Text, Dict[Text, Any],  *Any) -> HTTPResponse
+        # type: (Text, Optional[Dict[Text, Any]],  *Any) -> HTTPResponse
         assert "data" not in kwargs
         if data is not None:
             data = {
@@ -104,7 +107,11 @@ class HTTPClient:
         _LOGGER.debug("will request: POST %s: %s", url, data)
         return HTTPResponse(
             self._session.post(  # type: ignore
-                url, data=data, cookies={"token": self.token}, verify=False, **kwargs
+                url,
+                data=data,
+                cookies={"token": self.token.raw},
+                verify=False,
+                **kwargs
             )
         )
 
@@ -112,9 +119,9 @@ class HTTPClient:
         # type: (Text,  *Any) -> HTTPResponse
 
         return HTTPResponse(
-            self._session.get(
+            self._session.get(  # type: ignore
                 self._build_url(pathname),
-                cookies={"token": self.token},
+                cookies={"token": self.token.raw},
                 verify=False,
                 **kwargs
             )  # type: ignore

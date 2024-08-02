@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Text, Optional
+    from typing import Text, Optional, Any
     from ._client import Client
 
 import os
@@ -14,10 +14,12 @@ import sys
 from six.moves import configparser
 
 from .._client_impl import ClientImpl as BaseClientImpl
+from .._user_token import UserToken
 from .._util import cast_text
 from ._plugin_service_impl import new_plugin_service
 from ._view_service_impl import new_view_service
 from ._ws_client import WSClient, websocket
+
 
 _WELL_KNOWN_EXE_PATH = [
     "C:/cgteamwork/bin/cgtw/CgTeamWork.exe",
@@ -129,10 +131,25 @@ class ClientImpl(BaseClientImpl):
         return "http://%s" % (host,)
 
     def _get_token(self):
-        ret = self._ws.call_main_widget("get_token")
-        if ret is True:
-            return ""
-        return cast_text(ret)
+        if self._compat.level < self._compat.LEVEL_7_0:
+            return self._get_token_5_2()
+        return self._get_token_7_0()
+
+    def _get_token_5_2(self):
+        raw = self._ws.call_main_widget("get_token")
+        if raw is True:
+            return UserToken("", "")
+        user_id = cast_text(
+            self._http.call("c_token", "get_account_id", token=self.token)
+        )
+        return UserToken(user_id, raw)
+
+    def _get_token_7_0(self):
+        data = self._ws.call_main_widget("get_login_data")  # type: dict[str, Any]
+        return UserToken(
+            cast_text(data.get("account_id", "")),
+            cast_text(data.get("token", "")),
+        )
 
 
 def new_client(exe_path="", socket_url=""):

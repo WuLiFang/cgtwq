@@ -9,6 +9,7 @@ from ._filter import Filter
 from ._table_view import TableView
 from ._pipeline_service import PipelineService
 from ._flow_service import FlowService
+from ._user_token import UserToken
 
 class Client(Protocol):
     pipeline: PipelineService
@@ -17,9 +18,9 @@ class Client(Protocol):
     @property
     def http_url(self) -> str: ...
     @property
-    def token(self) -> str: ...
+    def token(self) -> UserToken: ...
     @token.setter
-    def token(self, v: str) -> None: ...
+    def token(self, v: UserToken) -> None: ...
     def table(
         self,
         database: str,

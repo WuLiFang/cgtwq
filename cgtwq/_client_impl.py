@@ -15,6 +15,7 @@ from ._compat_service import CompatService
 from ._filter import NULL_FILTER, Filter
 from ._flow_service_impl import new_flow_service
 from ._http_client import HTTPClient
+from ._user_token import UserToken
 from ._orm_table_view import ORMTableView
 from ._pipeline_service_impl import new_pipeline_service
 
@@ -48,7 +49,7 @@ class ClientImpl(object):
 
     @token.setter
     def token(self, v):
-        # type: (Text) -> None
+        # type: (UserToken) -> None
         self._http.token = v
 
     def table(self, database, module, module_type, filter_by=NULL_FILTER):

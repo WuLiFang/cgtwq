@@ -7,6 +7,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 from ._client_impl import new_client
 from ._row_id import RowID
 from ._field_sign import FieldSign as F, FieldSign
+from ._user_token import UserToken
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
         "FlowService",
         "PluginService",
         "PipelineService",
+        "UserToken",
         # legacy export,
         "server",
         "get_account",
@@ -83,7 +85,7 @@ from .public_module import ACCOUNT, PROJECT
 from .resultset import ResultSet
 from .selection import Entry, Selection
 from .util import current_account, current_account_id, update_setting
-from deprecated import deprecated # type: ignore
+from deprecated import deprecated  # type: ignore
 from . import __version__, compat
 
 get_all_status = deprecated(  # type: ignore
