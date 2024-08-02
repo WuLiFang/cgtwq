@@ -123,10 +123,11 @@ class FlowServiceImpl:
         if not sign_list:
             raise ValueError("submission file box not found")
         resp = self._http.call(
-            "controller",
+            controller,
             "get_sign_filebox",
             db=id.database,
             module=id.module,
+            id=id.value,
             os=constants.OS,
             filebox_sign=sign_list[0],
         )

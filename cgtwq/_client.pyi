@@ -10,10 +10,13 @@ from ._table_view import TableView
 from ._pipeline_service import PipelineService
 from ._flow_service import FlowService
 from ._user_token import UserToken
+from ._file_box_service import FileBoxService
 
 class Client(Protocol):
     pipeline: PipelineService
     flow: FlowService
+    file_box: FileBoxService
+
     def __init__(self, http_url: str = ..., version: str = ...) -> None: ...
     @property
     def http_url(self) -> str: ...
