@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Text
+    from typing import Text, Iterator
     from ._file_box_service import FileBoxService
     from ._compat_service import CompatService
     from ._http_client import HTTPClient
@@ -30,6 +30,63 @@ class FileBoxServiceImpl:
         if self._compat.level <= self._compat.LEVEL_6_1:
             return self._get_by_sign_v6_1(id, sign)
         return self._get_by_sign_v7_0(id, sign)
+
+    def all_submit(self, id):
+        # type: (RowID) -> Iterator[FileBox]
+        if self._compat.level <= self._compat.LEVEL_5_2:
+            return self._all_submit_v5_2(id)
+        if self._compat.level <= self._compat.LEVEL_6_1:
+            return self._all_submit_v6_1(id)
+        return self._all_submit_v7_0(id)
+
+    def _all_submit_v5_2(self, id):
+        # type: (RowID) -> Iterator[FileBox]
+        # spell-checker: word filebox etask
+        resp = self._http.call(
+            "c_file",
+            "filebox_get_submit_data",
+            db=id.database,
+            module=id.module,
+            task_id=id.value,
+            os=constants.OS,
+        )
+        yield FileBox(resp.json())
+
+    def _all_submit_v6_1(self, id):
+        # type: (RowID) -> Iterator[FileBox]
+        resp = self._http.call(
+            "c_filebox",
+            "filebox_get_submit_data",
+            db=id.database,
+            module=id.module,
+            task_id=id.value,
+            os=constants.OS,
+            sign="review",
+        )
+        yield FileBox(resp.json())
+
+    def _all_submit_v7_0(self, id):
+        # type: (RowID) -> Iterator[FileBox]
+        controller = "task"
+        if id.module == "etask":
+            controller = "etask"
+        for sign in self._http.call(
+            controller,
+            "get_submit_filebox_sign",
+            db=id.database,
+            module=id.module,
+            id=id.value,
+        ).json():
+            resp = self._http.call(
+                controller,
+                "get_sign_filebox",
+                db=id.database,
+                module=id.module,
+                id=id.value,
+                os=constants.OS,
+                filebox_sign=sign,
+            )
+            yield FileBox(resp.json())
 
     def _get_by_sign_v5_2(self, id, sign):
         # type: (RowID, Text) -> FileBox
