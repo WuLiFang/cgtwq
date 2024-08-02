@@ -24,5 +24,11 @@ class Image:
     def as_payload_v6_1(self):
         d = dict(type="image", max=self.max, min=self.min)
         if self.attachment_id:
+            d["att_id"] = self.attachment_id
+        return d
+
+    def as_payload(self):
+        d = self.as_payload_v6_1()
+        if self.attachment_id:
             d["attachment_id"] = self.attachment_id
         return d

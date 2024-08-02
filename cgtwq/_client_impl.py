@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from typing import Text
+    from typing import Text, Any, Sequence
     from ._table_view import TableView
     from ._client import Client
 
@@ -14,12 +14,14 @@ import os
 from ._compat_service import CompatService
 from ._filter import NULL_FILTER, Filter
 from ._flow_service_impl import new_flow_service
+from ._row_id import RowID
 from ._http_client import HTTPClient
 from ._user_token import UserToken
 from ._orm_table_view import ORMTableView
 from ._pipeline_service_impl import new_pipeline_service
 from ._file_box_service_impl import new_file_box_service
 from ._image_service_impl import new_image_service
+from ._util import iteritems
 
 
 class ClientImpl(object):
@@ -68,6 +70,55 @@ class ClientImpl(object):
             module_type,
             filter_by,
         )
+
+    def set(self, id, data):
+        # type: (Sequence[RowID], dict[str, Any]) -> None
+
+        if not id or not data:
+            return
+        data = {self._compat.transform_field(k): v for k, v in data.items()}
+
+        if self._compat.level < self._compat.LEVEL_7_0:
+            return self._set_v5_2(id, data)
+        return self._set_v7_0(id, data)
+
+    def _set_v5_2(self, id, data):
+        # type: (Sequence[RowID], dict[str, Any]) -> None
+
+        groups = {}  # type: dict[tuple[Text, Text,Text], list[Text]]
+        for i in id:
+            groups.setdefault((i.database, i.module, i.module_type), []).append(i.value)
+
+        for key, id_list in iteritems(groups):
+            database, module, module_type = key
+            self._http.call(
+                "c_orm",
+                "set_in_id",
+                db=database,
+                module=module,
+                module_type=module_type,
+                id_array=id_list,
+                sign_data_array=data,
+            ).json()
+
+    def _set_v7_0(self, id, data):
+        # type: (Sequence[RowID], dict[str, Any]) -> None
+        groups = {}  # type: dict[tuple[Text, Text,Text], list[Text]]
+        for i in id:
+            groups.setdefault((i.database, i.module, i.module_type), []).append(i.value)
+
+        for key, id_list in iteritems(groups):
+            database, module, module_type = key
+            self._http.call(
+                module_type,
+                "set",
+                db=database,
+                module=module,
+                module_type=module_type,
+                id_array=id_list,
+                sign_data_array=data,
+                exec_event_filter=True,
+            ).json()
 
 
 def new_client(http_url="", version=""):

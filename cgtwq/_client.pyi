@@ -2,9 +2,7 @@
 # pyright: strict
 
 from __future__ import annotations
-from typing import (
-    Protocol,
-)
+from typing import Protocol, Any, Sequence
 from ._filter import Filter
 from ._table_view import TableView
 from ._pipeline_service import PipelineService
@@ -12,6 +10,7 @@ from ._flow_service import FlowService
 from ._user_token import UserToken
 from ._file_box_service import FileBoxService
 from ._image_service import ImageService
+from ._row_id import RowID
 
 class Client(Protocol):
     pipeline: PipelineService
@@ -35,3 +34,9 @@ class Client(Protocol):
         *,
         filter_by: Filter = ...,
     ) -> TableView: ...
+    def set(
+        self,
+        id: Sequence[RowID],
+        data: dict[str, Any],
+        /,
+    ) -> None: ...
