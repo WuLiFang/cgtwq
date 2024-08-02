@@ -8,6 +8,7 @@ from ._client_impl import new_client
 from ._row_id import RowID
 from ._field_sign import FieldSign as F, FieldSign
 from ._user_token import UserToken
+from ._message import Message as MessageV2
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
@@ -26,6 +27,7 @@ if TYPE_CHECKING:
         "PluginService",
         "PipelineService",
         "UserToken",
+        "MessageV2",
         # legacy export,
         "server",
         "get_account",
